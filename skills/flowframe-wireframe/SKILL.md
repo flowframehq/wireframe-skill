@@ -283,7 +283,7 @@ Use Tailwind CSS v4 utility classes. Color palette: `zinc` exclusively for grays
 | Link | `text-sm text-zinc-500 dark:text-zinc-400 hover:underline` |
 | Placeholder (image) | `bg-zinc-200 dark:bg-zinc-700 rounded` |
 | Placeholder (circle) | `bg-zinc-200 dark:bg-zinc-700 rounded-full` |
-| Heading (large) | `text-2xl font-bold` |
+| Heading (large) | `text-xl font-semibold` |
 | Heading (medium) | `text-lg font-semibold` |
 | Small text | `text-sm text-zinc-600 dark:text-zinc-400` |
 | Divider with text | See example below |
@@ -304,7 +304,7 @@ With Tailwind CSS v4, complex multi-region layouts (sidebar + main + panel) need
 Use flex/grid utilities directly: `flex`, `flex-col`, `flex-1`, `w-60`, `h-screen`, `overflow-y-auto`, etc.
 
 See [references/LAYOUT-GUIDE.md](references/LAYOUT-GUIDE.md) for a complete editor example with sidebar, panels, and fixed areas.
-See [references/WIREFRAME-DESIGN-GUIDE.md](references/WIREFRAME-DESIGN-GUIDE.md) when the output feels structurally correct but visually weak, sparse, or poorly balanced.
+Use [references/WIREFRAME-DESIGN-GUIDE.md](references/WIREFRAME-DESIGN-GUIDE.md) as the primary authority for visual hierarchy, typography, spacing, density, and overall wireframe balance. If any example or pattern conflicts with the design guide, follow the design guide.
 
 ## Design Principles
 

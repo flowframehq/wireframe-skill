@@ -169,7 +169,7 @@ viewport: pc
       <div class="flex flex-col gap-6">
         <div class="flex flex-col items-center gap-2" data-feature="FEATURE_AUTH_LOGO">
         <div class="w-12 h-12 bg-zinc-200 dark:bg-zinc-700 rounded-lg"></div>
-        <span class="text-xl font-bold">FlowFrame</span>
+        <span class="text-xl font-semibold">FlowFrame</span>
         <span class="text-sm text-zinc-500 dark:text-zinc-400">계정에 로그인하세요</span>
         </div>
 

@@ -3,6 +3,13 @@
 This example demonstrates a **multi-feature screen** with sidebar + main grid layout.
 Compare with [EXAMPLE.md](EXAMPLE.md) (single-feature, card-centered) and [LAYOUT-GUIDE.md](LAYOUT-GUIDE.md) (5-region editor).
 
+## Table of Contents
+
+- [Step 1: Feature Specs](#step-1-feature-specs)
+- [Step 2: Screen Spec](#step-2-screen-spec)
+- [Step 3: Generated Wireframe](#step-3-generated-wireframe)
+- [Key Patterns](#key-patterns)
+
 ## Step 1: Feature Specs
 
 ### features/search-filter.md
@@ -77,7 +84,9 @@ usedIn:
 - 페이지 버튼 클릭 → 해당 페이지 상품 로드
 ```
 
-## Step 2: Screen Spec (screens/PRODUCT_LIST.md)
+## Step 2: Screen Spec
+
+`screens/PRODUCT_LIST.md`
 
 ```markdown
 ---
@@ -96,7 +105,9 @@ viewport: pc
 3. 메인 영역 — [@product-list](../features/product-list.md)
 ```
 
-## Step 3: Generated Wireframe (wireframes/PRODUCT_LIST.html)
+## Step 3: Generated Wireframe
+
+`wireframes/PRODUCT_LIST.html`
 
 ```html
 <!DOCTYPE html>

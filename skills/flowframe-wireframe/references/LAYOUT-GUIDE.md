@@ -173,7 +173,7 @@ viewport: pc
 
       <!-- Main: Editor canvas -->
       <main class="flex-1 p-6 overflow-y-auto" data-feature="FEATURE_EDITOR_CANVAS_BODY">
-        <h1 class="text-2xl font-bold mb-4">문서 제목</h1>
+        <h1 class="text-xl font-semibold mb-4">문서 제목</h1>
         <div class="h-3 bg-zinc-200 dark:bg-zinc-700 rounded mb-2 w-[90%]"></div>
         <div class="h-3 bg-zinc-200 dark:bg-zinc-700 rounded mb-2 w-full"></div>
         <div class="h-3 bg-zinc-200 dark:bg-zinc-700 rounded mb-2 w-3/4"></div>
