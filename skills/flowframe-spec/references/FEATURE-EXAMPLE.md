@@ -1,13 +1,18 @@
 # Example: Feature Spec — 댓글
 
+> **featureId는 경로에서 파생된다.** frontmatter에 featureId를 쓰지 않는다.
+> 예: `docs/features/comments/index.md` → featureId = `COMMENTS`
+> 예: `docs/features/auth/login-form/index.md` → featureId = `AUTH__LOGIN_FORM`
+
+## Leaf 예제 — `docs/features/comments/index.md`
+
 ```markdown
 ---
-featureId: COMMENTS
 label: 댓글
 type: section
 usedIn:
-  - docs/screens/EDITOR.md
-  - docs/screens/DASHBOARD.md
+  - docs/screens/EDITOR/index.md
+  - docs/screens/DASHBOARD/index.md
 ---
 
 # 댓글
@@ -41,6 +46,19 @@ usedIn:
 - @ 입력 시 → 멘션 자동완성 드롭다운 표시 (팀 멤버 목록)
 - 댓글 목록 스크롤 → 무한 스크롤 (20개씩 로드)
 
+## 유저스토리
+
+- 팀원으로서 댓글로 피드백을 남기고 싶다, 비동기로 소통하기 위해
+- 사용자로서 특정 팀원을 멘션하고 싶다, 필요한 사람에게 알림을 보내기 위해
+- 사용자로서 잘못 쓴 댓글을 삭제하고 싶다, 실수를 정정하기 위해
+
+## 인수조건
+
+- Given 댓글 입력창에 내용을 작성하고 When 등록 버튼을 클릭하면 Then 댓글 목록 상단에 새 댓글이 추가된다
+- Given 댓글에서 @ 를 입력하면 When 팀 멤버 목록이 표시되고 Then 선택한 멤버에게 알림이 발송된다
+- Given 본인이 작성한 댓글에서 When 삭제 버튼을 클릭하고 확인하면 Then 댓글이 삭제된다
+- Given 비로그인 상태이면 When 화면에 접근하면 Then 댓글 입력창이 숨겨진다
+
 ## 비즈니스 로직
 
 - 로그인한 사용자만 댓글 작성 가능 (비로그인 시 입력창 숨김)
@@ -49,3 +67,39 @@ usedIn:
 - 멘션된 사용자에게 알림 발송
 - 답글은 1단계만 허용 (답글의 답글 없음)
 ```
+
+## Branch 예제 — `docs/features/auth/index.md`
+
+branch는 자식 폴더가 있는 피쳐다. `## 와이어프레임 요소`와 `usedIn`이 없으며, 하위 leaf들의 공통 도메인 컨텍스트만 담는다. 와이어프레임 스킬은 branch를 읽지 않는다.
+
+```markdown
+---
+label: 인증
+---
+
+# 인증
+
+## 공통 상태
+
+| 상태 | 설명 |
+|------|------|
+| 미인증 | 로그인 필요 |
+| 인증됨 | 세션 활성 |
+| 세션 만료 | 재로그인 필요 |
+
+## 공통 인터랙션
+
+- 세션 만료 시 → 재로그인 모달 표시
+
+## 공통 비즈니스 로직
+
+- 세션 유효시간 30분, 갱신 가능
+- 모든 인증 실패는 보안 로그 기록
+- HTTPS 필수
+```
+
+## Key patterns
+
+- **유저스토리와 인수조건은 feature leaf에 작성한다.** feature가 기능의 단일 소스(Single Source of Truth)이므로, 해당 기능의 유저스토리와 인수조건은 leaf에만 존재한다.
+- **screen에는 화면 연계 인수조건만 작성한다.** 화면 고유의 기능 간 연동 조건(예: 파일 트리 클릭 → 에디터 로드)만 screen spec에 넣는다. 기능 자체의 AC는 feature에 둔다.
+- **같은 feature가 여러 화면에서 쓰여도 스토리/AC는 한 번만 작성한다.** 위 댓글 feature가 EDITOR, DASHBOARD 두 화면에서 사용되더라도, 유저스토리와 인수조건은 `docs/features/comments/index.md`에만 존재한다.

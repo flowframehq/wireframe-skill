@@ -12,15 +12,17 @@ Compare with [EXAMPLE.md](EXAMPLE.md) (single-feature, card-centered) and [LAYOU
 
 ## Step 1: Feature Specs
 
-### docs/features/search-filter.md
+### docs/features/search-filter/index.md
+
+> **Note:** `featureId`는 frontmatter에 쓰지 않는다. 폴더 경로에서 자동 파생된다.
+> 예: `docs/features/search-filter/index.md` → `SEARCH_FILTER`
 
 ```markdown
 ---
-featureId: SEARCH_FILTER
 label: 검색/필터
 type: section
 usedIn:
-  - docs/screens/PRODUCT_LIST.md
+  - docs/screens/PRODUCT_LIST/index.md
 ---
 
 # 검색/필터
@@ -48,15 +50,17 @@ usedIn:
 - 필터 초기화 클릭 → 모든 필터 해제 + 전체 상품 표시
 ```
 
-### docs/features/product-list.md
+### docs/features/product-list/index.md
+
+> **Note:** `featureId`는 frontmatter에 쓰지 않는다. 폴더 경로에서 자동 파생된다.
+> 예: `docs/features/product-list/index.md` → `PRODUCT_LIST`
 
 ```markdown
 ---
-featureId: PRODUCT_LIST
 label: 상품 목록
 type: section
 usedIn:
-  - docs/screens/PRODUCT_LIST.md
+  - docs/screens/PRODUCT_LIST/index.md
 ---
 
 # 상품 목록
@@ -86,7 +90,7 @@ usedIn:
 
 ## Step 2: Screen Spec
 
-`docs/screens/PRODUCT_LIST.md`
+`docs/screens/PRODUCT_LIST/index.md`
 
 ```markdown
 ---
@@ -101,8 +105,8 @@ viewport: pc
 ## 레이아웃
 
 1. 상단 헤더 — 로고, 검색바, 장바구니 아이콘, 프로필
-2. 좌측 사이드바 — [@search-filter](../features/search-filter.md)
-3. 메인 영역 — [@product-list](../features/product-list.md)
+2. 좌측 사이드바 — [@search-filter](../../features/search-filter/index.md)
+3. 메인 영역 — [@product-list](../../features/product-list/index.md)
 ```
 
 ## Step 3: Generated Wireframe
@@ -137,7 +141,7 @@ viewport: pc
         "type": "list",
         "label": "카테고리 필터",
         "description": "상품 카테고리 체크박스 목록",
-        "spec": "../features/search-filter.md"
+        "spec": "../features/search-filter/index.md"
       },
       {
         "id": "FEATURE_SEARCH_FILTER_PRICE",
@@ -145,7 +149,7 @@ viewport: pc
         "type": "input",
         "label": "가격 범위",
         "description": "최소~최대 가격 입력 필드",
-        "spec": "../features/search-filter.md"
+        "spec": "../features/search-filter/index.md"
       },
       {
         "id": "FEATURE_SEARCH_FILTER_APPLY",
@@ -153,7 +157,7 @@ viewport: pc
         "type": "button",
         "label": "필터 적용 버튼",
         "description": "선택한 필터를 적용하는 버튼",
-        "spec": "../features/search-filter.md"
+        "spec": "../features/search-filter/index.md"
       },
       {
         "id": "FEATURE_SEARCH_FILTER_RESET",
@@ -161,7 +165,7 @@ viewport: pc
         "type": "link",
         "label": "필터 초기화",
         "description": "모든 필터를 초기 상태로 되돌리는 링크",
-        "spec": "../features/search-filter.md"
+        "spec": "../features/search-filter/index.md"
       },
       {
         "id": "FEATURE_PRODUCT_LIST_SORT",
@@ -169,7 +173,7 @@ viewport: pc
         "type": "select",
         "label": "정렬 선택",
         "description": "인기순, 최신순, 가격순 정렬 드롭다운",
-        "spec": "../features/product-list.md"
+        "spec": "../features/product-list/index.md"
       },
       {
         "id": "FEATURE_PRODUCT_LIST_CARDS",
@@ -177,7 +181,7 @@ viewport: pc
         "type": "list",
         "label": "상품 카드",
         "description": "상품 이미지, 이름, 가격, 평점을 보여주는 카드 그리드",
-        "spec": "../features/product-list.md"
+        "spec": "../features/product-list/index.md"
       },
       {
         "id": "FEATURE_PRODUCT_LIST_PAGINATION",
@@ -185,7 +189,7 @@ viewport: pc
         "type": "button",
         "label": "페이지네이션",
         "description": "이전/다음 페이지 이동 버튼",
-        "spec": "../features/product-list.md"
+        "spec": "../features/product-list/index.md"
       }
     ]
   }

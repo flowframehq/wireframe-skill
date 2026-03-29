@@ -35,12 +35,14 @@ This example demonstrates a dashboard-style editor with five regions:
 
 ### Feature Specs Used
 
-- `docs/features/file-tree.md` → 파일 탐색기 (featureId: FILE_TREE)
-- `docs/features/editor.md` → 에디터 캔버스 (featureId: EDITOR_CANVAS)
-- `docs/features/comments.md` → 댓글 (featureId: COMMENTS)
-- `docs/features/version-control.md` → 버전 관리 (featureId: VERSION_CONTROL)
+- `docs/features/file-tree/index.md` → 파일 탐색기 (featureId: FILE_TREE)
+- `docs/features/editor/index.md` → 에디터 캔버스 (featureId: EDITOR_CANVAS)
+- `docs/features/comments/index.md` → 댓글 (featureId: COMMENTS)
+- `docs/features/version-control/index.md` → 버전 관리 (featureId: VERSION_CONTROL)
 
-### Screen Spec (`docs/screens/EDITOR.md`)
+> **Note:** `featureId`는 frontmatter에 쓰지 않는다. 폴더 경로에서 자동 파생된다.
+
+### Screen Spec (`docs/screens/EDITOR/index.md`)
 
 Use project-root paths in examples. If a screen supports multiple viewports, keep them in one screen spec and split the layout sections by viewport.
 
@@ -57,16 +59,16 @@ viewport: [pc, mobile]
 ## 레이아웃 (PC)
 
 1. 상단 메뉴바 — 파일명, 저장 상태, 공유 버튼
-2. 좌측 사이드바 — [@file-tree](../features/file-tree.md)
-3. 중앙 편집 영역 — [@editor](../features/editor.md)
-4. 우측 패널 — [@comments](../features/comments.md), [@version-control](../features/version-control.md)
+2. 좌측 사이드바 — [@file-tree](../../features/file-tree/index.md)
+3. 중앙 편집 영역 — [@editor](../../features/editor/index.md)
+4. 우측 패널 — [@comments](../../features/comments/index.md), [@version-control](../../features/version-control/index.md)
 5. 하단 상태바 — 커서 위치, 단어 수, 언어 모드
 
 ## 레이아웃 (Mobile)
 
 1. 상단 앱 바 — 문서 제목, 저장 상태
-2. 본문 편집 영역 — [@editor](../features/editor.md)
-3. 하단 탭 또는 접이식 패널 — [@comments](../features/comments.md), [@version-control](../features/version-control.md)
+2. 본문 편집 영역 — [@editor](../../features/editor/index.md)
+3. 하단 탭 또는 접이식 패널 — [@comments](../../features/comments/index.md), [@version-control](../../features/version-control/index.md)
 ```
 
 ### Generated Wireframe (`docs/wireframes/EDITOR.html`, PC example)
@@ -99,7 +101,7 @@ viewport: [pc, mobile]
         "type": "list",
         "label": "파일 트리 목록",
         "description": "프로젝트 파일과 폴더를 탐색하는 목록",
-        "spec": "../features/file-tree.md"
+        "spec": "../features/file-tree/index.md"
       },
       {
         "id": "FEATURE_EDITOR_CANVAS_BODY",
@@ -107,7 +109,7 @@ viewport: [pc, mobile]
         "type": "text",
         "label": "문서 편집 본문",
         "description": "문서 내용을 읽고 편집하는 주요 영역",
-        "spec": "../features/editor.md"
+        "spec": "../features/editor/index.md"
       },
       {
         "id": "FEATURE_COMMENTS_LIST",
@@ -115,7 +117,7 @@ viewport: [pc, mobile]
         "type": "list",
         "label": "댓글 목록",
         "description": "팀원 댓글과 상태를 확인하는 목록",
-        "spec": "../features/comments.md"
+        "spec": "../features/comments/index.md"
       },
       {
         "id": "FEATURE_COMMENTS_INPUT",
@@ -123,7 +125,7 @@ viewport: [pc, mobile]
         "type": "input",
         "label": "댓글 입력",
         "description": "새 댓글을 작성하고 등록하는 입력 영역",
-        "spec": "../features/comments.md"
+        "spec": "../features/comments/index.md"
       },
       {
         "id": "FEATURE_VERSION_CONTROL_LIST",
@@ -131,7 +133,7 @@ viewport: [pc, mobile]
         "type": "list",
         "label": "버전 히스토리 목록",
         "description": "문서 버전 변경 이력을 확인하는 목록",
-        "spec": "../features/version-control.md"
+        "spec": "../features/version-control/index.md"
       }
     ]
   }

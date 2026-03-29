@@ -59,7 +59,7 @@
         "featureId": {
           "type": "string",
           "pattern": "^[A-Z0-9_]+$",
-          "description": "Parent feature ID from the feature spec frontmatter (e.g., AUTH, COMMENTS)."
+          "description": "Feature ID derived from folder path (e.g., AUTH__LOGIN_FORM, CART_ITEMS). Single underscore joins words, double underscore separates depth levels."
         },
         "type": {
           "type": "string",
@@ -75,7 +75,7 @@
         },
         "spec": {
           "type": "string",
-          "description": "Relative path to the parent feature spec markdown file (e.g., \"../features/auth.md\")."
+          "description": "Relative path to the leaf feature spec index.md (e.g., \"../features/auth/login-form/index.md\")."
         }
       },
       "additionalProperties": false

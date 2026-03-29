@@ -6,7 +6,7 @@
 
 | 스킬 | 역할 |
 |------|------|
-| **flowframe-spec** | 기능명세(features/*.md)와 화면명세(screens/*.md) 작성 도우미 |
+| **flowframe-spec** | 기능명세(features/*/index.md)와 화면명세(screens/*/index.md) 작성 도우미 |
 | **flowframe-wireframe** | 명세를 읽고 FlowFrame 규격 HTML 와이어프레임 생성/업데이트 |
 
 ## 설치
@@ -23,7 +23,7 @@ npx skills add flowframehq/wireframe-skill
 댓글 기능 기획해줘. 작성, 수정, 삭제, 멘션 기능이 필요해
 ```
 
-→ `features/comments.md` 생성 (와이어프레임 요소, 상태, 인터랙션, 비즈니스 로직, API)
+→ `features/comments/index.md` 생성 (와이어프레임 요소, 상태, 인터랙션, 비즈니스 로직, API)
 
 ### 2. 화면명세 작성
 
@@ -31,7 +31,7 @@ npx skills add flowframehq/wireframe-skill
 에디터 화면 만들어줘. 댓글이랑 버전관리 기능이 들어가
 ```
 
-→ `screens/EDITOR.md` 생성 (레이아웃 + 기능 참조)
+→ `screens/EDITOR/index.md` 생성 (레이아웃 + 기능 참조)
 
 ### 3. 와이어프레임 생성
 
@@ -53,14 +53,24 @@ npx skills add flowframehq/wireframe-skill
 
 ```
 project/
-├── features/              ← 기능 단위 명세 (비즈니스 기능 단위)
-│   ├── auth.md
-│   ├── comments.md
-│   └── file-upload.md
-├── screens/               ← 화면 정의 (레이아웃 + 기능 참조)
-│   ├── LOGIN.md
-│   ├── DASHBOARD.md
-│   └── EDITOR.md
+├── features/              ← 기능 단위 명세 (폴더 기반, 재귀 구조)
+│   ├── auth/
+│   │   ├── index.md       ← branch (공통 컨텍스트)
+│   │   ├── login-form/
+│   │   │   └── index.md   ← leaf (와이어프레임 요소)
+│   │   └── social-login/
+│   │       └── index.md   ← leaf
+│   ├── comments/
+│   │   └── index.md       ← leaf (단독 기능)
+│   └── file-upload/
+│       └── index.md       ← leaf
+├── screens/               ← 화면 정의 (폴더 기반, 레이아웃 + 기능 참조)
+│   ├── LOGIN/
+│   │   └── index.md
+│   ├── DASHBOARD/
+│   │   └── index.md
+│   └── EDITOR/
+│       └── index.md
 └── wireframes/            ← 생성된 와이어프레임 HTML
     ├── LOGIN.html
     ├── DASHBOARD.html
