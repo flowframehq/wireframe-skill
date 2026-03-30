@@ -1,15 +1,15 @@
-# Example: End-to-End Wireframe Generation
+# Example: Single-Feature Screen Wireframe
 
-This example shows the full flow: feature spec + screen spec → wireframe HTML.
+This reference shows a simple **single-feature screen** flow: feature spec + screen spec → generated wireframe HTML.
 
 ## Table of Contents
 
-- [Step 1](#step-1)
-- [Step 2](#step-2)
-- [Step 3](#step-3)
+- [Step 1: Feature Spec](#step-1-feature-spec)
+- [Step 2: Screen Spec](#step-2-screen-spec)
+- [Step 3: Generated Wireframe](#step-3-generated-wireframe)
 - [Key Patterns](#key-patterns)
 
-## Step 1
+## Step 1: Feature Spec
 
 > **Note:** `featureId`는 frontmatter에 쓰지 않는다. 폴더 경로에서 자동 파생된다.
 > 예: `docs/features/auth/login-form/index.md` → `AUTH__LOGIN_FORM`
@@ -65,7 +65,7 @@ usedIn:
 - 비밀번호 최소 8자, 영문+숫자
 ```
 
-## Step 2
+## Step 2: Screen Spec
 
 ```markdown
 ---
@@ -82,7 +82,7 @@ viewport: pc
 1. 전체 화면 — [@auth/login-form](../../features/auth/login-form/index.md)
 ```
 
-## Step 3
+## Step 3: Generated Wireframe
 
 ```html
 <!DOCTYPE html>
@@ -111,24 +111,24 @@ viewport: pc
         "featureId": "AUTH__LOGIN_FORM",
         "type": "input",
         "label": "이메일",
-        "description": "이메일 주소 입력 필드",
-        "spec": "../features/auth/login-form/index.md"
+        "description": "사용자가 로그인에 사용할 이메일 주소를 입력하고 형식 오류 여부를 확인하는 입력 필드",
+        "spec": "../../features/auth/login-form/index.md"
       },
       {
         "id": "FEATURE_AUTH__LOGIN_FORM_PASSWORD",
         "featureId": "AUTH__LOGIN_FORM",
         "type": "input",
         "label": "비밀번호",
-        "description": "비밀번호 입력 필드 (마스킹)",
-        "spec": "../features/auth/login-form/index.md"
+        "description": "사용자 계정 인증에 필요한 비밀번호를 마스킹된 상태로 입력하는 보안 입력 필드",
+        "spec": "../../features/auth/login-form/index.md"
       },
       {
         "id": "FEATURE_AUTH__LOGIN_FORM_SUBMIT",
         "featureId": "AUTH__LOGIN_FORM",
         "type": "button",
         "label": "로그인 버튼",
-        "description": "인증 요청 주요 액션 버튼",
-        "spec": "../features/auth/login-form/index.md"
+        "description": "입력한 이메일과 비밀번호로 인증을 요청하고 다음 화면 이동 흐름을 시작하는 주요 실행 버튼",
+        "spec": "../../features/auth/login-form/index.md"
       }
     ]
   }
@@ -151,6 +151,11 @@ viewport: pc
         </div>
       </div>
 
+      <div class="rounded-md border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-700/30 p-3">
+        <div class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase mb-1">상태 예시</div>
+        <div class="text-sm text-zinc-600 dark:text-zinc-300">에러 상태에서는 입력 필드 아래에 "이메일 또는 비밀번호가 올바르지 않습니다" 메시지가 표시되고, 로딩 중에는 버튼이 비활성화됩니다.</div>
+      </div>
+
       <button class="h-10 w-full text-sm font-semibold bg-zinc-800 text-white dark:bg-zinc-200 dark:text-zinc-900 rounded-md" data-feature="FEATURE_AUTH__LOGIN_FORM_SUBMIT">
         로그인
       </button>
@@ -167,5 +172,7 @@ viewport: pc
 2. **featureId is path-derived**: No `featureId` in frontmatter. The path `auth/login-form/index.md` automatically becomes `AUTH__LOGIN_FORM` (single `_` joins words, double `__` joins depth levels).
 3. **Screen references leaf only**: The layout uses `[@auth/login-form](../../features/auth/login-form/index.md)` — always pointing to a leaf, never a branch like `@auth`.
 4. **ID generation**: `FEATURE_{featureId}_{ELEMENT_ID}` — e.g., `FEATURE_AUTH__LOGIN_FORM_EMAIL`. The `featureId` portion preserves the `__` depth separator.
-5. **spec points to leaf index.md**: All elements share `"spec": "../features/auth/login-form/index.md"` — the relative path from `docs/wireframes/` to the leaf's `index.md`.
-6. **All styling uses Tailwind CSS v4 utility classes — no custom CSS classes or inline `<style>` blocks needed**
+5. **spec points to leaf index.md**: All elements share `"spec": "../../features/auth/login-form/index.md"` — the relative path from `docs/screens/LOGIN/` to the leaf's `index.md`.
+6. **Descriptions are human-facing**: Metadata `description` explains what each control does in the login flow, not just the visible label.
+7. **Representative state is visible**: The wireframe shows an error/loading note so reviewers can understand what changes on failure before opening the spec.
+8. **All styling uses Tailwind CSS v4 utility classes — no custom CSS classes or inline `<style>` blocks needed**

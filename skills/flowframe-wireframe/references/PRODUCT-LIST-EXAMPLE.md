@@ -1,16 +1,16 @@
-# Example: Product Listing Page (Multi-Feature, Sidebar Layout)
+# Example: Multi-Feature Screen Wireframe
 
-This example demonstrates a **multi-feature screen** with sidebar + main grid layout.
-Compare with [EXAMPLE.md](EXAMPLE.md) (single-feature, card-centered) and [LAYOUT-GUIDE.md](LAYOUT-GUIDE.md) (5-region editor).
+This reference shows a **multi-feature screen** where separate leaf specs combine into one generated wireframe.
+Compare with [EXAMPLE.md](EXAMPLE.md) for a simple single-feature case and [WIREFRAME-GUIDE.md](WIREFRAME-GUIDE.md) for the shared composition rules.
 
 ## Table of Contents
 
-- [Step 1: Feature Specs](#step-1-feature-specs)
+- [Step 1: Feature Spec](#step-1-feature-spec)
 - [Step 2: Screen Spec](#step-2-screen-spec)
 - [Step 3: Generated Wireframe](#step-3-generated-wireframe)
 - [Key Patterns](#key-patterns)
 
-## Step 1: Feature Specs
+## Step 1: Feature Spec
 
 ### docs/features/search-filter/index.md
 
@@ -111,7 +111,7 @@ viewport: pc
 
 ## Step 3: Generated Wireframe
 
-`docs/wireframes/PRODUCT_LIST.html`
+`docs/screens/PRODUCT_LIST/wireframe.html`
 
 ```html
 <!DOCTYPE html>
@@ -140,56 +140,56 @@ viewport: pc
         "featureId": "SEARCH_FILTER",
         "type": "list",
         "label": "카테고리 필터",
-        "description": "상품 카테고리 체크박스 목록",
-        "spec": "../features/search-filter/index.md"
+        "description": "사용자가 관심 카테고리만 선택해 상품 목록 범위를 좁히는 카테고리 필터 체크박스 목록",
+        "spec": "../../features/search-filter/index.md"
       },
       {
         "id": "FEATURE_SEARCH_FILTER_PRICE",
         "featureId": "SEARCH_FILTER",
         "type": "input",
         "label": "가격 범위",
-        "description": "최소~최대 가격 입력 필드",
-        "spec": "../features/search-filter/index.md"
+        "description": "최소 가격과 최대 가격을 지정해 예산 범위 안의 상품만 보이게 하는 가격 필터 입력 영역",
+        "spec": "../../features/search-filter/index.md"
       },
       {
         "id": "FEATURE_SEARCH_FILTER_APPLY",
         "featureId": "SEARCH_FILTER",
         "type": "button",
         "label": "필터 적용 버튼",
-        "description": "선택한 필터를 적용하는 버튼",
-        "spec": "../features/search-filter/index.md"
+        "description": "선택한 카테고리와 가격 조건을 실제 목록 조회에 반영해 결과를 다시 그리는 실행 버튼",
+        "spec": "../../features/search-filter/index.md"
       },
       {
         "id": "FEATURE_SEARCH_FILTER_RESET",
         "featureId": "SEARCH_FILTER",
         "type": "link",
         "label": "필터 초기화",
-        "description": "모든 필터를 초기 상태로 되돌리는 링크",
-        "spec": "../features/search-filter/index.md"
+        "description": "현재 적용된 카테고리와 가격 조건을 모두 해제해 기본 상품 목록으로 되돌리는 초기화 링크",
+        "spec": "../../features/search-filter/index.md"
       },
       {
         "id": "FEATURE_PRODUCT_LIST_SORT",
         "featureId": "PRODUCT_LIST",
         "type": "select",
         "label": "정렬 선택",
-        "description": "인기순, 최신순, 가격순 정렬 드롭다운",
-        "spec": "../features/product-list/index.md"
+        "description": "인기순, 최신순, 가격순 등 정렬 기준을 바꿔 같은 상품 집합을 다른 우선순위로 탐색하게 하는 정렬 선택 영역",
+        "spec": "../../features/product-list/index.md"
       },
       {
         "id": "FEATURE_PRODUCT_LIST_CARDS",
         "featureId": "PRODUCT_LIST",
         "type": "list",
         "label": "상품 카드",
-        "description": "상품 이미지, 이름, 가격, 평점을 보여주는 카드 그리드",
-        "spec": "../features/product-list/index.md"
+        "description": "상품 이미지, 이름, 가격, 평점 정보를 카드 단위로 보여줘 사용자가 비교하며 탐색하는 메인 상품 그리드",
+        "spec": "../../features/product-list/index.md"
       },
       {
         "id": "FEATURE_PRODUCT_LIST_PAGINATION",
         "featureId": "PRODUCT_LIST",
         "type": "button",
         "label": "페이지네이션",
-        "description": "이전/다음 페이지 이동 버튼",
-        "spec": "../features/product-list/index.md"
+        "description": "현재 조회 결과가 여러 페이지일 때 이전 페이지나 다음 페이지로 이동해 상품 목록을 계속 탐색하는 제어 영역",
+        "spec": "../../features/product-list/index.md"
       }
     ]
   }
@@ -278,6 +278,11 @@ viewport: pc
           </div>
         </div>
 
+        <div class="mb-4 rounded-md border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-700/30 p-3">
+          <div class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase mb-1">상태 예시</div>
+          <div class="text-sm text-zinc-600 dark:text-zinc-300">검색 결과가 없으면 상품 카드 그리드 대신 "검색 결과가 없습니다" 메시지와 필터 초기화 안내가 표시됩니다.</div>
+        </div>
+
         <!-- Product card grid -->
         <div class="grid grid-cols-3 gap-4" data-feature="FEATURE_PRODUCT_LIST_CARDS">
           <!-- Card 1 -->
@@ -363,9 +368,10 @@ viewport: pc
 ## Key Patterns
 
 1. **Two features in one screen**: `SEARCH_FILTER` (sidebar) and `PRODUCT_LIST` (main) are separate feature specs, each with their own `featureId` and `spec` path
-2. **Fixed header**: Top bar has no `data-feature`, not in metadata — it's UI chrome (logo, search bar, cart icon)
-3. **Sidebar + main layout**: `flex flex-1 overflow-hidden` for horizontal split, sidebar with fixed `w-64`, main with `flex-1`
-4. **Grid layout**: `grid grid-cols-3 gap-4` for product cards — a common pattern for list/card-type features
-5. **Multiple tracked elements per feature**: `SEARCH_FILTER` has 4 elements (category, price, apply, reset), `PRODUCT_LIST` has 3 elements (sort, cards, pagination)
-6. **Placeholder images**: `aspect-square bg-zinc-200 dark:bg-zinc-700 rounded-md` for product thumbnails
-7. **All dark: variants present**: Every color class has its `dark:` counterpart
+2. **Representative empty state is visible**: The wireframe includes a reviewer-facing state note for the no-results scenario.
+3. **Fixed header**: Top bar has no `data-feature`, not in metadata — it's UI chrome (logo, search bar, cart icon)
+4. **Sidebar + main layout**: `flex flex-1 overflow-hidden` for horizontal split, sidebar with fixed `w-64`, main with `flex-1`
+5. **Grid layout**: `grid grid-cols-3 gap-4` for product cards — a common pattern for list/card-type features
+6. **Multiple tracked elements per feature**: `SEARCH_FILTER` has 4 elements (category, price, apply, reset), `PRODUCT_LIST` has 3 elements (sort, cards, pagination)
+7. **Placeholder images**: `aspect-square bg-zinc-200 dark:bg-zinc-700 rounded-md` for product thumbnails
+8. **All dark: variants present**: Every color class has its `dark:` counterpart

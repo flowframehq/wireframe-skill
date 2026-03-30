@@ -2,7 +2,7 @@
 
 > FlowFrame Wireframe Skill의 핵심 설계 결정 사항을 기록한다.
 > 이 문서는 SKILL.md 업데이트 시 단일 소스(Single Source of Truth)로 사용한다.
-> 재귀적 폴더 구조의 상세 명세는 `docs/FEATURE-FOLDER-SPEC.md`를 참조한다.
+> 재귀적 폴더 구조의 상세 명세는 `guides/FEATURE-FOLDER-SPEC.md`를 참조한다.
 
 ---
 
@@ -33,23 +33,22 @@ project/
     │   └── notifications/
     │       └── index.md           ← leaf
     │
-    ├── screens/                   ← 화면 정의 (기능 조합 + 레이아웃, 폴더 구조)
+    ├── screens/                   ← 화면 정의 + 화면별 와이어프레임
     │   ├── LOGIN/
     │   │   ├── index.md           ← 화면명세
-    │   │   └── requirements.md    ← 선택. 기획자가 미리 적어둔 요구사항
+    │   │   ├── requirements.md    ← 선택. 기획자가 미리 적어둔 요구사항
+    │   │   └── wireframe.html     ← 단일 viewport 와이어프레임
     │   ├── DASHBOARD/
-    │   │   └── index.md
+    │   │   ├── index.md
+    │   │   └── wireframe.html
     │   └── EDITOR/
-    │       └── index.md
+    │       ├── index.md
+    │       ├── wireframe-pc.html
+    │       └── wireframe-mobile.html
     │
     ├── flows/                     ← 화면 간 사용자 흐름과 인수조건
     │   ├── purchase.md
     │   └── onboarding.md
-    │
-    └── wireframes/                ← 생성된 와이어프레임 HTML (화면 단위)
-        ├── LOGIN.html
-        ├── DASHBOARD.html
-        └── EDITOR.html
 ```
 
 ### 근거
@@ -236,7 +235,7 @@ screens:
   "type": "input",
   "label": "이메일",
   "description": "이메일 입력 필드",
-  "spec": "../features/auth/login-form/index.md"
+  "spec": "../../features/auth/login-form/index.md"
 }
 ```
 
@@ -420,7 +419,7 @@ branch의 공통 섹션과 leaf의 섹션이 충돌하면 **leaf 우선**. branc
 | 구분 | 역할 | 담당 |
 |------|------|------|
 | **에이전트** | 기획자와 대화하며 docs/features/\*/index.md, docs/screens/\*/index.md, docs/flows/\*.md 작성/수정 | 기획 도메인 지식, 템플릿 가이드 |
-| **스킬** | md를 읽고 docs/wireframes/\*.html 생성/업데이트 | FlowFrame 규격, HTML 렌더링 규칙 |
+| **스킬** | md를 읽고 각 screen 폴더 안의 `wireframe*.html` 생성/업데이트 | FlowFrame 규격, HTML 렌더링 규칙 |
 
 ### 근거
 
@@ -484,7 +483,8 @@ Pass 2: feature leaf md를 하나씩 읽기 → 해당 위치에 와이어프레
 
 ### 파일 매칭 규칙
 
-- `docs/screens/LOGIN/index.md` → `docs/wireframes/LOGIN.html` (1:1 매칭)
+- `docs/screens/LOGIN/index.md` → `docs/screens/LOGIN/wireframe.html`
+- `docs/screens/EDITOR/index.md` + `viewport: [pc, mobile]` → `docs/screens/EDITOR/wireframe-pc.html`, `docs/screens/EDITOR/wireframe-mobile.html`
 - feature leaf의 폴더 경로 → featureId 자동 파생 → 메타데이터의 `featureId` 및 `spec` 필드로 연결
 - HTML의 `data-feature`는 `FEATURE_{FEATURE_ID}_{ELEMENT_ID}` 패턴 (예: `FEATURE_AUTH__LOGIN_FORM_EMAIL`)
 - 업데이트 시 해당 `data-feature` 영역만 교체
@@ -577,7 +577,7 @@ auth/
 - screen md 참조와 wireframe ID가 더 구체적인 leaf를 가리키므로 정밀도가 높아진다
 - 승격은 점진적이다 — 모든 feature를 처음부터 분할할 필요 없이 필요할 때 승격하면 된다
 
-상세 명세: `docs/FEATURE-FOLDER-SPEC.md`
+상세 명세: `guides/FEATURE-FOLDER-SPEC.md`
 
 ---
 
@@ -603,14 +603,14 @@ auth/
         ▼
    ┌─────────────────────────┐
    │  flowframe-wireframe    │  ← 스킬 2: 와이어프레임 생성
-   │  md → docs/wireframes/*.html │
+   │  md → docs/screens/*/wireframe*.html │
    └─────────────────────────┘
 ```
 
 | 스킬 | 역할 | 트리거 예시 |
 |------|------|------------|
 | **flowframe-spec** | 기획자와 대화하며 docs/features/\*/index.md, docs/screens/\*/index.md, docs/flows/\*.md 작성/수정 | "기획서 만들어줘", "기능 추가", "화면 명세", "플로우 정리" |
-| **flowframe-wireframe** | md를 읽고 docs/wireframes/\*.html 생성/업데이트 | "와이어프레임 만들어줘", "와이어프레임 업데이트" |
+| **flowframe-wireframe** | md를 읽고 각 screen 폴더 안의 `wireframe*.html` 생성/업데이트 | "와이어프레임 만들어줘", "와이어프레임 업데이트" |
 
 - 에이전트가 스킬을 호출하든, 사용자가 직접 호출하든 동일하게 동작
 - 에이전트는 이 프로젝트 범위 밖 — 스킬만 범용으로 제공

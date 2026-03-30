@@ -364,7 +364,7 @@ GitHub에 `flowframe/wireframe-skill` (또는 원하는 이름) 레포를 생성
 ```markdown
 # FlowFrame Wireframe Skill
 
-md 기획서를 [FlowFrame](https://flowframe.dev)에 업로드 가능한 HTML 와이어프레임으로 변환하는 AI 에이전트 스킬.
+md 기획서를 FlowFrame에 업로드 가능한 HTML 와이어프레임으로 변환하는 AI 에이전트 스킬.
 
 ## 설치
 

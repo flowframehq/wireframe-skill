@@ -7,7 +7,8 @@
 
 ## 1. 프로젝트 구조 정책
 
-- 사용자 프로젝트의 기준 구조는 `docs/features/`, `docs/screens/`, `docs/flows/`, `docs/wireframes/` 이다.
+- 사용자 프로젝트의 기준 구조는 `docs/features/`, `docs/screens/`, `docs/flows/` 이다.
+- wireframe HTML 은 각 screen 폴더 안에 둔다. 예: `docs/screens/LOGIN/wireframe.html`
 - `feature` 는 비즈니스 기능 단위의 **폴더**다. 각 폴더에는 `index.md` 가 있다. 단독 `.md` 파일(예: `auth.md`)은 허용하지 않는다.
 - `screen` 은 화면 단위의 **폴더**다. 단독 `.md` 파일(예: `CART.md`)이 아니다. 모든 screen 폴더에는 `index.md` 가 있어야 한다.
 - `screen` 은 레이아웃, feature 참조, 화면 연계 인수조건을 함께 담는다.
@@ -77,14 +78,15 @@
 ## 4. Wireframe 생성 정책
 
 - wireframe 생성은 `docs/screens/*/index.md` 와 `docs/features/**/index.md` (leaf) 를 기반으로 한다.
-- output 은 `docs/wireframes/*.html` 아래에 만든다.
+- output 은 각 screen 폴더 안에 만든다. 예: `docs/screens/LOGIN/wireframe.html`
 - HTML 은 단일 파일이어야 한다.
 - 스타일링은 Tailwind CSS v4 유틸리티 클래스로만 처리한다.
 - 커스텀 CSS 나 인라인 스타일에 의존하지 않는다.
 - 컬러 팔레트는 `zinc` 중심의 그레이스케일을 사용한다.
 - 모든 색상 관련 클래스에 `dark:` 변형을 포함한다.
 - PC 와 mobile 은 별도 HTML 파일로 생성한다.
-- viewport 별 파일명은 프로젝트 안에서 일관되게 정하되, 특정 suffix 규칙을 고정 정책으로 강제하지 않는다.
+- 단일 viewport 는 `wireframe.html` 을 사용한다.
+- `pc` 와 `mobile` 동시 지원 시 `wireframe-pc.html`, `wireframe-mobile.html` 을 사용한다.
 
 ---
 
@@ -166,7 +168,7 @@
 - feature 전체 삭제 시, 먼저 참조 중인 screen 목록을 확인해야 한다.
 - 참조가 남아 있으면 사용자에게 경고하고 screen 쪽 참조 제거를 먼저 반영해야 한다.
 - screen 삭제 시, 그 screen 이 참조하던 feature 들의 `usedIn` 에서 해당 screen 을 제거해야 한다.
-- screen 삭제 후에는 `docs/wireframes/` 아래의 대응 HTML 삭제 여부도 사용자에게 확인해야 한다.
+- screen 삭제 후에는 해당 screen 폴더 안의 대응 HTML 삭제 여부도 사용자에게 확인해야 한다.
 
 ---
 

@@ -307,7 +307,7 @@ FEATURE_{featureId}_{ELEMENT_ID}
   "type": "input",
   "label": "이메일 입력",
   "description": "이메일 주소 입력 필드",
-  "spec": "../features/auth/login-form/index.md"
+  "spec": "../../features/auth/login-form/index.md"
 }
 ```
 

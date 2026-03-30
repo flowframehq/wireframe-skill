@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://flowframe.co.kr/schema/flowframe-meta.schema.json",
+  "$id": "https://example.com/schema/flowframe-meta.schema.json",
   "title": "FlowFrame Wireframe Metadata",
   "description": "Metadata schema for FlowFrame wireframe HTML files. Embedded in <script id=\"flowframe-meta\"> block.",
   "type": "object",
@@ -17,7 +17,7 @@
     },
     "screenId": {
       "type": "string",
-      "description": "Screen identifier (e.g., LOGIN, DASHBOARD, CANVAS-001)."
+      "description": "Screen identifier (e.g., LOGIN, DASHBOARD, ORDER_MANAGEMENT)."
     },
     "title": {
       "type": "string",
@@ -75,7 +75,7 @@
         },
         "spec": {
           "type": "string",
-          "description": "Relative path to the leaf feature spec index.md (e.g., \"../features/auth/login-form/index.md\")."
+          "description": "Relative path to the leaf feature spec index.md from the screen folder wireframe (e.g., \"../../features/auth/login-form/index.md\")."
         }
       },
       "additionalProperties": false

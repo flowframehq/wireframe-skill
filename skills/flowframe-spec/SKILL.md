@@ -286,12 +286,12 @@ flowchart TD
 2. If no `requirements.md`, ask the user what the feature does (purpose, key functions)
 3. **Responsibility check**: if the request covers multiple developer-owned responsibilities, design a branch tree first (branch `index.md` + child leaf folders) before writing any leaf spec.
 4. Create folder `docs/features/{feature-name}/` and `index.md` using the leaf template (or branch template if step 3 identified a branch)
-4. Fill in `## 와이어프레임 요소` with the user
-5. Fill in `## 상태`, `## 인터랙션` as the user provides details
-6. Ask: "이 기능을 사용하는 사용자의 목표가 뭔가요?" → fill `## 유저스토리`
-7. Ask: "이 기능이 올바르게 동작하는지 어떻게 확인하나요?" → fill `## 인수조건`
-8. Fill in `## 비즈니스 로직` as needed
-9. Set `usedIn` to empty list initially — update when screens reference it
+5. Fill in `## 와이어프레임 요소` with the user
+6. Fill in `## 상태`, `## 인터랙션` as the user provides details
+7. Ask: "이 기능을 사용하는 사용자의 목표가 뭔가요?" → fill `## 유저스토리`
+8. Ask: "이 기능이 올바르게 동작하는지 어떻게 확인하나요?" → fill `## 인수조건`
+9. Fill in `## 비즈니스 로직` as needed
+10. Set `usedIn` to empty list initially — update when screens reference it
 
 ### Creating a new screen
 

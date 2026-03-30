@@ -257,9 +257,10 @@ wireframe-skill/
 │   └── flowframe-wireframe/        ← name과 동일해야 함
 │       ├── SKILL.md                ← 핵심 인스트럭션
 │       └── references/
-│           └── EXAMPLE.md          ← LOGIN.html 예시 + 설명
+│           └── EXAMPLE.md          ← `docs/screens/LOGIN/wireframe.html` 예시 + 설명
 ├── samples/
-│   └── LOGIN.html                  ← 실제 산출물 예시
+│   └── LOGIN/
+│       └── wireframe.html         ← 실제 산출물 예시
 ├── schema/
 │   └── flowframe-meta.schema.json  ← JSON Schema
 ├── README.md
