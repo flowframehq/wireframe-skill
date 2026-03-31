@@ -1,64 +1,70 @@
 ---
 name: flowframe-spec
-description: Helps planners write and manage feature specs (docs/features/*/index.md) and screen specs (docs/screens/*/index.md) for FlowFrame projects. Creates structured specifications with wireframe elements, states, interactions, and business logic. Triggers on "기획서", "기능명세", "화면 명세", "기능 추가", "화면 추가", "기획 도와줘", "spec", "feature spec", "screen spec", "기능 정의", "새 화면", "spec 삭제", "기능 삭제", "화면 삭제", "정합성 검증", "consistency check", or any request to create, edit, delete, or plan features and screens. Also use when the user describes a feature they want to build, asks about spec templates, wants to add/remove features from screens, or wants to verify spec consistency.
+description: FlowFrame 프로젝트의 feature 명세(docs/features/*/index.md)와 screen 명세(docs/screens/*/index.md)를 작성하고 관리하도록 돕는다. 와이어프레임 요소, 상태, 인터랙션, 비즈니스 로직이 포함된 구조화 명세를 생성한다. "기획서", "기능명세", "화면 명세", "기능 추가", "화면 추가", "기획 도와줘", "명세", "기능 명세", "화면 명세", "기능 정의", "새 화면", "명세 삭제", "기능 삭제", "화면 삭제", "정합성 검증", "정합성 확인"처럼 feature나 screen을 생성·수정·삭제·기획하려는 요청에 사용한다. 사용자가 만들고 싶은 기능을 설명하거나, 명세 템플릿을 묻거나, screen에 feature를 추가/제거하거나, 명세 정합성을 확인하려 할 때도 사용한다.
 license: MIT
 metadata:
   author: flowframehq
   version: "2.0.0"
 ---
 
-# FlowFrame Spec Writer
+# FlowFrame 명세 작성기
 
-Helps planners create and manage structured specifications for FlowFrame projects.
-Outputs are used by the `flowframe-wireframe` skill to generate HTML wireframes.
+FlowFrame 프로젝트에서 구조화된 명세를 작성하고 관리하도록 돕는다.
+이 산출물은 `flowframe-wireframe` 스킬이 HTML 와이어프레임을 생성할 때 사용한다.
 
-## Project Structure
+## 프로젝트 구조
 
 ```
 project/docs/
-├── features/           ← Feature specs (recursive folder structure)
+├── features/           ← 기능 명세 (재귀 폴더 구조)
 │   ├── auth/
-│   │   ├── index.md        ← branch (공통 컨텍스트)
-│   │   ├── login-form/index.md   ← leaf (렌더링 단위)
-│   │   └── social-login/index.md ← leaf
-│   ├── comments/index.md  ← leaf (자식 없으면 leaf)
+│   │   ├── index.md        ← 상위 feature (공통 컨텍스트 + 자체 기능 가능)
+│   │   ├── login-form/index.md   ← 하위 feature
+│   │   └── social-login/index.md ← 하위 feature
+│   ├── comments/index.md  ← 단일 feature
 │   └── file-upload/index.md
-├── screens/            ← Screen specs (folder per screen)
+├── screens/            ← 화면 명세 (화면별 폴더)
 │   ├── LOGIN/index.md
 │   ├── DASHBOARD/
 │   │   ├── index.md
-│   │   └── requirements.md  ← 선택. 기획자 요구사항 메모
+│   │   ├── notes.md         ← 기획 메모 (선택)
+│   │   └── requirements.md  ← 화면 유저스토리 / 인수조건
 │   └── EDITOR/index.md
-└── flows/              ← Flow specs (cross-screen user stories)
+└── flows/              ← 플로우 명세 (화면 간 유저스토리)
     └── purchase.md
 ```
 
-If these directories don't exist, create them.
+이 디렉토리들이 없으면 생성한다.
 
 ---
 
-## Feature Spec (docs/features/)
+## Feature 명세 (docs/features/)
 
-A feature is a **business or content unit** stored as a **folder with `index.md`**.
-Standalone `.md` files (e.g., `auth.md`) are not allowed — always use `{name}/index.md`.
+feature는 **비즈니스 또는 콘텐츠 단위**이며, 반드시 **`index.md`를 가진 폴더**로 저장한다.
+단독 `.md` 파일(예: `auth.md`)은 허용하지 않는다. 항상 `{name}/index.md` 구조를 사용한다.
 
-### Leaf vs Branch
+### 재귀 feature 구조
 
-Determined automatically by whether the folder has child folders:
+폴더에 하위 폴더가 있더라도, 모든 feature는 필요하면 자체 기능을 가질 수 있다.
 
-| Type | Condition | `## 와이어프레임 요소` | `usedIn` |
-|------|-----------|----------------------|----------|
-| **leaf** | No child folders | **Yes** — rendering unit | **Yes** — screen list |
-| **branch** | Has child folders | **No** — delegates to children | **No** — not rendered |
+| 유형 | 조건 | `## 와이어프레임 요소` | `usedIn` |
+|------|------|----------------------|----------|
+| **단일 feature** | 하위 폴더 없음 | 있을 수 있음 | 있을 수 있음 |
+| **상위 feature** | 하위 폴더 있음 | 있을 수도 있고 없을 수도 있음 | 있을 수도 있고 없을 수도 있음 |
 
-### featureId (path-derived)
+- `elements`가 있으면 이 레벨 자체가 렌더링 대상이다
+- 하위 `features`가 있으면 자식으로 재귀 탐색한다
+- 둘 다 있으면 자체 UI와 하위 feature를 함께 표현할 수 있다
+- 둘 다 없으면 불완전한 명세다
 
-featureId is **not stored in frontmatter**. It is derived from the folder path:
+### featureId (경로 파생)
 
-1. Take the path after `docs/features/`
-2. Remove `/index.md`
-3. Convert each folder's kebab-case to UPPER_SNAKE_CASE
-4. Join depth levels with `__` (double underscore)
+featureId는 **frontmatter에 저장하지 않는다**. 폴더 경로에서 파생한다.
+
+1. `docs/features/` 이후 경로를 취한다
+2. `/index.md`를 제거한다
+3. 각 폴더명의 kebab-case를 UPPER_SNAKE_CASE로 변환한다
+4. 깊이 단계는 `__`(이중 언더스코어)로 연결한다
 
 | Path | featureId |
 |------|-----------|
@@ -66,386 +72,396 @@ featureId is **not stored in frontmatter**. It is derived from the folder path:
 | `features/auth/login-form/index.md` | `AUTH__LOGIN_FORM` |
 | `features/auth/2fa/totp/index.md` | `AUTH__2FA__TOTP` |
 
-Single underscore = word separator. Double underscore = depth separator.
+### 분리 기준
 
-### Splitting criteria
-
-| Criteria | Description | Example |
+| 기준 | 설명 | 예시 |
 |----------|-------------|---------|
-| **Independently describable** | Can be explained without other features | "댓글" is self-contained |
-| **Reusable** | Used across multiple screens | "파일 업로드" appears in editor, settings, messages |
-| **One task** | Assignable to one team/person as a dev task | "버전관리" is one sprint task |
+| **독립 설명 가능** | 다른 feature 없이도 설명 가능한가 | "댓글"은 단독 설명 가능 |
+| **재사용 가능** | 여러 화면에서 쓰이는가 | "파일 업로드"는 에디터, 설정, 메시지 등에서 사용 |
+| **하나의 태스크** | 한 팀 또는 한 사람이 맡을 수 있는 개발 단위인가 | "버전관리"는 하나의 스프린트 태스크 |
 
-### Good vs bad splitting
+- 모든 screen은 **최소 하나**의 렌더링 가능한 feature 명세를 참조해야 한다
+- 하나의 feature에 여러 개발 책임이 섞이면 **명세 작성 전에 분리한다**
+- 장식 전용 요소를 feature로 만들지 않는다
 
-```
-✅ Business function units
-features/
-├── auth/
-│   ├── index.md                    ← branch: 공통 인증 규칙
-│   ├── login-form/index.md         ← leaf: 로그인 + 비밀번호 찾기
-│   └── social-login/index.md       ← leaf: 소셜 로그인
-├── comments/index.md               ← leaf: 생성 + 편집 + 삭제 + 멘션 + 답글
-└── notifications/index.md          ← leaf: 실시간 알림 + 설정 + 읽음 상태
+### 책임 단위 분해 (feature 생성 전 필수)
 
-✅ Content units: company-overview/, brand-story/ — 각각 leaf
+feature를 만들기 전에 먼저 screen을 **개발 책임 단위**로 분해한다.
+이 단계가 feature 개수와 재귀 구조를 함께 결정하며, 단순 하위 기능 개수 기준의 복잡도 판단을 대체한다.
 
-✗ Too granular (UI element level): email-input/, password-input/, submit-button/
-```
+**분해 질문** (명세 작성 전에 모두 답해야 한다):
 
-### Default splitting rule
+1. 이 screen 안에 **독립적으로 구현/수정 가능한 책임 영역**이 몇 개인가?
+2. 한 개발 에이전트가 이 feature만 읽고도 **구현 범위를 닫을 수 있는가**?
+3. 일부만 바뀌어도 **다른 부분을 함께 읽어야 하는가**? 그렇다면 상위 feature 아래로 나눌 만큼 책임이 다르지 않은 이상 하나의 feature로 유지한다.
 
-- Every screen must reference **at least one** feature spec (leaf)
-- If a screen is mostly one feature, keep the screen spec minimal
-- If one leaf would mix multiple developer-owned responsibilities, **split before writing specs**
-- Do not create features for decorative-only elements
+**재귀 구조 규칙:**
 
-### Responsibility decomposition (mandatory before feature creation)
-
-Before creating any feature, decompose the screen into **development responsibility units**.
-This step determines both feature count AND branch structure — it replaces leaf-count-based complexity checks.
-
-**Decomposition questions** (answer all before writing any spec):
-
-1. 이 화면에서 **독립적으로 구현/수정 가능한 책임 영역**이 몇 개인가?
-2. 한 개발자 에이전트가 이 leaf 하나만 읽고 **구현 범위를 닫을 수 있는가?**
-3. 일부만 수정할 때 **다른 부분을 함께 읽어야 하는가?** → 같이 읽어야 하면 하나의 leaf로 묶되, 책임이 다르면 branch 아래 별도 leaf로 분리
-
-**Branching rule:**
-
-| Condition | Action |
+| 조건 | 행동 |
 |-----------|--------|
-| 책임 영역 간 **공통 규칙/상태**가 존재 | 브랜치 index.md에 공통 로직 작성 |
-| 관련 책임 영역이 **하나의 모듈로 구현**될 단위 | 브랜치 = 모듈 경계 |
-| 관련 leaf가 **2개 이상** 같은 모듈에 속함 | 브랜치로 묶기 |
+| 여러 책임 영역에 공통 규칙이나 상태가 있음 | 상위 feature `index.md`에 공통 로직을 쓴다 |
+| 관련 책임들이 하나의 모듈로 구현될 예정임 | 해당 상위 feature를 모듈 경계로 본다 |
+| 서로 연관된 feature가 둘 이상 같은 모듈에 속함 | 상위 feature 아래로 묶는다 |
 
-Example — 디자인 편집기:
+예시 — 디자인 에디터:
 
 ```
 features/
-├── canvas/index.md                  ← leaf (독립 책임)
+├── canvas/index.md                  ← 단일 feature (독립 책임)
 ├── drawing-tools/
-│   ├── index.md                     ← branch (공통: 도구 전환 규칙)
-│   ├── shape-drawing/index.md       ← leaf
-│   └── text-editing/index.md        ← leaf
+│   ├── index.md                     ← 상위 feature (공통: 도구 전환 규칙 + 공용 기능 가능)
+│   ├── shape-drawing/index.md       ← 하위 feature
+│   └── text-editing/index.md        ← 하위 feature
 ├── panels/
-│   ├── index.md                     ← branch (공통: 사이드바 열기/닫기)
-│   ├── layers-panel/index.md        ← leaf
-│   └── properties-panel/index.md    ← leaf
+│   ├── index.md                     ← 상위 feature (공통: 사이드바 열기/닫기)
+│   ├── layers-panel/index.md        ← 하위 feature
+│   └── properties-panel/index.md    ← 하위 feature
 ```
 
-### Leaf Template
+### 기본 feature 템플릿
 
 ```yaml
 # Frontmatter
-label: 기능 이름 (Korean)
+label: feature 이름 (한국어)
 type: section | modal | drawer | dialog
 usedIn:
   - docs/screens/{SCREEN}/index.md
 ```
 
-Sections (in order): `## 와이어프레임 요소` → `## 상태` → `## 인터랙션` → `## 유저스토리` → `## 인수조건` → `## 비즈니스 로직`
+섹션 순서: `## 와이어프레임 요소` → `## 상태` → `## 인터랙션` → `## 비즈니스 로직`
 
-→ Full example: [references/FEATURE-EXAMPLE.md](references/FEATURE-EXAMPLE.md)
-
-### Branch Template
+### 상위 feature 템플릿
 
 ```yaml
-# Frontmatter (no type, no usedIn)
-label: 기능 그룹명 (Korean)
+# Frontmatter
+label: feature 그룹 이름 (한국어)
+type: section
+usedIn:
+  - docs/screens/{SCREEN}/index.md
 ```
 
-Sections use `공통` prefix: `## 공통 상태` → `## 공통 인터랙션` → `## 공통 비즈니스 로직`
+섹션은 `## 공통 상태`, `## 공통 인터랙션`, `## 공통 비즈니스 로직`을 필요에 따라 쓸 수 있다.
 
-Branch has no `## 와이어프레임 요소`. Wireframe skill does not read branches.
-On conflict between branch and leaf, leaf wins.
+상위 feature도 자체 기능을 가질 수 있다. 자체 `## 와이어프레임 요소`가 있으면 `## 상태`와 `## 인터랙션`도 함께 쓴다. `## 상태`는 이 feature 자체 elements의 UI 상태이고, `## 공통 상태`는 하위 feature에 적용되는 공유 규칙이다. 상위 feature와 더 구체적인 하위 feature가 충돌하면, 하위 feature가 우선한다.
 
-→ Full example: [references/FEATURE-EXAMPLE.md](references/FEATURE-EXAMPLE.md)
+### Frontmatter 필드
 
-### Frontmatter fields
+**기본 feature:**
 
-**Leaf:**
-
-| Field | Required | Description |
+| 필드 | 필수 | 설명 |
 |-------|----------|-------------|
-| `label` | Yes | Feature name in Korean |
-| `type` | Yes | `section`, `modal`, `drawer`, `dialog`, etc. |
-| `usedIn` | Yes | List of screen md paths that use this feature |
+| `label` | Yes | feature 이름 (한국어) |
+| `type` | Yes | `section`, `modal`, `drawer`, `dialog` 등 |
+| `usedIn` | No | 이 feature가 렌더링되는 screen md 경로 목록. 직접 참조 또는 상위를 통한 간접 참조 모두 포함 |
 
-**Branch:**
+**상위 feature:**
 
-| Field | Required | Description |
+| 필드 | 필수 | 설명 |
 |-------|----------|-------------|
-| `label` | Yes | Feature name in Korean |
+| `label` | Yes | feature 이름 (한국어) |
+| `type` | No | `section`, `modal`, `drawer`, `dialog` 등 |
+| `usedIn` | No | 이 feature가 렌더링되는 screen md 경로 목록. 직접 참조 또는 상위를 통한 간접 참조 모두 포함 |
 
-`featureId` is never in frontmatter — it is derived from the path.
+`featureId`는 frontmatter에 두지 않는다. 경로에서 파생한다.
 
-### Section rules
+### `usedIn` 전파 규칙
 
-| Section | Purpose | Who reads |
+상위 feature가 screen에 연결되면, 그 아래 모든 하위 feature도 해당 screen에서 렌더링된다. 따라서 상위 feature의 `usedIn`에 screen이 추가되면 하위 feature의 `usedIn`에도 같은 screen을 추가한다. 하위 feature가 직접 참조되든 상위를 통해 간접 참조되든 `usedIn`은 실제 렌더링되는 모든 screen을 포함해야 한다.
+
+### 섹션 규칙
+
+| 섹션 | 목적 | 읽는 주체 |
 |---------|---------|-----------|
-| **와이어프레임 요소** | UI elements to render (leaf only) | Wireframe skill |
-| **상태** | State variations (leaf) | Planner + Designer |
-| **인터랙션** | User interactions (leaf) | Planner + Designer |
-| **유저스토리** | User goals for this feature | Planner + Team |
-| **인수조건** | Verification criteria for this feature | Planner + QA + Developer |
-| **비즈니스 로직** | Business rules (leaf) | Planner + Team |
-| **공통 상태/인터랙션/비즈니스 로직** | Shared rules (branch only) | Planner + Developer |
+| **와이어프레임 요소** | 렌더링할 UI 요소 | Wireframe 스킬 |
+| **상태** | 상태 변화 | Planner + Designer |
+| **인터랙션** | 사용자 상호작용 | Planner + Designer |
+| **비즈니스 로직** | 비즈니스 규칙 | Planner + Team |
+| **requirements** | 소유 screen requirements 앵커 포인터 (screen 에 직접 연결되는 feature에 필수) | Planner + Developer Agent |
+| **공통 상태/인터랙션/비즈니스 로직** | 공통 규칙 | Planner + Developer |
 
-유저스토리와 인수조건은 feature leaf에 작성한다. screen에는 화면 연계 인수조건만 작성한다.
-Sections can be added/removed per project needs.
+feature 파일은 재사용 가능한 UI/행동 블록을 설명한다. 유저스토리와 인수조건은 `docs/screens/{SCREEN_NAME}/requirements.md`에 둔다.
+사전 기획 메모는 `docs/screens/{SCREEN_NAME}/notes.md`에 둔다.
+프로젝트 필요에 따라 섹션을 추가하거나 제거할 수 있다.
 
-### Element types
+### 요소 타입
 
-Use these in the `type` column: `input`, `button`, `link`, `image`, `text`, `select`, `checkbox`, `radio`, `table`, `list`
+`type` 컬럼에는 `input`, `button`, `link`, `image`, `text`, `select`, `checkbox`, `radio`, `table`, `list`를 사용한다.
 
 ---
 
-## Screen Spec (docs/screens/*/index.md)
+## Screen 명세 (docs/screens/*/index.md)
 
-A screen is the **planning document** for a page — layout and cross-feature interactions.
-Screens are **folders** with `index.md`, not flat files. Optionally a `requirements.md` can sit beside it.
+screen은 페이지 단위의 **기획 문서**이며, 레이아웃과 참조 feature를 담는다.
+screen은 평평한 파일이 아니라 `index.md`를 가진 **폴더**다. 각 screen은 `requirements.md`를 가져야 하고, 필요하면 `notes.md`도 가질 수 있다.
 
 ```
 docs/screens/{SCREEN_NAME}/
-  index.md              ← 화면명세 (레이아웃 + 화면 연계 AC)
-  requirements.md       ← 선택. 기획자가 미리 적어둔 요구사항
+  index.md              ← screen 정의 (레이아웃 + feature 참조)
+  notes.md              ← 자유형식 기획 메모 (선택)
+  requirements.md       ← screen 유저스토리 + 인수조건
 ```
 
-Every screen must reference **at least one** feature leaf.
-A screen must not reference the same leaf feature more than once. If needed in multiple positions, split the feature into separate leaves.
+모든 screen은 **최소 하나**의 렌더링 가능한 feature를 참조해야 한다.
+하나의 screen이 같은 feature를 두 번 이상 참조하면 안 된다. 여러 위치에서 필요하면 feature를 분리한다.
 
-### Feature reference syntax
+### Feature 참조 문법
 
-Use markdown links with `@` prefix. **Always reference leaf features, never branches.**
-Because screen specs now live inside a folder, use `../../features/` (two levels up).
+`@` 접두어가 붙은 마크다운 링크를 사용한다. screen은 렌더링 가능한 feature를 참조한다.
+screen 명세가 폴더 안에 있으므로 `../../features/`(두 단계 상위)를 사용한다.
 
 ```markdown
+[@auth](../../features/auth/index.md)
 [@auth/login-form](../../features/auth/login-form/index.md)
 [@auth/social-login](../../features/auth/social-login/index.md)
 [@comments](../../features/comments/index.md)
 ```
 
 ```
-✗ [@auth](../../features/auth/index.md)                       ← branch. 금지.
-✓ [@auth/login-form](../../features/auth/login-form/index.md)  ← leaf. 허용.
+✓ [@auth](../../features/auth/index.md)                       ← 상위 feature. Allowed.
+✓ [@auth/login-form](../../features/auth/login-form/index.md)  ← 하위 feature. Allowed.
 ```
 
-### Template
+### 템플릿
 
 ```yaml
 # Frontmatter
-screenId: SCREEN_ID          # UPPERCASE (e.g., LOGIN, DASHBOARD)
-title: 화면 제목              # Korean
-purpose: 한 문장 목적 설명
+screenId: SCREEN_ID          # UPPERCASE (예: LOGIN, DASHBOARD)
+title: 화면 제목              # 한국어
+purpose: 한 줄 목적
 viewport: pc | mobile | [pc, mobile]
 ```
 
-Sections: `## 레이아웃` (single viewport) or `## 레이아웃 (PC)` / `## 레이아웃 (Mobile)` → `## 화면 연계 인수조건`
+섹션은 `## 레이아웃`(단일 viewport) 또는 `## 레이아웃 (PC)` / `## 레이아웃 (Mobile)`를 사용하고, 필요하면 `## 메모`를 둔다.
 
-Layout uses numbered list + `[@feature](../../features/path/index.md)` references.
-Planners specify **order + direction** only. Visual details are the designer's domain.
+레이아웃은 번호 목록 + `[@feature](../../features/path/index.md)` 참조를 사용한다.
+기획자는 **순서와 방향**만 정의한다. 시각적 디테일은 디자이너 영역이다.
+유저스토리와 인수조건은 `index.md`가 아니라 `requirements.md`에 둔다.
+자유형식 사전 메모는 `requirements.md`가 아니라 `notes.md`에 둔다.
 
-→ Full examples: [references/SCREEN-EXAMPLE.md](references/SCREEN-EXAMPLE.md)
+### Frontmatter 필드
 
-### Frontmatter fields
-
-| Field | Required | Description |
+| 필드 | 필수 | 설명 |
 |-------|----------|-------------|
-| `screenId` | Yes | Uppercase screen ID (e.g., `LOGIN`, `DASHBOARD`) |
-| `title` | Yes | Screen title in Korean |
-| `purpose` | Yes | One sentence describing the screen's purpose |
+| `screenId` | Yes | 대문자 screen ID (예: `LOGIN`, `DASHBOARD`) |
+| `title` | Yes | 화면 제목 (한국어) |
+| `purpose` | Yes | 화면 목적을 설명하는 한 문장 |
 | `viewport` | Yes | `pc`, `mobile`, or `[pc, mobile]` |
 
 ---
 
-## Workflows
+## 워크플로우
 
-### Workflow Map
+### 새 feature 만들기
 
-```mermaid
-flowchart TD
-    A["사용자 요청 수신"] --> B{"요청 유형"}
-    B -->|새 화면/기능 기획| C["책임 분해 수행"]
-    C --> D{"복수 책임/공통 규칙 존재?"}
-    D -->|예| E["branch tree 설계"] --> G["screen skeleton 작성"]
-    D -->|아니오| F["leaf spec 작성"] --> G
-    G --> H["leaf별 spec 작성 및 usedIn 반영"] --> I["screen index.md 완료"] --> R["완료"]
-    B -->|기존 명세 수정| J["대상 screen/feature만 읽기"]
-    J --> K{"branch 승격 필요?"}
-    K -->|예| L["branch 전환 + child leaf 분리"] --> N["참조/usedIn 정리"]
-    K -->|아니오| M["기존 leaf/screen 직접 수정"] --> N
-    B -->|구조 재편 요청| O["대상 subtree만 읽기"]
-    O --> P["책임 경계 재판단"] --> Q["branch 승격/leaf 재배치"] --> N
-    N --> R
-```
+1. 대상 screen에 `notes.md`(`docs/screens/{SCREEN_NAME}/notes.md`)가 있으면 먼저 읽고, 이미 답이 있는 제약은 다시 묻지 않는다.
+2. 대상 screen에 `requirements.md`(`docs/screens/{SCREEN_NAME}/requirements.md`)가 있으면 이 feature 책임에 해당하는 섹션만 읽는다.
+3. 두 문서 어디에도 필요한 정보가 없으면, 사용자에게 이 feature의 역할(목적, 핵심 기능)을 묻는다.
+4. **책임 점검**: 요청이 여러 개발 책임을 포함하면 상위 feature와 하위 feature 구조부터 설계한다.
+5. `docs/features/{feature-name}/` 폴더와 `index.md`를 만든다. 상위 feature가 필요하면 상위 feature 템플릿을 사용한다.
+6. 사용자와 함께 `## 와이어프레임 요소`를 채운다.
+7. 사용자 입력에 따라 `## 상태`, `## 인터랙션`을 채운다.
+8. 필요하면 `## 비즈니스 로직`을 채운다.
+9. 처음에는 `usedIn`을 빈 목록으로 두고, screen이 참조할 때 갱신한다.
+10. 유저스토리나 인수조건을 feature 파일에 중복해서 쓰지 않는다.
 
-### Creating a new feature
+### 새 screen 만들기
 
-1. Check if the target screen has a `requirements.md` (`docs/screens/{SCREEN_NAME}/requirements.md`). If yes, read it first and use it to pre-fill answers. Only ask about things not covered.
-2. If no `requirements.md`, ask the user what the feature does (purpose, key functions)
-3. **Responsibility check**: if the request covers multiple developer-owned responsibilities, design a branch tree first (branch `index.md` + child leaf folders) before writing any leaf spec.
-4. Create folder `docs/features/{feature-name}/` and `index.md` using the leaf template (or branch template if step 3 identified a branch)
-5. Fill in `## 와이어프레임 요소` with the user
-6. Fill in `## 상태`, `## 인터랙션` as the user provides details
-7. Ask: "이 기능을 사용하는 사용자의 목표가 뭔가요?" → fill `## 유저스토리`
-8. Ask: "이 기능이 올바르게 동작하는지 어떻게 확인하나요?" → fill `## 인수조건`
-9. Fill in `## 비즈니스 로직` as needed
-10. Set `usedIn` to empty list initially — update when screens reference it
+모든 screen 작업은 feature 나열이 아니라 **책임 단위 분해**부터 시작한다.
 
-### Creating a new screen
+아래 순서를 엄격히 지킨다.
+1. 책임 분해 표를 확정한다
+2. feature 구조를 확정한다
+3. 사용자가 자유형식 기획 메모를 줬다면 `notes.md`를 쓰거나 갱신한다
+4. `screen/index.md`를 쓴다
+5. 각 `feature/index.md`를 쓴다
+6. 마지막에 `requirements.md`를 쓴다
+7. 마지막에 정합성 점검을 수행한다
 
-Every screen starts with **responsibility decomposition**, not feature listing.
+`requirements.md`를 메모장처럼 쓰지 않는다.
+feature 구조가 확정되기 전에는 `requirements.md`를 쓰지 않는다.
+`requirements.md`를 쓰는 중에 새 feature를 만들지 않는다.
+연결된 섹션 앵커가 있으면 `requirements.md` 전체를 다시 읽지 않는다.
 
-**Phase 1 — Responsibility decomposition**
+**1단계 — 책임 단위 분해**
 
-1. Ask the user what the screen shows (purpose, key behaviors)
-2. Ask the user to choose a viewport: **PC / 모바일 / 둘 다**
-3. Run "Responsibility decomposition" (see above). Output: a **책임 분해표** listing each independent development unit, its scope, and whether it branches.
-4. Present the 책임 분해표 to the user for confirmation before proceeding.
+1. 사용자에게 이 screen이 무엇을 보여주는지 묻는다. (목적, 핵심 행동)
+2. viewport를 **PC / 모바일 / 둘 다** 중에서 고르게 한다.
+3. 책임 단위 분해를 수행한다. 각 독립 개발 단위, 범위, 상위 feature 필요 여부를 담은 **책임 분해 표**를 출력한다.
+4. 진행하기 전에 책임 분해 표를 사용자에게 보여주고 확인받는다.
 
-**Phase 2 — Structure decision**
+**2단계 — 구조 결정**
 
-Based on the confirmed 책임 분해표:
-- **Responsibility units ≥ 3** → **multi-step mode**: create features one at a time with interactive dialogue
-- **Responsibility units ≤ 2** → **single-pass mode**: create all features and the screen spec together
+확정된 책임 분해 표를 기준으로 아래처럼 결정한다.
+- **책임 단위 ≥ 3** → **다단계 모드**: feature를 하나씩 대화형으로 만든다
+- **책임 단위 ≤ 2** → **단일 패스 모드**: 모든 feature와 screen 명세를 함께 만든다
 
-In both modes, create branches first if the 분해표 identified any.
+두 모드 모두 분해 결과에 상위 feature가 있으면 먼저 상위 feature를 만든다.
+**2.5단계 — Requirements 소유권**
 
-**Phase 3a — Single-pass mode (≤ 2 units)**
+feature 구조가 확정된 뒤 `docs/screens/{SCREEN_NAME}/requirements.md`를 생성하거나 갱신한다.
+이 파일이 `## 유저스토리`와 `## 인수조건`의 소유 문서다.
+
+**3a단계 — 단일 패스 모드 (≤ 2개 단위)**
 
 1. Create folder `docs/screens/{SCREEN_NAME}/` and `index.md`
-2. Check if `requirements.md` exists — if yes, read and reflect
-3. Create feature leaf specs
-4. Define layout with `[@feature]` references
-5. Add `## 화면 연계 인수조건` if multiple features interact
-6. Update each leaf's `usedIn`
+2. Create or update `notes.md` if free-form planner notes exist
+3. feature 명세를 만든다
+4. `[@feature]` 참조로 레이아웃을 정의한다
+5. 참조된 각 feature의 `usedIn`을 갱신한다
+6. Create or update `requirements.md`
 
-**Phase 3b — Multi-step mode (≥ 3 units)**
+**3b단계 — 다단계 모드 (≥ 3개 단위)**
 
-Do not ask whether to split — **just split and announce**.
+분리할지 물어보지 않는다. **그냥 분리하고 공지한다.**
 
-1. **Announce**: present the 책임 분해표 with proposed folder structure and declare multi-step mode:
+1. **공지**: 제안한 폴더 구조와 함께 책임 분해 표를 보여주고 다단계 모드임을 선언한다.
    ```
    "이 화면은 책임 단위 N개입니다. 하나씩 순서대로 기획합니다.
     먼저 '○○'부터 시작합니다."
    ```
-2. **Create branches first**: branch `index.md` files with 공통 상태/인터랙션/비즈니스 로직
-3. **Create skeleton screen spec**: frontmatter + placeholder `[@feature]` references
-4. **Work through features one at a time** (order: core → input → display → supporting):
-   - Create leaf `index.md` through **interactive dialogue** — do not assume
-   - Update `usedIn`
-   - Announce progress: **"N/M 완료. 다음은 '○○'입니다."**
-5. **Finalize**: update screen layout references, write 화면 연계 인수조건, run consistency check
+2. **상위 feature 먼저 생성**: 공통 상태/인터랙션/비즈니스 로직을 담은 상위 feature `index.md`를 먼저 만든다.
+3. 사용자가 원문 기획 메모를 이미 줬다면 **`notes.md`를 먼저 생성하거나 갱신**한다.
+4. **골격 screen 명세 생성**: frontmatter + 자리표시자 `[@feature]` 참조를 만든다.
+5. **feature를 하나씩 진행**한다. (순서: core → input → display → supporting)
+   - **대화형으로** feature `index.md`를 만든다. 추정하지 않는다.
+   - `usedIn`을 갱신한다.
+   - 진행 상황을 알린다: **"N/M 완료. 다음은 '○○'입니다."**
+6. **마무리**: screen 레이아웃 참조를 갱신하고, 그룹화된 `requirements.md`를 생성/갱신한 뒤 정합성 점검을 수행한다.
 
-### Wireframe handoff (mandatory after spec changes)
+### Notes 파일
 
-After creating or modifying specs, always end with a **wireframe handoff summary** so the planner can continue with `flowframe-wireframe` without re-explaining the change.
+`notes.md`는 구조화 명세가 확정되기 전, 자유형식 기획 입력을 담는 screen 수준의 선택적 메모장이다.
 
-The handoff must state:
+`docs/screens/{SCREEN_NAME}/notes.md`는 아래 용도로 사용한다.
+- 거친 요구사항 bullet
+- 기획자가 이미 아는 정책 제약
+- 열린 질문이나 엣지 케이스
+- 나중에 정규화해야 하는 회의 메모 붙여넣기
 
-1. **Change scope**
-   - `screen`
-   - `feature`
-   - `structure` (branch 승격 / leaf 분리 / 참조 재배치)
-2. **Changed files**
-   - exact `docs/features/**/index.md` and/or `docs/screens/**/index.md`
-3. **Affected screens**
-   - derived from `usedIn` or direct screen edits
-4. **Recommended wireframe action**
-   - `partial-update` — one or more leaf changes, no screen layout change
-   - `screen-regenerate` — screen layout changed, feature added/removed, or branch structure changed
-   - `full-regenerate` — project-wide refactor or user explicitly requested full refresh
-5. **Suggested next prompt**
-   - a ready-to-send Korean sentence for the planner
+규칙:
+- `notes.md`는 선택 사항이다
+- 자유 형식을 허용한다
+- 추가 질문 전에 먼저 `notes.md`를 읽는다
+- `notes.md`에 이미 답이 있으면 다시 묻지 않는다
+- `notes.md`를 canonical 검증 산출물로 취급하지 않는다
+- feature의 `requirements:` 포인터를 `notes.md`로 만들지 않는다
 
-Use this output format:
+### 와이어프레임 핸드오프 (명세 변경 후 필수)
+
+명세를 생성하거나 수정한 뒤에는 항상 **와이어프레임 핸드오프 요약**으로 마무리한다. 그래야 기획자가 변경 내용을 다시 설명하지 않고 `flowframe-wireframe`을 이어서 사용할 수 있다.
+
+핸드오프에는 변경 범위, 변경 파일, 영향받는 screen, 권장 wireframe 액션, 추천 다음 프롬프트가 반드시 들어가야 한다.
+
+아래 형식을 사용한다.
 
 ```markdown
-## Wireframe Handoff
+## 와이어프레임 핸드오프
 
-- Change scope: `feature`
-- Changed files:
+- 변경 범위: `feature`
+- 변경 파일:
   - `docs/features/auth/login-form/index.md`
-- Affected screens:
+- 영향받는 화면:
   - `docs/screens/LOGIN/index.md`
-- Recommended wireframe action: `partial-update`
-- Suggested next prompt:
+- 권장 와이어프레임 액션: `partial-update`
+- 추천 다음 프롬프트:
   - `flowframe-wireframe 스킬 사용해서 auth/login-form 변경을 LOGIN 와이어프레임에 반영해줘`
 ```
 
-Action selection rules:
+액션 선택 규칙:
+- 기존 feature 요소만 변경됨 → `partial-update`
+- screen 레이아웃 또는 참조 feature가 바뀜 → `screen-regenerate`
+- 여러 화면에 걸친 구조 리팩터링 → `full-regenerate`
 
-- If only `## 와이어프레임 요소` inside existing leaf features changed, use `partial-update`
-- If a screen layout changed, a feature was added/removed from a screen, or the same screen's referenced leaves changed, use `screen-regenerate`
-- If a leaf was promoted to branch, child leaves were introduced, or multiple screens were structurally affected, use `screen-regenerate` for each affected screen
-- Use `full-regenerate` only when many screens changed and listing them individually is not practical
+### requirements 추가
 
-### Adding requirements
+`requirements.md`는 screen 수준의 기준 검증 문서이며, 부분 읽기를 지원해야 한다.
 
-1. Create `docs/screens/{SCREEN_NAME}/requirements.md` with the user's notes (free-form, no template)
-2. When features are later created for this screen, the skill reads `requirements.md` first and pre-fills answers from it
+`docs/screens/{SCREEN_NAME}/requirements.md`는 아래 구조로 작성한다.
 
-### Modifying a feature
+```markdown
+# {화면 제목} 요구사항
 
-1. Read the existing leaf `index.md`
-2. Apply the user's changes
-3. If 와이어프레임 요소 changed, remind:
+## 유저스토리
+
+### [{책임 그룹 또는 기능군 이름}](#slug)
+- {역할}으로서 {행동}하고 싶다, {목적}을 위해
+
+## 인수조건
+
+### [{책임 그룹 또는 기능군 이름}](#slug)
+- Given {조건} When {행동} Then {결과}
+```
+
+규칙:
+- 책임 단위 분해 기준으로 섹션을 그룹화한다
+- 책임 그룹 제목은 갱신 후에도 안정적으로 유지한다
+- 문서 상단에 각 그룹 앵커로 이동하는 짧은 인덱스를 추가한다
+- 자유형식 기획 메모는 이 파일에 쓰지 않는다. 그런 내용은 `notes.md`를 사용한다
+- 테스트 포인트, E2E 체크리스트, 개발자 메모를 넣지 않는다
+- 텍스트를 feature 명세나 screen `index.md`에 중복하지 않는다
+
+참조 규칙:
+- `screen/index.md`는 네비게이션 용도로 `requirements.md`를 한 번 링크할 수 있다
+- 전체 파일보다 연결된 책임 그룹 섹션을 먼저 읽는다
+- screen 범위가 바뀌지 않았다면 연결된 섹션만 수정한다
+- screen과 feature 구조가 확정된 뒤에만 `requirements.md` 초안을 작성한다
+- 책임 그룹 제목에서 자동 생성된 heading anchor를 사용한다. 별도 수동 slug를 만들지 않는다
+
+feature 소유권 규칙:
+- 각 screen 에 직접 연결되는 feature 끝에 아래 한 줄 포인터를 넣는다
+  - `requirements: ../../screens/{SCREEN_NAME}/requirements.md#auto-heading-anchor`
+- 이 포인터는 대응되는 책임 그룹 heading의 자동 생성 앵커를 가리켜야 한다
+- 단순 이동 포인터일 뿐이며, US/AC 텍스트를 중복해서 적으면 안 된다
+
+`requirements.md`를 작성하거나 갱신한 뒤에는 작업을 끝내기 전에 반드시 정합성 점검을 한 번 수행한다.
+
+### feature 수정
+
+1. 기존 feature `index.md`를 읽는다
+2. 사용자 변경사항을 반영한다
+3. 와이어프레임 요소가 바뀌었으면 아래를 안내한다
    "와이어프레임 요소가 변경되었습니다. 와이어프레임도 업데이트하시겠습니까?"
-4. If 유저스토리 or 인수조건 changed, note it in the change summary
-5. Check `usedIn` and remind:
-   "다음 화면의 화면 연계 인수조건도 검토가 필요할 수 있습니다: {screen list}"
-6. Output a `Wireframe Handoff` summary
+4. 변경이 feature의 사용자 목표나 검증 행동에 영향을 주면, 각 소유 screen의 `requirements.md`에서 대응 섹션만 갱신한다
+5. `usedIn`을 확인하고 아래를 안내한다
+   "다음 화면의 requirements도 검토가 필요할 수 있습니다: {screen 목록}"
+6. `와이어프레임 핸드오프` 요약을 출력한다
 
-### Adding/removing a feature from a screen
+### screen에 feature 추가/제거
 
-**Adding:**
-1. Add the leaf feature reference in the appropriate layout position
-2. Update the leaf's `usedIn` to include this screen
-3. Output a `Wireframe Handoff` summary with `screen-regenerate`
+- 추가: feature 참조를 넣고, `usedIn`을 갱신한 뒤 `screen-regenerate` 핸드오프를 출력한다
+- 제거: feature 참조를 삭제하고, `usedIn`을 갱신하고, wireframe 업데이트 필요를 경고한 뒤 `screen-regenerate` 핸드오프를 출력한다
 
-**Removing:**
-1. Remove the `[@feature]` reference from the layout
-2. Update the leaf's `usedIn` to remove this screen
-3. Warn: "이 화면의 와이어프레임에서 해당 기능이 제거됩니다. 와이어프레임 업데이트가 필요합니다."
-4. Output a `Wireframe Handoff` summary with `screen-regenerate`
+### feature 삭제
 
-### Deleting a feature
+1. feature의 `usedIn` 목록을 확인한다
+2. 아직 참조하는 screen이 있으면 경고한다
+3. 확인을 받은 뒤 참조를 제거하고 feature 폴더를 삭제하며, wireframe 업데이트 필요를 경고한다
+4. `screen-regenerate` 핸드오프를 출력한다
 
-1. Check the leaf's `usedIn` list
-2. If screens reference it, warn:
-   "다음 화면에서 이 기능을 참조하고 있습니다: {screen list}"
-3. After user confirms:
-   - Remove references from all listed screen mds
-   - Delete the feature **folder** (not just index.md)
-   - Warn about wireframes needing update
-4. Output a `Wireframe Handoff` summary with affected screens and `screen-regenerate`
+### feature를 상위 feature로 확장
 
-### Promoting a leaf to branch (승격)
+feature가 너무 커지면 기존 feature를 유지한 채 하위 feature를 추가한다.
 
-When a leaf grows too large, promote it to a branch with child leaves:
+1. 기존 `index.md`에서 공통 규칙과 그대로 유지할 기능을 구분한다
+2. 공통 규칙은 `## 공통 상태`, `## 공통 인터랙션`, `## 공통 비즈니스 로직`으로 정리한다
+3. 하위 feature 폴더를 만들고, 각각의 `index.md`와 요소 하위 집합을 작성한다
+4. 상위 feature를 계속 screen이 참조할지, 하위 feature를 직접 참조할지 결정하고 `usedIn`을 맞춘다
+5. wireframe `data-feature` ID를 새 구조에 맞게 갱신한다
+6. `structure` 범위의 `와이어프레임 핸드오프` 요약과 `screen-regenerate`를 출력한다
 
-1. Remove `## 와이어프레임 요소`, `usedIn`, `type` from the existing `index.md` — it becomes a branch
-2. Move shared rules to `## 공통 상태`, `## 공통 인터랙션`, `## 공통 비즈니스 로직`
-3. Create child leaf folders, each with its own `index.md` and subset of elements
-4. Set `usedIn` on each new leaf
-5. Update screen md references: e.g., `@auth` → `@auth/login-form`, `@auth/social-login`
-6. Update wireframe `data-feature` IDs to match new path-derived featureIds
-7. Output a `Wireframe Handoff` summary with `structure` scope and `screen-regenerate`
+### screen 삭제
 
-### Deleting a screen
+1. screen `index.md`를 읽고 참조된 feature를 모두 찾는다
+2. 각 참조 feature의 `usedIn`에서 이 screen을 제거한다
+3. screen **폴더**를 삭제한다 (`index.md`, `notes.md`, `requirements.md` 포함)
+4. 대응하는 wireframe이 있으면 함께 삭제할지 묻는다
 
-1. Read the screen `index.md` to find all referenced features
-2. For each referenced leaf, update its `usedIn` to remove this screen
-3. Delete the screen **folder** (including `index.md` and `requirements.md` if present)
-4. Ask to delete matching wireframes if they exist
+### flow 생성
 
-### Creating a flow
+유저스토리가 여러 screen에 걸치면 아래처럼 처리한다.
 
-When a user story spans multiple screens:
-
-1. Create `docs/flows/{flow-name}.md`
-2. Use the flow template:
+1. `docs/flows/{flow-name}.md`를 만든다
+2. 아래 flow 템플릿을 사용한다
 
 ```markdown
 ---
@@ -467,78 +483,62 @@ screens:
 - Given {화면A 조건} When {행동} Then {화면B 결과}
 ```
 
-3. Only create flows for stories that genuinely span multiple screens
+3. 실제로 여러 screen에 걸치는 스토리에만 flow를 만든다
 
-### Consistency check
+### 정합성 점검
 
-Trigger: "전체 정합성 확인해줘", "check consistency"
+트리거: "전체 정합성 확인해줘", "정합성 확인"
 
-Verify:
+아래를 검증한다.
 
-1. **Feature reference check**: Every `[@feature]` in screens has a matching leaf `index.md`
-2. **usedIn sync check**: Every leaf's `usedIn` matches actual screen references
-3. **Wireframe sync check**: Every wireframe's `data-feature` IDs match the leaf's 와이어프레임 요소
-4. **Feature story/AC check**: Every feature leaf has at least one 유저스토리 and one 인수조건
-5. **No featureId in frontmatter**: Leaf frontmatter must not contain `featureId`
-6. **Screen references leaf only**: Screen `[@...]` must point to a leaf (no child folders), not a branch
-7. **Branch has no wireframe elements**: Branch `index.md` must not have `## 와이어프레임 요소`
+1. **Feature 참조 점검**: screen의 모든 `[@feature]`에 대응하는 feature `index.md`가 있는가
+2. **usedIn 동기화 점검**: 모든 참조 feature의 `usedIn`이 실제 screen 참조와 일치하는가
+3. **Wireframe 동기화 점검**: 모든 wireframe의 `data-feature` ID가 feature의 와이어프레임 요소와 일치하는가
+4. **notes 사용 점검**: screen에 자유형식 메모가 있으면 `requirements.md`가 아니라 `notes.md`에 있는가
+5. **requirements 존재 점검**: 기획된 모든 screen에 `requirements.md`가 있는가
+6. **requirements 구조 점검**: `requirements.md`에 `## 유저스토리`, `## 인수조건`, 안정적인 책임 그룹 제목이 있는가
+7. **requirements 네비게이션 점검**: screen 에 직접 연결된 feature에 `requirements:` 포인터가 있고, screen requirements의 자동 생성 앵커를 가리키는가
+8. **feature에 story/AC 중복 없음**: feature에 `## 유저스토리` 또는 `## 인수조건`이 중복 작성되지 않았는가
+9. **frontmatter에 featureId 없음**: feature frontmatter에 `featureId`가 없어야 한다
+10. **Screen은 렌더링 가능한 feature 참조**: screen `[@...]`가 `elements` 또는 하위 `features`를 가진 feature를 가리키는가
+11. **상위 feature도 기능 가능**: 하위 feature가 있는 `index.md`에 `## 와이어프레임 요소`가 있어도 오류로 취급하지 않는다
 
-Report discrepancies as a table:
+불일치는 표 형태로 보고한다.
 
-| 유형 | 파일 | 문제 |
+| 유형 | 파일 | 이슈 |
 |------|------|------|
-| 참조 누락 | docs/screens/EDITOR/index.md | @file-tree 참조하지만 leaf index.md 없음 |
-| usedIn 불일치 | docs/features/auth/login-form/index.md | usedIn에 EDITOR/index.md 있지만 실제 참조 없음 |
-| branch 참조 | docs/screens/LOGIN/index.md | @auth는 branch — leaf를 참조해야 함 |
-| featureId 잔존 | docs/features/comments/index.md | frontmatter에 featureId가 있음 — 삭제 필요 |
+| 참조 누락 | docs/screens/EDITOR/index.md | `@file-tree`가 참조되지만 대응하는 feature `index.md`가 존재하지 않는다 |
+| `usedIn` 불일치 | docs/features/auth/login-form/index.md | `usedIn`에 `EDITOR/index.md`가 있지만 실제 참조는 없다 |
+| notes 위치 오류 | docs/screens/LOGIN/requirements.md | 자유형식 기획 메모가 `requirements.md`에 작성되어 있다. `notes.md`로 옮겨야 한다 |
+| requirements 누락 | docs/screens/LOGIN/requirements.md | screen 유저스토리 / 인수조건 파일이 없다 |
+| requirements 앵커 오류 | docs/features/auth/login-form/index.md | `requirements` 포인터가 존재하지 않는 앵커를 가리킨다 |
+| 중복 규칙 위반 | docs/features/comments/index.md | feature에 아직 `## 유저스토리` 섹션이 남아 있다 |
+| 잘못된 참조 | docs/screens/LOGIN/index.md | `@auth`가 `## 와이어프레임 요소`도 하위 feature도 없는 feature를 가리킨다 |
+| 남은 `featureId` | docs/features/comments/index.md | frontmatter에 `featureId`가 아직 남아 있어 제거해야 한다 |
 
 ---
 
-## Guidelines
+## 가이드라인
 
-- Write specs in **Korean** (matching the planner's language)
-- 유저스토리와 인수조건은 feature leaf에 작성한다
-- screen md에는 화면 연계 인수조건만 작성한다
-- 같은 feature가 여러 화면에서 사용되더라도 스토리/AC는 feature에 한 번만 작성한다
-- Feature specs should be self-contained — readable without the screen context
-- User stories: `{역할}으로서 {행동}하고 싶다, {목적}을 위해`
-- Acceptance criteria: Given-When-Then format
-- Cross-feature interactions go in `## 화면 연계 인수조건`
-- Cross-screen flows go in `docs/flows/`
-- Always maintain `usedIn` consistency
-- **When the user's description is vague, ask clarifying questions before writing — do not fill in with assumptions**
-- Not all sections need to be filled from the start — 와이어프레임 요소 is the minimum
-- Every screen must have at least one feature leaf
-- Prefer developer-sized features (one dev agent can close the scope); avoid splitting by visual blocks or single elements
+- 명세는 **한국어**로 작성한다. (기획자의 언어를 따른다)
+- `screen/index.md`는 구조와 feature 참조를 정의한다
+- `screen/requirements.md`는 screen 유저스토리와 인수조건의 기준 문서다
+- `screen/notes.md`는 구조 확정 전 기획 메모용 선택 문서다
+- feature 파일에는 유저스토리나 인수조건을 넣지 않는다
+- feature 명세는 재사용 가능한 블록이어야 하며, screen 수준 검증 텍스트를 복사하지 않고도 읽혀야 한다
+- 유저스토리 형식: `{role}으로서 {action}하고 싶다, {goal}을 위해`
+- 인수조건 형식: 조건-행동-결과
+- 여러 책임이 있으면 `requirements.md`에서 책임 그룹별로 유저스토리와 인수조건을 묶는다
+- 화면 간 흐름은 `docs/flows/`에 둔다
+- 항상 `usedIn` 정합성을 유지한다
+- **사용자 설명이 모호하면 작성 전에 확인 질문을 한다. 추정으로 채우지 않는다**
+- 처음부터 모든 섹션을 채울 필요는 없다. 최소 기준은 `## 와이어프레임 요소`다
+- 모든 screen은 최소 하나의 렌더링 가능한 feature를 가져야 한다
+- 한 개발 에이전트가 범위를 닫을 수 있을 정도의 크기를 선호한다. 시각 블록이나 단일 요소 기준으로 쪼개지 않는다
 
-### File naming
+### 파일명과 확인 원칙
 
-- Feature folders: **kebab-case** English (e.g., `auth/`, `file-upload/`, `version-control/`)
-- Each feature folder contains `index.md` — no other `.md` files in the folder
-- Screen folders: **UPPERCASE** screen ID (e.g., `LOGIN/`, `DASHBOARD/`)
-- Each screen folder contains `index.md` and optionally `requirements.md`
-
-### Mandatory clarification rule
-
-**Do not assume — ask the planner.** The agent must not fill in business logic, thresholds, behavior rules, or interaction details based on guesses or general knowledge. If a decision requires domain expertise or product judgment, ask the planner.
-
-Must ask:
-- 비즈니스 로직의 구체적 수치 (제한 횟수, 시간, 크기 등)
-- 에러/예외 상황의 처리 방식
-- 기능 간 우선순위나 제약조건
-- 사용자 권한별 차이
-
-May assume (without asking):
-- 템플릿 구조 및 포맷
-- 이미 확정된 feature의 usedIn 업데이트
-- featureId 경로 파생 규칙
-
-### Clarifying questions guide
-
-**Features:** 핵심 동작, 사용자, 사용 화면, 에러/빈 상태 처리
-**Screens:** 목적, 포함 기능, viewport(PC/모바일/둘 다), 영역 구분, 핵심 목표
-
-## Example
-
-See [references/FEATURE-EXAMPLE.md](references/FEATURE-EXAMPLE.md) for a complete feature spec example (leaf format).
-See [references/SCREEN-EXAMPLE.md](references/SCREEN-EXAMPLE.md) for a complete screen spec example.
+- Feature 폴더는 영어 **kebab-case** 를 사용하고 파일은 `index.md`만 둔다
+- Screen 폴더는 **대문자 screen ID** 를 사용하고, `index.md`, 선택적 `notes.md`, `requirements.md`를 둔다
+- 비즈니스 로직, 임계값, 에러 처리, 권한 차이는 추정하지 말고 기획자에게 묻는다
+- 템플릿 형식, `usedIn` 동기화, 경로 파생 `featureId` 규칙은 기본 전제로 사용해도 된다

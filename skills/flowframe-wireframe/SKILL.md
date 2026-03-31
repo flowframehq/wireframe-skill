@@ -1,39 +1,36 @@
 ---
 name: flowframe-wireframe
-description: Converts markdown screen and feature specifications into FlowFrame-compatible HTML wireframes. Reads docs/screens/*/index.md for layout and docs/features/**/index.md for UI elements, then generates or updates wireframe HTML files inside each screen folder. Triggers on "wireframe", "와이어프레임", "화면 설계", "화면 그려줘", "HTML로 변환", "와이어프레임 업데이트", "wireframe update", "기획서로 화면 만들어줘", or any request to generate, regenerate, or update wireframes from specs. Also use when the user says something changed and wants wireframes refreshed, or asks to convert planning documents into visual screen layouts.
+description: 마크다운 화면 명세와 기능 명세를 읽어 FlowFrame 호환 HTML 와이어프레임을 생성한다. docs/screens/*/index.md에서 레이아웃을, docs/features/**/index.md에서 UI 요소를 읽은 뒤, 각 screen 폴더 안에 와이어프레임 HTML 파일을 생성하거나 업데이트한다. "wireframe", "와이어프레임", "화면 설계", "화면 그려줘", "HTML로 변환", "와이어프레임 업데이트", "wireframe update", "기획서로 화면 만들어줘" 등의 표현이 나오면 이 스킬을 사용한다.
 license: MIT
 metadata:
   author: flowframehq
-  version: "3.0.0"
+  version: "3.1.0"
 ---
 
-# FlowFrame Wireframe Generator
+# FlowFrame 와이어프레임 생성기
 
-Generates single-file HTML wireframes from screen and feature specs.
-Output is directly uploadable to FlowFrame for flow review and team commenting.
-These wireframes are human review artifacts for planners, designers, and developers before implementation is delegated to other agents.
+화면 명세와 기능 명세로부터 단일 파일 HTML 와이어프레임을 생성한다.
+출력물은 FlowFrame에 바로 업로드하여 플로우 리뷰와 팀 코멘트에 사용할 수 있다.
+와이어프레임은 기획자, 디자이너, 개발자가 구현 전에 검토하는 리뷰 산출물이다.
 
-## Project Structure
+## 프로젝트 구조
 
-This skill expects the following file layout in the user's project:
+이 스킬은 사용자 프로젝트에 아래 파일 구조를 기대한다:
 
 ```
 project/
 └── docs/
-    ├── features/              ← Feature specs (folder-based, recursive)
+    ├── features/              ← 기능 명세 (폴더 기반, 재귀 구조)
     │   ├── auth/
-    │   │   ├── index.md       ← branch (domain context only)
+    │   │   ├── index.md       ← 하위 feature + 자체 elements 모두 가능
     │   │   ├── login-form/
-    │   │   │   └── index.md   ← leaf (wireframe elements)
+    │   │   │   └── index.md
     │   │   └── social-login/
-    │   │       └── index.md   ← leaf
+    │   │       └── index.md
     │   └── comments/
-    │       └── index.md       ← leaf (no children = leaf)
-    ├── screens/               ← Screen specs (folder per screen)
+    │       └── index.md
+    ├── screens/               ← 화면 명세 (화면별 폴더)
     │   ├── LOGIN/
-    │   │   ├── index.md
-    │   │   └── wireframe.html
-    │   ├── DASHBOARD/
     │   │   ├── index.md
     │   │   └── wireframe.html
     │   └── EDITOR/
@@ -42,13 +39,13 @@ project/
     │       └── wireframe-mobile.html
 ```
 
-Wireframes live inside each screen folder. If `docs/features/` or `docs/screens/` don't exist, tell the user to create specs first (suggest the `flowframe-spec` skill).
+와이어프레임은 각 screen 폴더 안에 위치한다. `docs/features/`나 `docs/screens/`가 없으면 먼저 명세를 작성하라고 안내한다 (`flowframe-spec` 스킬 추천).
 
-## Input Files
+## 입력 파일
 
-### Screen spec (docs/screens/*/index.md)
+### 화면 명세 (docs/screens/*/index.md)
 
-Screens are **folders** with `index.md`. Defines layout and references features. Frontmatter fields:
+화면은 **폴더** 단위이며 `index.md`를 가진다. 레이아웃과 feature 참조를 정의한다. frontmatter:
 
 ```yaml
 ---
@@ -59,33 +56,43 @@ viewport: pc
 ---
 ```
 
-The body contains layout with feature references using `[@path](../../features/path/index.md)` links (two levels up since screen specs are inside folders). Example: `[@auth/login-form](../../features/auth/login-form/index.md)`.
+본문에는 `[@경로](../../features/경로/index.md)` 링크로 feature를 참조하는 레이아웃이 들어간다 (screen이 폴더 안이므로 `../../` 상대 경로). 예: `[@auth/login-form](../../features/auth/login-form/index.md)`.
 
-### Feature spec (docs/features/**/index.md)
+### 기능 명세 (docs/features/**/index.md)
 
-Features use a recursive folder structure. Each feature is a **folder** with an `index.md`. A feature is a **leaf** (no child folders) or a **branch** (has child folders). This skill only reads **leaf** `index.md` files — branches hold domain context only and have no wireframe elements.
+feature는 재귀적 폴더 구조를 사용한다. 각 feature는 `index.md`를 가진 **폴더**다.
 
-**featureId** is path-derived, not written in frontmatter:
-- Take the path after `docs/features/`, remove `/index.md`
-- Convert each folder segment from kebab-case to UPPER_SNAKE_CASE
-- Join depth levels with `__` (double underscore)
-- Example: `docs/features/auth/login-form/index.md` → `AUTH__LOGIN_FORM`
+모든 feature는 동일한 구조를 가진다:
+- `elements`가 있으면 — 이 레벨에 와이어프레임 요소가 있다 → 렌더링 대상
+- `features`(하위)가 있으면 — 자식 feature가 있다 → 재귀 탐색
+- 둘 다 가질 수도 있고, 하나만 가질 수도 있다
 
-Leaf frontmatter fields:
+이 스킬은 재귀적으로 모든 feature를 순회한다. `elements`가 있으면 해당 요소를 렌더링하고, `features`가 있으면 하위로 재귀 탐색한다. 하위 feature는 해당 feature 폴더 내 `index.md`를 가진 하위 디렉토리를 스캔하여 발견한다.
+
+**featureId**는 경로 파생값이며 frontmatter에 쓰지 않는다:
+- `docs/features/` 이후 경로를 취한다
+- `/index.md`를 제거한다
+- 각 폴더명의 kebab-case를 UPPER_SNAKE_CASE로 변환한다
+- 깊이 구분자로 `__` (이중 밑줄)을 사용한다
+- 예: `docs/features/auth/login-form/index.md` → `AUTH__LOGIN_FORM`
+
+feature frontmatter:
 
 ```yaml
 ---
 label: 댓글
 type: section
-usedIn:
+usedIn:                              # 이 feature가 렌더링되는 screen 목록
   - docs/screens/EDITOR/index.md
   - docs/screens/DASHBOARD/index.md
 ---
 ```
 
-**Branch reference error**: If a screen spec references a feature path that has child folders (= branch), stop and tell the user to reference a leaf instead.
+`usedIn`은 이 feature가 직접 또는 상위를 통해 렌더링되는 모든 screen을 포함한다. 부분 업데이트 시 영향 화면을 찾는 데 사용한다.
 
-The `## 와이어프레임 요소` section in the body lists the UI elements to render inside that feature block:
+**참조 에러**: 화면 명세가 참조하는 feature에 `elements`도 없고 하위 `features`도 없으면, 중단하고 사용자에게 명세를 보완하라고 안내한다.
+
+`## 와이어프레임 요소` 섹션에 해당 feature 블록에 렌더링할 UI 요소가 나열된다:
 
 ```markdown
 ## 와이어프레임 요소
@@ -97,438 +104,411 @@ The `## 와이어프레임 요소` section in the body lists the UI elements to 
 | 등록 버튼 | button | 댓글 등록 |
 ```
 
-Read `## 와이어프레임 요소` as the primary rendering source.
-Also read `## 상태` and `## 인터랙션` to make the wireframe understandable to human reviewers:
-- enrich metadata `description`
-- expose representative states, disabled actions, confirmation steps, empty cases, loading cases, or error cues when they materially affect review
+`## 와이어프레임 요소`를 주요 렌더링 소스로 읽는다.
+리뷰어가 와이어프레임을 이해하는 데 필요하면 `## 상태`, `## 인터랙션`도 함께 참고한다:
+- 메타데이터 `description` 보강
+- 대표 상태, 비활성 액션, 확인 단계, 빈 상태, 로딩, 에러 표시 등 리뷰에 영향을 주는 케이스 노출
 
-Do **not** turn `## 비즈니스 로직` or `API` into direct UI unless the screen/spec explicitly requires a visible summary.
-Every screen must contain at least one referenced feature. Even simple screens like login or company introduction still use one coarse feature block.
+`## 비즈니스 로직`이나 `API`를 직접 UI로 변환하지 않는다. 화면/명세에서 명시적으로 표시를 요구하는 경우만 예외.
+모든 화면은 최소 하나의 feature를 참조해야 한다.
 
-### Missing `## 와이어프레임 요소` section
+### `## 와이어프레임 요소` 섹션이 없는 경우
 
-If a referenced feature md does not contain a `## 와이어프레임 요소` section, or the section exists but has no valid rows:
+참조된 feature md에 `## 와이어프레임 요소` 섹션이 없거나 유효한 행이 없을 때:
 
-- Do **not** invent UI elements from other sections
-- Stop generation or update for that feature
-- Tell the user which feature spec is incomplete
-- Ask the user to add or fix the `## 와이어프레임 요소` section before continuing
-- If the screen depends entirely on that feature, stop the whole wireframe generation rather than outputting a partial result
+- 하위 `features`가 있으면 → 재귀 탐색을 계속한다. 상위 feature에 `elements`가 없어도 정상이다
+- 하위 `features`도 없으면 → 중단하고 사용자에게 어떤 요소가 들어가야 하는지 질문한다. 다른 섹션에서 추측하면 명세와 맞지 않는 와이어프레임이 나온다
+- 해당 feature에 화면 전체가 의존하고 하위에서도 렌더링할 것이 없으면, 부분 결과를 출력하지 말고 전체 생성을 중단한다
 
-## Wireframe Generation
+## 와이어프레임 생성
 
-### Workflow Map
+**한 화면씩 순차 처리한다.** 여러 화면이 대상이어도 한 화면의 와이어프레임을 완성한 뒤 다음 화면으로 넘어간다. 동시에 여러 화면을 병렬 진행하지 않는다. 대상 화면이 여러 개이면 목록을 보여주고 처리 순서를 확인한 뒤 첫 번째 화면부터 시작한다.
 
-```mermaid
-flowchart TD
-    A["사용자 요청 수신"] --> B{"요청 유형"}
+### 최초 생성 (2-pass, 점진적)
 
-    B -->|최초 생성| C["screen index.md 읽기"]
-    C --> D["layout skeleton 작성"]
-    D --> E["참조 leaf를 순서대로 읽기"]
-    E --> F["영역별 HTML + metadata 채우기"]
-
-    B -->|부분 반영| G["변경된 leaf 또는 screen 식별"]
-    G --> H{"입력이 leaf 기준인가?"}
-    H -->|예| I["usedIn으로 영향 screen 식별"]
-    H -->|아니오| J["대상 screen 하나만 읽기"]
-    I --> K["영향 화면 확인 요청"]
-    J --> K
-    K --> L["해당 HTML의 관련 영역 + metadata만 교체"]
-
-    B -->|screen 다시 그리기| M["대상 screen 하나만 읽기"]
-    M --> N["참조 leaf만 다시 읽기"]
-    N --> O["해당 screen wireframe만 재생성"]
-
-    B -->|전체 재생성| P["docs/screens/*/index.md 목록 확인"]
-    P --> Q["사용자 확인"]
-    Q --> R["screen별 초기 생성 반복"]
-
-    F --> S["완료"]
-    L --> S
-    O --> S
-    R --> S
-```
-
-### Initial generation (2-pass, incremental)
-
-Generation MUST proceed incrementally — do NOT read all feature mds at once and write the full HTML in a single pass.
+feature md를 한꺼번에 읽으면 수가 많아질수록 누락이 생긴다. 하나씩 처리해야 각 feature에 충분한 주의를 기울이고 불완전한 명세를 일찍 잡아낸다.
 
 ```
-Pass 1 — Layout skeleton:
-  1. Read screen md → identify layout regions and feature positions
-  2. Read design guide + layout guide (parallel OK)
-  3. Write HTML file with:
-     - Full <head> (Tailwind, dark mode config, metadata with empty elements array)
-     - Body layout structure with region containers
-     - Fixed areas (header, footer, etc.) fully rendered
-     - Feature positions marked with empty placeholder containers:
+Pass 1 — 레이아웃 골격:
+  1. 화면 md 읽기 → 레이아웃 영역과 feature 위치 파악
+  2. 디자인 가이드 + 레이아웃 가이드 읽기 (병렬 가능)
+  3. HTML 파일 작성:
+     - 전체 <head> (Tailwind, 다크모드 설정, 빈 features 배열의 메타데이터)
+     - body 레이아웃 구조 및 영역 컨테이너
+     - 화면 명세에 명시된 고정 영역만 렌더링
+     - feature 위치는 빈 플레이스홀더 컨테이너로 표시:
        <!-- Feature: FEATURE_ID (cart-items/index.md) -->
-       <div data-feature="FEATURE_{ID}_PLACEHOLDER" class="p-4">
+       <div data-feature-id="{FEATURE_ID}" data-feature-label="{label}" class="p-4">
          <span class="text-sm text-zinc-400">Loading feature...</span>
        </div>
 
-Pass 2 — Fill features one by one:
-  For each referenced feature (in layout order):
-    1. Read ONE leaf feature index.md
-       - extract the `## 와이어프레임 요소` table as the primary UI source
-       - read `## 상태` and `## 인터랙션` to understand which cases must be visible to human reviewers
-       - If the referenced feature is a branch (has child folders), stop and tell the user to reference a leaf
-    2. If section is missing or empty → stop and ask the user (do NOT continue)
-    3. Edit the HTML:
-       - Replace the placeholder container with rendered UI elements
-       - Add matching entries to the metadata elements array
-       - If the feature has important states, permissions, disabled actions, confirmation steps, empty/loading/error cases, render a representative visible case block or inline state cue
-    4. Move to the next feature
+Pass 2 — feature 하나씩 채우기:
+  참조된 각 feature를 레이아웃 순서대로:
+    1. feature index.md 하나 읽기
+       - `elements`가 있으면 → `## 와이어프레임 요소` 테이블을 주요 UI 소스로 추출
+       - `features`(하위)가 있으면 → 하위 feature로 재귀 진입
+       - 둘 다 있으면 → 자체 elements를 렌더링하고, 하위 feature도 재귀 처리
+       - 둘 다 없으면 → 중단, 사용자에게 명세 보완 안내
+       - `## 상태`와 `## 인터랙션`으로 리뷰어에게 보여야 할 케이스 파악
+    2. `## 와이어프레임 요소` 섹션이 없거나 비어 있는데 하위 features도 없으면 → 중단, 사용자에게 질문
+    3. HTML 수정:
+       - 플레이스홀더를 렌더링된 UI 요소로 교체
+       - 메타데이터 `features` 배열에 해당 feature 엔트리 추가 (재귀 구조 유지)
+       - 중요한 형제 상태가 있으면 리뷰 탭 래퍼로 감싸서 렌더링
+    4. 다음 feature로 이동
 ```
 
-**Why incremental**: Reading all features at once risks missing elements when feature count grows. Processing one by one ensures each feature gets full attention, and incomplete specs are caught immediately before wasting work on later features.
+### 업데이트 (사용자 요청 시)
 
-### Update (user-triggered)
+명세 변경 후 사용자가 업데이트를 요청하면, `flowframe-spec`의 `Wireframe Handoff` 계약을 참고한다.
 
-When the user says something like "댓글이랑 인증 수정했어, 와이어프레임 업데이트해줘":
+액션 규칙:
+- `partial-update`: 기존 레이아웃, 기존 feature 구조가 유지된 상태에서 요소 내용만 변경됨
+- `screen-regenerate`: 화면 레이아웃 변경, feature 추가/제거, feature 계층 구조 변경
+- `full-regenerate`: 여러 화면에 걸친 구조 리팩터링
 
-```
-1. Find the mentioned feature md files
-2. Read ONLY the `## 와이어프레임 요소` section from each
-3. Check the usedIn field in frontmatter for affected screens
-4. Show the user which wireframes will be affected and ask for confirmation:
-
-   "다음 와이어프레임이 영향 받습니다:
-    - docs/screens/EDITOR/wireframe.html (댓글, 인증)
-    - docs/screens/LOGIN/wireframe.html (인증)
-    - docs/screens/DASHBOARD/wireframe.html (댓글)
-    진행할까요?"
-
-5. After user confirms, update ONLY the matching data-feature sections in each HTML
-   (Do NOT re-read screen md or other feature mds)
-```
-
-**Adding new elements**: If a feature spec gained new rows in the `## 와이어프레임 요소` table, append the new rendered UI and
-add matching entries to the metadata `elements` array. Inner tracked elements may share the same parent `featureId`
-and `spec` while using distinct `id` values such as `FEATURE_AUTH__LOGIN_FORM_EMAIL`, `FEATURE_AUTH__LOGIN_FORM_SUBMIT`.
-
-**Important**: Always confirm with the user before updating. The user may exclude specific wireframes.
-
-### Multi-viewport screens
-
-When a screen spec has `viewport: [pc, mobile]`, generate **separate HTML files** per viewport:
-
-- Single viewport: write `docs/screens/{SCREEN_NAME}/wireframe.html`
-- Multi-viewport: write `docs/screens/{SCREEN_NAME}/wireframe-pc.html` from `## 레이아웃 (PC)`
-- Multi-viewport: write `docs/screens/{SCREEN_NAME}/wireframe-mobile.html` from `## 레이아웃 (Mobile)`
-
-This naming rule is fixed and must be used consistently.
-Each file sets its own metadata `viewport` field to `"pc"` or `"mobile"`.
-
-### Full regeneration
-
-When the user says "전부 다시 만들어줘" or "regenerate all wireframes":
+#### 부분 업데이트
 
 ```
-1. List all `docs/screens/*/index.md` files
-2. Show the list and ask for confirmation
-3. For each screen, run the initial generation (2-pass) workflow
-4. Overwrite existing wireframe HTMLs
+1. 변경된 feature md 파일 찾기
+2. 변경된 feature의 `## 와이어프레임 요소` 읽기
+3. 변경된 리뷰 케이스가 있을 때만 `## 상태`와 `## 인터랙션` 읽기
+4. feature의 `usedIn` 필드로 영향받는 화면 찾기
+5. 영향받는 와이어프레임을 보여주고 확인 요청
+6. 사용자 확인 후, 해당 HTML 영역과 메타데이터만 업데이트
 ```
 
-## Output: HTML Structure
+관련 없는 feature를 다시 읽으면 컨텍스트가 낭비되고 의도치 않은 편집이 생길 수 있다. 화면 명세 재읽기는 `screen-regenerate`나 `full-regenerate`에서만 수행한다.
 
-### FlowFrame Metadata
+#### 화면 재생성 / 전체 재생성
 
-Place in `<head>` — this is what FlowFrame validates on upload:
+```
+1. 핸드오프 요약이나 사용자 요청에서 대상 화면 범위 파악
+2. 재생성 범위를 보여주고 확인 요청
+3. 대상 화면마다 최초 생성 워크플로우 다시 실행
+4. 해당 와이어프레임 HTML 파일 덮어쓰기
+```
+
+**새 요소 추가**: `partial-update` 중 `## 와이어프레임 요소` 테이블에 새 행이 추가됐으면, 새 UI를 렌더링하고 메타데이터의 해당 feature `elements` 배열에 엔트리를 추가한다. feature 자체가 추가되거나 삭제된 경우는 `partial-update`가 아니라 `screen-regenerate`다.
+
+**중요**: 업데이트 전에 반드시 사용자 확인을 받는다. 사용자가 특정 와이어프레임을 제외할 수 있다.
+
+### 다중 뷰포트 화면
+
+화면 명세에 `viewport: [pc, mobile]`이 있으면 뷰포트별로 **별도 HTML 파일**을 생성한다:
+
+- 단일 뷰포트: `docs/screens/{SCREEN_NAME}/wireframe.html`
+- 다중 뷰포트: `docs/screens/{SCREEN_NAME}/wireframe-pc.html` (`## 레이아웃 (PC)`에서)
+- 다중 뷰포트: `docs/screens/{SCREEN_NAME}/wireframe-mobile.html` (`## 레이아웃 (Mobile)`에서)
+
+각 파일은 메타데이터 `viewport` 필드에 `"pc"` 또는 `"mobile"`을 설정한다.
+
+### 전체 재생성
+
+사용자가 "전부 다시 만들어줘"나 "regenerate all wireframes"라고 하면:
+
+```
+1. 모든 docs/screens/*/index.md 파일 나열
+2. 목록을 보여주고 확인 요청
+3. 각 화면마다 최초 생성(2-pass) 워크플로우 실행
+4. 기존 와이어프레임 HTML 덮어쓰기
+```
+
+## 출력: HTML 구조
+
+### FlowFrame 메타데이터
+
+`<head>`에 배치한다 — FlowFrame이 업로드 시 검증하는 부분:
 
 ```json
 {
   "generator": "flowframe-wireframe-skill",
-  "version": "1.0",
+  "version": "1.2",
   "screenId": "SCREEN_ID",
   "title": "화면 제목",
   "purpose": "이 화면의 목적 설명",
-  "elements": [
+  "features": [
     {
-      "id": "FEATURE_AUTH__LOGIN_FORM_EMAIL",
-      "featureId": "AUTH__LOGIN_FORM",
-      "type": "input",
-      "label": "이메일",
-      "description": "사용자가 로그인 시 사용할 이메일 주소를 입력하고 형식 오류를 확인하는 입력 필드",
-      "spec": "../../features/auth/login-form/index.md"
+      "featureId": "AUTH",
+      "label": "인증",
+      "spec": "../../features/auth/index.md",
+      "features": [
+        {
+          "featureId": "AUTH__LOGIN_FORM",
+          "label": "로그인 폼",
+          "spec": "../../features/auth/login-form/index.md",
+          "elements": [
+            {
+              "id": "FEATURE_AUTH__LOGIN_FORM_EMAIL",
+              "type": "input",
+              "label": "이메일",
+              "description": "사용자가 로그인 시 사용할 이메일 주소를 입력하고 형식 오류를 확인하는 입력 필드"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
 ```
 
-Required: `generator` (fixed `"flowframe-wireframe-skill"`), `version`, `screenId`, `title`, `purpose`, `elements` (1+ items).
+#### 최상위 필드
 
-Optional: `author`, `viewport` (`"pc"` | `"mobile"`).
+필수: `generator` (고정 `"flowframe-wireframe-skill"`), `version` (`"1.2"`), `screenId`, `title`, `purpose`, `features` (1개 이상).
 
-The `featureId` is path-derived (kebab → UPPER_SNAKE, `__` for depth). The `spec` points to the leaf `index.md`. Because wireframes are stored inside `docs/screens/{SCREEN}/`, `spec` paths are relative from that folder and typically start with `../../features/`.
+선택: `author`, `viewport` (`"pc"` | `"mobile"`).
 
-Because the wireframe is a human review artifact, `elements[].description` must help a human reviewer understand intent without immediately opening the spec. Do not keep it as a short label restatement. Each description should explain:
-- what the element shows or accepts
-- what user or operator action it supports
-- what functional purpose or state context it has on this screen
-- when relevant, what condition enables, disables, confirms, or changes it
-- when relevant, what business action, validation rule, or transition the reviewer should understand from this control
+#### `features[]` 필드 (재귀)
 
-Good: `"결제완료 상태 주문에서 배송준비나 취소로 전이할 수 있는 다음 상태 액션 버튼 그룹"`
-Weak: `"다음 상태 버튼들"`
+| 필드 | 필수 | 설명 |
+|------|------|------|
+| `featureId` | Yes | 경로 파생 ID (kebab → UPPER_SNAKE, `__`로 깊이 구분) |
+| `label` | Yes | feature 표시명 (한국어, frontmatter `label` 값) |
+| `spec` | Yes | 와이어프레임에서 feature `index.md`까지의 상대 경로 |
+| `elements` | 선택 | 추적 요소 배열 (1개 이상). `elements`와 `features` 중 최소 하나 필요 |
+| `features` | 선택 | 하위 feature 배열 (재귀). `elements`와 `features` 중 최소 하나 필요 |
 
-Description writing rules:
-- Do not just paraphrase the label.
-- Prefer one sentence with concrete nouns and actions over short fragments.
-- Mention business meaning when it matters: status transition, filtering scope, approval step, validation purpose, collaboration purpose.
-- If the same kind of control can appear elsewhere, explain what makes this one specific to the current feature or screen.
-- If an action is conditional, mention the condition in the description.
-- If a planner, designer, or developer would ask "what exactly is this for?", answer that in the description.
+#### `elements[]` 필드
 
-### State visibility rules
+| 필드 | 필수 | 설명 |
+|------|------|------|
+| `id` | Yes | `FEATURE_{featureId}_{ELEMENT_ID}` |
+| `type` | Yes | 요소 타입 (input, button, text, table, list 등) |
+| `label` | Yes | 요소 표시명 (한국어) |
+| `description` | Yes | 리뷰어를 위한 기능적 역할 설명 |
 
-Wireframes are not only structure sketches. They are review artifacts for planners, designers, and developers.
-If a feature can appear in materially different states, the wireframe should expose those states enough for a human reviewer to understand the flow direction before opening the spec.
+와이어프레임이 `docs/screens/{SCREEN}/` 안에 있으므로 `spec` 경로는 보통 `../../features/`로 시작한다.
 
-Prefer showing state/case information in one of these ways:
-- inline helper text, badges, disabled buttons, validation messages, or confirmation copy inside the main feature block
-- a compact sub-panel such as `상태 예시`, `처리 조건`, or `검토 포인트`
-- a visible confirmation, empty, error, loading, or permission block when that case is central to the feature
+와이어프레임은 리뷰 산출물이므로, 요소 `description`은 리뷰어가 명세를 열지 않고도 의도를 이해할 수 있어야 한다 — 요소가 보여주거나 받는 내용, 지원하는 액션, 이 화면에서의 비즈니스 맥락을 포함한다.
 
-Good candidates for explicit state rendering:
-- empty / loading / error
-- enabled vs disabled actions
-- approval or confirmation dialogs
-- permission or role-based availability
-- success/failure feedback that changes the next operator action
+좋은 예: `"결제완료 상태 주문에서 배송준비나 취소로 전이할 수 있는 다음 상태 액션 버튼 그룹"`
+나쁜 예: `"다음 상태 버튼들"`
 
-Do not render every case exhaustively. Show the representative cases a human must see to align on behavior.
-If a feature's behavior would be misunderstood without a visible case, render that case in the wireframe instead of leaving it only in markdown.
+description 작성 가이드:
+- 라벨 이상의 정보를 담는다 — description만 읽어도 요소의 역할을 파악할 수 있어야 한다
+- 구체적인 명사와 동작이 포함된 한 문장을 선호한다
+- 비즈니스 의미나 조건이 해석에 영향을 주면 함께 언급한다
 
-### HTML Template
+### 상태 표시 규칙
 
-```html
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{화면 제목}</title>
+와이어프레임은 단순한 구조 스케치가 아니다. 기획자, 디자이너, 개발자를 위한 리뷰 산출물이다.
+feature가 실질적으로 다른 상태를 가질 수 있으면, 리뷰어가 명세를 열기 전에 흐름 방향을 이해할 수 있도록 그 상태를 와이어프레임에서 노출해야 한다.
 
-  <!-- Tailwind CSS v4 (browser JIT — stripped on upload, re-injected by viewer) -->
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+같은 feature의 2~4개 상호배타 형제 상태를 비교해야 할 때 기본적으로 **리뷰 탭 래퍼**를 사용한다.
 
-  <!-- FlowFrame dark mode config -->
-  <style type="text/tailwindcss">
-    @custom-variant dark (&:where(.dark, .dark *));
-  </style>
+리뷰 탭 규칙:
+- feature를 `<div class="feature-review group/{feature-key} relative">` 같은 재사용 컨테이너로 감싼다. `{feature-key}`는 리뷰 탭 라디오 이름에 사용하는 고유 슬러그 (예: `group/login`, `group/order-list`). `group/feature` 같은 고정 리터럴은 절대 사용하지 않는다 — 중첩된 리뷰 탭이 한 번의 호버로 모두 드러난다
+- 네이티브 라디오 입력과 `peer-checked`로 패널 전환 (패널은 input의 형제이므로 `peer` 작동)
+- 라벨은 `.review-tabs` 안에 중첩되므로 `peer`가 도달하지 못한다 — 활성 라벨 스타일은 `<style>` 블록의 공유 `:has()` CSS 규칙으로 처리 (`references/REVIEW-TABS.md` 참조)
+- 실제 제품 UI는 탭 패널 안에 배치
+- 리뷰 탭은 제품 UI 흐름 밖에 absolute 오버레이로 배치, 보통 `absolute -top-3 right-4`
+- 기본 상태에서 숨기고, feature hover/focus 시 드러나도록 하여 리뷰 도구로 인식되게 한다
+- 작은 점선 pill/chip 컨트롤로 스타일링
+- 한 번에 하나의 패널만 활성, 비활성 패널은 `hidden`
+- `references/REVIEW-TABS.md`의 구체적인 HTML/Tailwind 레시피를 재사용한다
 
-  <!-- FlowFrame Metadata (required) -->
-  <script type="application/json" id="flowframe-meta">
-  { ... }
-  </script>
+인라인 도움말이나 직접 오버레이 렌더링은 형제 모드 비교가 아닌 상태에서만 사용한다.
 
-</head>
-<body class="bg-zinc-50 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200">
-  <div class="min-h-screen flex items-center justify-center p-6">
-    <!-- Card wrapper — NO data-feature -->
-    <div class="w-full max-w-md flex flex-col gap-6 p-8 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-sm">
-      <!-- Layout wrapper — NO data-feature -->
-      <div class="flex flex-col gap-4">
-        <!-- Individual tracked element — HAS data-feature -->
-        <div data-feature="FEATURE_AUTH__LOGIN_FORM_EMAIL" class="flex flex-col gap-1.5">
-          <label>이메일</label>
-          <input type="text" />
-        </div>
-        <div data-feature="FEATURE_AUTH__LOGIN_FORM_PASSWORD" class="flex flex-col gap-1.5">
-          <label>비밀번호</label>
-          <input type="password" />
-        </div>
-      </div>
-      <button data-feature="FEATURE_AUTH__LOGIN_FORM_SUBMIT">로그인</button>
-    </div>
-  </div>
-</body>
-</html>
-```
+명시적 상태 렌더링이 적합한 경우:
+- 빈 상태 / 로딩 / 에러
+- 활성 vs 비활성 액션
+- 승인 또는 확인 다이얼로그
+- 권한 또는 역할 기반 가용성
+- 다음 조작에 영향을 주는 성공/실패 피드백
 
-### data-feature Rules
+모든 케이스를 빠짐없이 렌더링하면 복잡해진다. 리뷰어가 행동에 합의하는 데 필요한 대표 케이스만 보여준다.
 
-- `data-feature` = **individual tracked element** (the smallest meaningful UI unit), not a feature container or layout wrapper
-- Every `elements[].id` in metadata **must** have a matching `data-feature` on a specific DOM element
-- Layout wrappers that group feature elements are plain divs without `data-feature`
-- A feature with 3 tracked elements produces 3 `data-feature` attributes inside one plain wrapper div
-- FlowFrame uses this for bidirectional hover highlighting
-- Elements without `data-feature` are excluded from highlighting
-- The tracked unit is a **wireframe element**, while `featureId` preserves the parent feature relationship
-- Multiple tracked elements may belong to the same feature spec
-- A screen must not reference the same leaf feature twice
-- If the same feature appears in multiple layout regions, split it into separate leaves
-- This ensures each data-feature region maps unambiguously to one layout position
+판단 기준:
+- 리뷰어가 같은 영역의 형제 상태를 비교해야 하면 → 탭
+- 리뷰어가 경고나 다음 단계 제약을 알아차리면 되면 → 인라인 도움말이나 컴팩트 패널
+- 상태가 메인 흐름을 가로막는 오버레이면 → 트리거 근처에 오버레이 자체를 렌더링
 
-### Fixed areas (no feature reference)
+### HTML 템플릿
 
-Screen specs can have layout areas without feature references (e.g., "상단 메뉴바 — 파일명, 저장 상태, 공유 버튼").
-These are fixed UI chrome, not tracked features:
+`references/EXAMPLE.md`와 `references/WIREFRAME-GUIDE.md`에 정의된 head/body 골격을 사용한다.
+구체적인 리뷰 탭 HTML/Tailwind 레시피는 `references/REVIEW-TABS.md`를 재사용한다.
 
-- Render as regular HTML **without** `data-feature` attribute
-- Do **not** include in the `elements` metadata array
-- Use descriptive class names for readability
+필수 구조:
+- `<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>`
+- `<style type="text/tailwindcss">` 포함:
+  - `@custom-variant dark (&:where(.dark, .dark *));`
+  - 리뷰 탭 활성 라벨 `:has()` 규칙 (`references/REVIEW-TABS.md` 참조)
+- `<script type="application/json" id="flowframe-meta">`
+- `data-feature-id`와 `data-feature-label` 속성을 가진 feature 컨테이너
+- feature 컨테이너 안에 `data-feature` 값이 매칭되는 추적 DOM 요소
+
+### 2-tier DOM 추적
+
+와이어프레임은 두 레벨의 DOM 추적을 사용한다 — **feature 컨테이너**는 코멘트용, **추적 요소**는 하이라이트용:
 
 ```html
-<!-- Fixed area — no data-feature -->
-<header class="h-12 px-4 flex items-center justify-between border-b border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800">
-  <span>파일명.md</span>
-  <span class="text-sm text-zinc-500 dark:text-zinc-400">저장됨</span>
-  <button class="h-10 px-4 text-sm font-semibold border border-zinc-300 dark:border-zinc-600 text-zinc-600 dark:text-zinc-400 rounded-md">공유</button>
-</header>
-```
-
-### Multiple features in one layout region
-
-When a screen spec lists multiple features under one region (e.g., "우측 패널 — [@comments], [@version-control]"),
-the layout wrapper is a plain div, and each individual tracked element inside gets its own `data-feature`:
-
-```html
-<!-- Layout wrapper (aside) — NO data-feature -->
-<aside class="w-70 border-l border-zinc-200 dark:border-zinc-700 flex flex-col overflow-y-auto bg-white dark:bg-zinc-800">
-  <!-- Feature area wrapper — NO data-feature (plain grouping div) -->
-  <div class="p-4 flex flex-col gap-3">
-    <div data-feature="FEATURE_COMMENTS_LIST" class="flex flex-col gap-2">
-      <!-- comments list elements -->
-    </div>
-    <div data-feature="FEATURE_COMMENTS_INPUT" class="flex flex-col gap-1.5">
-      <!-- comment input elements -->
-    </div>
-    <button data-feature="FEATURE_COMMENTS_SUBMIT" class="h-10 px-4 text-sm font-semibold bg-zinc-800 text-white dark:bg-zinc-200 dark:text-zinc-900 rounded-md">등록</button>
-  </div>
-  <!-- Another feature area — NO data-feature on wrapper -->
-  <div class="p-4 border-t border-zinc-200 dark:border-zinc-700">
-    <div data-feature="FEATURE_VERSION_CONTROL_LIST">
-      <!-- version-control elements -->
-    </div>
-  </div>
-</aside>
-```
-
-## Tailwind Class Patterns
-
-Use Tailwind CSS v4 utility classes. Color palette: `zinc` exclusively for grayscale wireframe aesthetic.
-
-| Element | Tailwind Classes |
-|---------|-----------------|
-| Page wrapper | `min-h-screen flex items-center justify-center p-6 bg-zinc-50 dark:bg-zinc-900` |
-| Card | `w-full max-w-md flex flex-col gap-6 p-8 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-sm` |
-| Wide container | `w-full max-w-5xl mx-auto p-6` |
-| Form field | `flex flex-col gap-1.5` |
-| Label | `text-sm font-medium text-zinc-600 dark:text-zinc-400` |
-| Input | `h-10 px-3 text-sm border border-zinc-300 dark:border-zinc-600 rounded-md bg-transparent` |
-| Primary button | `h-10 px-4 text-sm font-semibold bg-zinc-800 text-white dark:bg-zinc-200 dark:text-zinc-900 rounded-md` |
-| Secondary button | `h-10 px-4 text-sm font-semibold border border-zinc-300 dark:border-zinc-600 text-zinc-600 dark:text-zinc-400 rounded-md` |
-| Ghost button | `h-10 px-4 text-sm font-semibold text-zinc-500 dark:text-zinc-400` |
-| Link | `text-sm text-zinc-500 dark:text-zinc-400 hover:underline` |
-| Placeholder (image) | `bg-zinc-200 dark:bg-zinc-700 rounded` |
-| Placeholder (circle) | `bg-zinc-200 dark:bg-zinc-700 rounded-full` |
-| Heading (large) | `text-xl font-semibold` |
-| Heading (medium) | `text-lg font-semibold` |
-| Small text | `text-sm text-zinc-600 dark:text-zinc-400` |
-| Divider with text | See example below |
-
-### Divider pattern
-
-```html
-<div class="flex items-center gap-3">
-  <div class="flex-1 h-px bg-zinc-200 dark:bg-zinc-700"></div>
-  <span class="text-xs text-zinc-400">또는</span>
-  <div class="flex-1 h-px bg-zinc-200 dark:bg-zinc-700"></div>
+<!-- feature 컨테이너: 코멘트 앵커 -->
+<div data-feature-id="AUTH__LOGIN_FORM" data-feature-label="로그인 폼">
+  <!-- 추적 요소: 호버 하이라이트 -->
+  <div data-feature="FEATURE_AUTH__LOGIN_FORM_EMAIL">...</div>
+  <div data-feature="FEATURE_AUTH__LOGIN_FORM_PASSWORD">...</div>
+  <button data-feature="FEATURE_AUTH__LOGIN_FORM_SUBMIT">...</button>
 </div>
 ```
 
-## Complex Layouts
+| 속성 | 레벨 | 용도 | 파생 근거 |
+|------|------|------|----------|
+| `data-feature-id` | feature 래퍼 | 코멘트 앵커 (FlowFrame 클릭 대상) | `featureId` (경로 파생) |
+| `data-feature-label` | feature 래퍼 | 코멘트 UI 표시명 | frontmatter `label` |
+| `data-feature` | 개별 요소 | 호버 하이라이트 (양방향) | 메타데이터 `elements[].id` |
 
-With Tailwind CSS v4, complex multi-region layouts (sidebar + main + panel) need no inline `<style>` block.
-Use flex/grid utilities directly: `flex`, `flex-col`, `flex-1`, `w-60`, `h-screen`, `overflow-y-auto`, etc.
+### data-feature-id 규칙 (feature 컨테이너)
 
-Use [references/WIREFRAME-GUIDE.md](references/WIREFRAME-GUIDE.md) as the primary authority for layout selection, region splitting, visual hierarchy, spacing, density, and state visibility. If any example or pattern conflicts with the guide, follow the guide.
+- 모든 feature는 `data-feature-id="{featureId}"`와 `data-feature-label="{label}"`을 가진 래퍼를 받는다
+- `data-feature-id` = 경로 파생 `featureId` (예: `MEMBER_PROFILE`, `AUTH__LOGIN_FORM`)
+- `data-feature-label` = frontmatter `label` (한국어 표시명)
+- 해당 feature의 `data-feature` 요소와 하위 feature 래퍼는 모두 이 래퍼 안에 위치한다
+- **재귀 중첩**: 하위 feature가 있으면 상위 `data-feature-id` 래퍼 안에 하위 `data-feature-id` 래퍼가 들어간다
+- feature에 `elements`와 하위 `features`가 동시에 있으면, `data-feature` 요소와 하위 래퍼가 같은 레벨에 공존한다
+- 모달의 경우 `data-feature-id`는 트리거 버튼이 아니라 모달 카드(주요 콘텐츠)에 배치
 
-## Design Principles
+### 재귀 DOM 중첩
 
-- Goal is **structure verification**, not pretty UI
-- Grayscale, neutral wireframe style — use `zinc` palette exclusively
-- Buttons, inputs, cards are simple box shapes
-- Images/icons use placeholder boxes (`bg-zinc-200 dark:bg-zinc-700 rounded`)
-- No colors, shadows, or decorative elements beyond `shadow-sm` on cards
-- All elements must include `dark:` variants for FlowFrame dark mode
+메타데이터의 재귀 구조와 DOM 구조가 1:1로 대응한다:
 
-## ID Rules
+```html
+<!-- 독립 feature (elements만 있음) -->
+<div data-feature-id="MEMBER_PROFILE" data-feature-label="회원 기본 정보">
+  <div data-feature="FEATURE_MEMBER_PROFILE_NAME">홍길동</div>
+  <div data-feature="FEATURE_MEMBER_PROFILE_EMAIL">hong@example.com</div>
+</div>
 
-- `screenId`: From screen spec frontmatter (e.g., `LOGIN`, `DASHBOARD`)
-- `elements[].id`: `FEATURE_{featureId}_{ELEMENT_ID}` pattern — one tracked ID per hover/comment target
-- `featureId` is path-derived (not from frontmatter): kebab → UPPER_SNAKE, `__` for depth separator
-- Use grouped IDs such as `FEATURE_AUTH__LOGIN_FORM_EMAIL`, `FEATURE_AUTH__LOGIN_FORM_SUBMIT`, `FEATURE_COMMENTS_LIST`
-- Multiple tracked elements may share the same `featureId` and `spec`
-- Keep the parent feature coarse-grained even when tracked elements are more detailed
+<!-- 재귀 중첩: AUTH → AUTH__2FA → AUTH__2FA__TOTP -->
+<div data-feature-id="AUTH" data-feature-label="인증">
 
-### `ELEMENT_ID` derivation
+  <div data-feature-id="AUTH__LOGIN_FORM" data-feature-label="로그인 폼">
+    <input data-feature="FEATURE_AUTH__LOGIN_FORM_EMAIL" placeholder="이메일" />
+    <button data-feature="FEATURE_AUTH__LOGIN_FORM_SUBMIT">로그인</button>
+  </div>
 
-- Choose the smallest English noun or action word that preserves the element's role.
-- Use uppercase with underscores for multiple words.
-- Prefer semantic names over repeating the raw element type.
-- If two tracked elements in the same feature would collide, add role or position to disambiguate.
+  <div data-feature-id="AUTH__2FA" data-feature-label="2단계 인증">
 
-| Korean label | Recommended `ELEMENT_ID` | Notes |
-|-------------|---------------------------|-------|
-| 이메일 | `EMAIL` | Use domain meaning, not input type |
+    <div data-feature-id="AUTH__2FA__TOTP" data-feature-label="TOTP 인증">
+      <input data-feature="FEATURE_AUTH__2FA__TOTP_CODE" placeholder="인증 코드 6자리" />
+      <button data-feature="FEATURE_AUTH__2FA__TOTP_VERIFY">인증 확인</button>
+    </div>
+
+    <div data-feature-id="AUTH__2FA__RECOVERY" data-feature-label="복구 코드">
+      <input data-feature="FEATURE_AUTH__2FA__RECOVERY_CODE" placeholder="복구 코드 입력" />
+      <button data-feature="FEATURE_AUTH__2FA__RECOVERY_SUBMIT">복구 코드로 인증</button>
+    </div>
+
+  </div>
+
+</div>
+```
+
+중첩 규칙:
+- 하위 feature가 있는 feature는 `data-feature-id` 래퍼 안에 자식 래퍼가 들어간다
+- 자체 `elements`가 있으면 `data-feature` 요소가 자식 래퍼와 같은 레벨에 배치된다
+- `elements`만 있는 feature의 `data-feature-id` 안에는 다른 `data-feature-id`가 들어가지 않는다
+- FlowFrame에서 상위 `data-feature-id` 클릭 시 하위 전체가 코멘트 범위가 된다
+
+### data-feature 규칙 (추적 요소)
+
+- `data-feature`는 호버 하이라이트를 위한 **가장 작은 의미 단위의 UI 요소**에 부여한다
+- 메타데이터 `elements[].id` 각각에 대해 부모 `data-feature-id` 컨테이너 안에 하나 이상의 매칭 DOM 요소가 필요하다
+- 여러 DOM 노드가 같은 `elements[].id`를 공유하면, 그 노드들은 같은 추적 요소의 상호배타 상태(리뷰 탭 패널)를 나타낸다 — 기본 상태에서 최소 하나는 보여야 한다
+- 같은 feature가 화면의 여러 위치에 필요하면, feature를 분리하여 각 `data-feature-id` 영역이 하나의 레이아웃 위치에 매핑되도록 한다
+
+### 고정 영역
+
+- **고정 영역** (메뉴바, 상태바): 화면 명세에 명시된 경우에만 렌더링, `data-feature`나 메타데이터 없이 일반 HTML
+- **한 영역에 여러 feature**: 레이아웃 래퍼는 일반으로 유지, `data-feature`는 개별 추적 요소에만 부여
+
+## Tailwind과 레이아웃
+
+Tailwind CSS v4 유틸리티를 `zinc` 팔레트로 사용한다. `references/WIREFRAME-GUIDE.md`와 `references/EXAMPLE.md`의 클래스 레시피를 재사용한다 — 화면별로 스타일을 즉흥으로 만들면 일관성이 깨진다. 복잡한 레이아웃은 flex/grid 유틸리티를 직접 사용하며, 공유 다크모드 + 리뷰 탭 블록 외에 `<style>` 인라인은 쓰지 않는다.
+
+[references/WIREFRAME-GUIDE.md](references/WIREFRAME-GUIDE.md)가 레이아웃 선택, 간격, 밀도, 상태 표시의 주요 기준이다.
+
+## 디자인 원칙
+
+- 목표는 **구조 검증**이지 예쁜 UI가 아니다
+- 그레이스케일, 중립적 와이어프레임 스타일 — `zinc` 팔레트만 사용
+- 버튼, 입력, 카드는 단순한 박스 형태
+- 이미지/아이콘은 플레이스홀더 박스 (`bg-zinc-200 dark:bg-zinc-700 rounded`)
+- 카드의 `shadow-sm` 외에 색상, 그림자, 장식 요소 없음
+- 모든 색상 클래스에 `dark:` 변형 포함 — FlowFrame은 다크모드로 렌더링
+
+## ID 규칙
+
+- `screenId`: 화면 명세 frontmatter에서
+- `features[].featureId`: 경로 파생 (kebab → UPPER_SNAKE, `__`로 깊이 구분)
+- `features[].elements[].id`: `FEATURE_{featureId}_{ELEMENT_ID}`
+- feature 엔트리는 재귀적으로 중첩 가능; 한 feature 안에 여러 요소 가능
+
+### `ELEMENT_ID` 도출
+
+- 요소의 역할을 보존하는 가장 간결한 영어 명사나 동작어를 선택한다
+- 여러 단어는 대문자 + 밑줄
+- 원시 요소 타입 반복보다 의미 중심 이름을 우선한다
+- 같은 feature 안에서 두 추적 요소가 충돌하면 역할이나 위치를 추가하여 구분한다
+
+| 한국어 라벨 | 권장 `ELEMENT_ID` | 비고 |
+|------------|-------------------|------|
+| 이메일 | `EMAIL` | 도메인 의미 사용, input 타입이 아님 |
 | 비밀번호 | `PASSWORD` | |
-| 로그인 버튼 | `SUBMIT` | Prefer action over generic `BUTTON` |
-| 등록 버튼 | `SUBMIT` | Use when the action is a submit/create action |
+| 로그인 버튼 | `SUBMIT` | 일반적 `BUTTON`보다 동작 선호 |
+| 등록 버튼 | `SUBMIT` | submit/create 동작일 때 |
 | 저장 버튼 | `SAVE` | |
 | 삭제 버튼 | `DELETE` | |
-| 댓글 목록 | `LIST` | In `COMMENTS`, becomes `FEATURE_COMMENTS_LIST` |
-| 댓글 입력 | `INPUT` | Allowed when paired with `LIST` in the same feature |
+| 댓글 목록 | `LIST` | `COMMENTS`에서 `FEATURE_COMMENTS_LIST`가 됨 |
+| 댓글 입력 | `INPUT` | 같은 feature 안에서 `LIST`와 짝으로 허용 |
 | 서비스 로고 | `LOGO` | |
-| 소셜 로그인 | `SOCIAL` | For a grouped social-login block |
+| 소셜 로그인 | `SOCIAL` | 소셜 로그인 블록 그룹 |
 
-### Feature granularity guidance
+### feature 세분화 가이드
 
-- Prefer coarse-grained features for content-heavy pages
-- A company introduction page may use one parent feature like `COMPANY_OVERVIEW`, while tracked elements can be `FEATURE_COMPANY_OVERVIEW_HERO` or `FEATURE_COMPANY_OVERVIEW_CTA`
-- Do not create separate feature specs for micro-parts such as `hero-title.md` or `address-box.md`
-- Fixed decorative UI that is not a meaningful business/content unit should remain untracked
+- 콘텐츠 밀도가 높은 화면에서는 굵은 단위의 feature를 선호한다
+- 추적 요소는 상세하게, feature 명세는 비즈니스/콘텐츠 단위 세분화로 유지한다
+- 장식 전용 UI는 추적하지 않는다
 
-## FlowFrame Upload Validation
+## FlowFrame 업로드 검증
 
-| # | Check | On Failure |
-|---|-------|------------|
-| 1 | File extension `.html` | Blocked |
-| 2 | File size ≤ 2MB | Blocked |
-| 3 | HTML parseable (DOMParser) | Blocked |
-| 4 | `<script id="flowframe-meta">` exists | Blocked |
-| 5 | JSON parseable | Blocked |
-| 6 | `generator` === `"flowframe-wireframe-skill"` | Blocked |
-| 7 | Required fields: `version`, `screenId`, `title`, `purpose`, `elements` | Blocked |
-| 8 | `elements` is array with 1+ items | Blocked |
-| 9 | `screenId` matches screen slug | Warning only |
+| # | 검사 항목 | 실패 시 |
+|---|----------|---------|
+| 1 | 파일 확장자 `.html` | 차단 |
+| 2 | 파일 크기 ≤ 2MB | 차단 |
+| 3 | HTML 파싱 가능 (DOMParser) | 차단 |
+| 4 | `<script id="flowframe-meta">` 존재 | 차단 |
+| 5 | JSON 파싱 가능 | 차단 |
+| 6 | `generator` === `"flowframe-wireframe-skill"` | 차단 |
+| 7 | 필수 필드: `version`, `screenId`, `title`, `purpose`, `features` | 차단 |
+| 8 | `features`가 1개 이상, 각 feature에 `elements` 또는 `features` 1개 이상 | 차단 |
+| 9 | `screenId`가 화면 슬러그와 일치 | 경고만 |
 
-## Quality Checklist
+## 품질 체크리스트
 
-Before outputting HTML, verify:
+HTML 출력 전 확인:
 
-- [ ] All required metadata fields present
-- [ ] `generator` is exactly `"flowframe-wireframe-skill"`
-- [ ] Every element in metadata has matching `data-feature` in HTML
-- [ ] Every `data-feature` in HTML has matching metadata entry
-- [ ] Every metadata element has a valid `featureId`
-- [ ] Every metadata element has a valid `spec`
-- [ ] Every metadata `description` explains the element's functional role for human reviewers
-- [ ] Important states or cases are visibly represented when the feature would otherwise be ambiguous to a human reviewer
-- [ ] Each `featureId` matches the path-derived value (kebab → UPPER_SNAKE, `__` depth separator)
-- [ ] Each `spec` points to a leaf `index.md` (not branch, not flat file)
-- [ ] Tailwind CDN `<script>` tag included
-- [ ] `<style type="text/tailwindcss">` dark mode config present
-- [ ] `spec` field points to correct leaf feature `index.md` path
-- [ ] All color classes include `dark:` variants
-- [ ] No key features from the spec are missing
-- [ ] No duplicate leaf references in the same screen
+- [ ] 필수 메타데이터 필드 전부 존재
+- [ ] `generator`가 정확히 `"flowframe-wireframe-skill"`
+- [ ] 모든 feature에 `data-feature-id`와 `data-feature-label`이 있는 래퍼 존재
+- [ ] `data-feature-id` 값이 경로 파생 `featureId`와 일치
+- [ ] `data-feature-label` 값이 frontmatter `label`과 일치
+- [ ] 하위 feature가 있는 feature의 `data-feature-id`가 자식 래퍼를 올바르게 감싸고 있음
+- [ ] `elements`만 있는 feature의 `data-feature-id` 안에 다른 `data-feature-id`가 없음
+- [ ] 모든 `elements[].id`에 하나 이상의 매칭 `data-feature` DOM 요소 존재
+- [ ] 모든 `data-feature` 요소가 부모 `data-feature-id` 컨테이너 안에 있음
+- [ ] 하나의 메타데이터 요소가 여러 DOM 노드와 매칭되면, 상호배타 상태 변형임
+- [ ] 기본 상태에서 보이는 모든 `data-feature`에 매칭 메타데이터 엔트리 존재
+- [ ] 모든 `features[]`에 유효한 `featureId`, `label`, `spec`, 그리고 `elements` 또는 `features` 중 최소 하나
+- [ ] `features` 배열 내 `featureId` 중복 없음
+- [ ] 요소 `description`이 리뷰어를 위한 기능적 역할 설명
+- [ ] 중요 상태가 행동이 모호해질 때 가시적으로 표현됨
+- [ ] Tailwind CDN `<script>` + `<style>`에 다크모드 설정과 `:has()` 리뷰 탭 규칙 포함
+- [ ] 모든 색상 클래스에 `dark:` 변형 포함
+- [ ] 명세의 핵심 feature 누락 없음
+- [ ] 메타데이터 재귀 구조와 DOM 중첩 구조가 1:1 대응
 
-## Examples
+## 예제
 
-See [references/EXAMPLE.md](references/EXAMPLE.md) for a simple single-feature example (login screen).
-See [references/PRODUCT-LIST-EXAMPLE.md](references/PRODUCT-LIST-EXAMPLE.md) for a multi-feature example (sidebar + grid layout, two features).
+[references/EXAMPLE.md](references/EXAMPLE.md) — 단일 feature 예제 (로그인 화면).
+[references/PRODUCT-LIST-EXAMPLE.md](references/PRODUCT-LIST-EXAMPLE.md) — 다중 feature 예제 (사이드바 + 그리드, 두 feature).
+[references/REVIEW-TABS.md](references/REVIEW-TABS.md) — 재사용 가능한 형제 상태 비교 패턴.

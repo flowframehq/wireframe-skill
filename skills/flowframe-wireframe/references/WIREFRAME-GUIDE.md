@@ -1,189 +1,204 @@
-# Wireframe Guide
+# 와이어프레임 가이드
 
-This guide is the primary reference for composing FlowFrame wireframes.
-Use it to decide screen shape, split regions, control width and density, and expose the states a human reviewer must understand.
+FlowFrame 와이어프레임을 구성할 때 사용하는 주요 레퍼런스다.
+화면 형태 선택, 영역 분할, 폭과 밀도 조절, 리뷰어가 이해해야 할 상태 노출 방법을 다룬다.
+재사용 가능한 hover/focus 상태 전환 패턴은 [REVIEW-TABS.md](REVIEW-TABS.md)를 참조한다.
 
-## Table of Contents
+## 목차
 
-- [Step 1: Choose a Layout](#step-1-choose-a-layout)
-- [Step 2: Split the Regions](#step-2-split-the-regions)
-- [Step 3: Refine the Balance](#step-3-refine-the-balance)
-- [Key Patterns](#key-patterns)
+- [1단계: 레이아웃 선택](#1단계-레이아웃-선택)
+- [2단계: 영역 분할](#2단계-영역-분할)
+- [3단계: 균형 조정](#3단계-균형-조정)
+- [핵심 패턴](#핵심-패턴)
 
-## Step 1: Choose a Layout
+## 1단계: 레이아웃 선택
 
-Start from the screen's dominant job, not from visual decoration.
+화면의 핵심 역할에서 시작한다. 시각적 장식이 아니라.
 
-| Screen shape | Use when | Recommended structure |
-|-------------|----------|-----------------------|
-| Single-focus | One primary task or one leaf feature dominates the screen | Centered card or simple single-column section |
-| Two-region | One supporting area controls one main area | Header + filter/sidebar + main content |
-| Multi-region | Several independent responsibilities must stay visible together | Top bar + main workspace + one or more side/bottom panels |
+| 화면 형태 | 사용 시점 | 권장 구조 |
+|----------|----------|----------|
+| 단일 포커스 | 하나의 주요 작업이나 하나의 feature가 화면을 지배 | 중앙 카드 또는 단순 단일 열 섹션 |
+| 두 영역 | 하나의 보조 영역이 하나의 메인 영역을 제어 | 헤더 + 필터/사이드바 + 메인 콘텐츠 |
+| 다중 영역 | 여러 독립 책임을 동시에 볼 수 있어야 함 | 상단바 + 메인 작업 공간 + 하나 이상의 사이드/하단 패널 |
 
-Choose the simplest shape that can still show the feature relationships clearly.
-Do not add extra columns or panels unless the screen would become ambiguous without them.
+feature 관계를 명확하게 보여줄 수 있는 가장 단순한 형태를 선택한다.
+그 없이는 화면이 모호해지는 경우가 아니면 추가 열이나 패널을 넣지 않는다.
 
-### Quick heuristics
+### 빠른 판단 기준
 
-- If the screen has one main CTA and one primary form, prefer a single-focus layout.
-- If one region changes what another region shows, prefer a two-region layout.
-- If users must compare or monitor multiple responsibilities at once, use a multi-region layout.
-- If mobile would collapse the structure completely, split the viewport into a separate wireframe file instead of forcing one dense layout.
+- 화면에 하나의 메인 CTA와 하나의 주요 폼이 있으면 단일 포커스 레이아웃을 선호한다.
+- 한 영역이 다른 영역에 표시되는 내용을 바꾸면 두 영역 레이아웃을 선호한다.
+- 사용자가 여러 책임을 동시에 비교하거나 모니터링해야 하면 다중 영역 레이아웃을 사용한다.
+- 모바일에서 구조가 완전히 무너진다면, 하나의 밀집 레이아웃에 억지로 넣지 말고 별도 와이어프레임 파일로 분리한다.
 
-### Width baseline
+### 폭 기준선
 
-- PC wireframes should keep the main content within roughly `1200px`.
-- Mobile wireframes should treat roughly `370px` as the stable content width target.
-- In PC layouts, keep the main working area visually dominant even when side panels exist.
-- In mobile layouts, avoid forcing desktop-style multi-column composition into one narrow frame.
+- PC 와이어프레임은 메인 콘텐츠를 `width: 100%`로 유지하되 최소 폭 기준선 `1200px`을 적용한다.
+- 모바일 와이어프레임은 메인 콘텐츠를 최대 `370px` 로 유지한다.
+- PC 레이아웃에서 사이드 패널이 있어도 메인 작업 영역이 시각적으로 지배적이어야 한다.
+- 모바일 레이아웃에서 데스크톱 스타일의 다중 열 구성을 좁은 프레임에 억지로 넣지 않는다.
 
-## Step 2: Split the Regions
+## 2단계: 영역 분할
 
-After choosing the shape, separate the screen into fixed chrome and feature regions.
+형태를 선택한 후, 화면을 고정 영역과 feature 영역으로 분리한다.
 
-### Fixed chrome
+### 고정 영역
 
-Use fixed chrome for elements that provide frame or context but are not the main planning target.
+프레임이나 맥락을 제공하지만 기획의 주요 대상이 아닌 요소에 사용한다.
 
-Examples:
-- top headers
-- bottom status bars
-- navigation shells
-- simple branding or utility areas
+예시:
+- 상단 헤더
+- 하단 상태바
+- 네비게이션 셸
+- 단순 브랜딩이나 유틸리티 영역
 
-Rules:
-- fixed chrome has no `data-feature`
-- fixed chrome does not appear in metadata `elements`
-- fixed chrome should stay visually weaker than the main feature area
+규칙:
+- 고정 영역에는 `data-feature`를 부여하지 않는다
+- 고정 영역은 메타데이터 `elements`에 포함하지 않는다
+- 고정 영역은 메인 feature 영역보다 시각적으로 약해야 한다
+- 화면 명세에 명시적으로 기술되지 않은 고정 영역을 임의로 만들지 않는다
 
-### Feature regions
+### Feature 영역
 
-Use feature regions for referenced leaf specs.
+참조된 feature 명세에 대응하는 영역에 사용한다.
 
-Rules:
-- each referenced leaf needs a clear visual home in the layout
-- if two leaves belong in the same area, stack them in one plain wrapper and put `data-feature` on the tracked inner elements
-- if one leaf would need to appear in two distant places, the spec boundary is probably wrong and should be split upstream
+규칙:
+- 참조된 각 feature는 레이아웃에서 명확한 시각적 위치가 필요하다
+- 두 feature가 같은 영역에 속하면 일반 래퍼 안에 쌓고 `data-feature`는 내부 추적 요소에만 부여한다
+- 하나의 feature가 화면의 두 먼 곳에 나타나야 하면, 명세 경계가 잘못된 것이므로 상위에서 분리해야 한다
 
-### Region selection checklist
+### 영역 선택 체크리스트
 
-- What is the user's main working area?
-- What controls or filters change that main area?
-- What supporting information must stay visible while the main task happens?
-- Which areas are just frame and should remain untracked?
+- 사용자의 주요 작업 영역은 어디인가?
+- 어떤 컨트롤이나 필터가 그 메인 영역을 변경하는가?
+- 메인 작업 중에 함께 보여야 하는 보조 정보는 무엇인가?
+- 어떤 영역이 단순 프레임이어서 추적 대상이 아닌가?
 
-### Overlay regions
+### 오버레이 영역
 
-Some feature types should not be treated as permanent sidebars or full regions.
+일부 feature 타입은 상시 사이드바나 전체 영역으로 다루면 안 된다.
 
-#### Dialog / modal
+#### 다이얼로그 / 모달
 
-Use a dialog or modal when the user must confirm, review, or complete a focused step before returning to the main screen.
+사용자가 메인 화면으로 돌아가기 전에 확인, 검토, 또는 집중 단계를 완료해야 할 때 사용한다.
 
-Rules:
-- keep the main screen visible underneath as background context
-- show one representative open state rather than multiple stacked overlays
-- use the overlay body for the tracked feature elements
-- keep destructive or final CTA meaning explicit inside the overlay
+규칙:
+- 메인 화면을 배경 맥락으로 아래에 보이게 유지한다
+- 여러 겹의 오버레이가 아니라 하나의 대표적인 열린 상태를 보여준다
+- 오버레이 본문에 추적 feature 요소를 배치한다
+- 파괴적이거나 최종 CTA의 의미를 오버레이 안에서 명확히 드러낸다
 
-#### Drawer
+#### 드로어
 
-Use a drawer when supporting detail or secondary actions slide in while preserving awareness of the main screen.
+메인 화면 인식을 유지하면서 보조 상세나 부가 액션이 슬라이드 인할 때 사용한다.
 
-Rules:
-- keep the base screen visible and readable behind or beside the drawer
-- anchor the drawer from one side and make it visually distinct from a permanent sidebar
-- use a drawer when the panel is conditional or temporary, not always-on chrome
-- if the drawer contains the main task, it is probably not a drawer and should be modeled as a primary region instead
+규칙:
+- 드로어 뒤나 옆에 기본 화면이 보이고 읽히도록 유지한다
+- 드로어를 한쪽에 고정하고 상시 사이드바와 시각적으로 구분한다
+- 드로어는 조건부이거나 임시인 패널에 사용한다. 항상 열려 있는 영역이면 드로어가 아니다
+- 드로어가 메인 작업을 담고 있으면 드로어가 아니라 주요 영역으로 모델링해야 한다
 
-### Switching regions
+### 전환 영역
 
-Use a tab pattern when multiple related feature views share the same space and only one should be visible at a time.
+여러 관련 feature 뷰가 같은 공간을 공유하고 한 번에 하나만 보여야 할 때 탭 패턴을 사용한다.
 
-Rules:
-- keep one stable tab header row
-- show the active tab panel only
-- make the active tab obvious through text weight, underline, or subtle contrast
-- if each tab needs a completely different screen structure, split the screen or the feature instead of hiding everything behind tabs
+규칙:
+- 안정적인 탭 헤더 행을 하나 유지한다
+- 활성 탭 패널만 보여준다
+- 활성 탭은 텍스트 굵기, 밑줄, 또는 미묘한 대비로 명확히 표시한다
+- 각 탭이 완전히 다른 화면 구조를 필요로 하면, 탭 뒤에 숨기지 말고 화면이나 feature를 분리한다
 
-## Step 3: Refine the Balance
+## 3단계: 균형 조정
 
-Once the regions exist, adjust width, spacing, hierarchy, and state visibility so the wireframe is easy to review.
+영역이 확정되면 폭, 간격, 위계, 상태 가시성을 조정하여 리뷰하기 쉬운 와이어프레임을 만든다.
 
-### Visual principles
+### 시각 원칙
 
-1. Let content lead. Headers, filters, and helper panels should feel secondary to the main task.
-2. Build hierarchy with typography, spacing, and neutral contrast instead of decoration.
-3. Keep density intentional. Avoid both cramped grouping and large dead space.
-4. Remove decorative noise. Strong shadows, gradients, or visual flourish weaken wireframe clarity.
-5. Show the state that matters. If a reviewer would misunderstand the behavior without seeing a case, surface that case.
+1. 콘텐츠가 이끌게 한다. 헤더, 필터, 도우미 패널은 메인 작업보다 부차적으로 느껴져야 한다.
+2. 타이포그래피, 간격, 중립적 대비로 위계를 만든다. 장식이 아니라.
+3. 밀도를 의도적으로 유지한다. 과밀도와 큰 빈 공간 모두 피한다.
+4. 장식적 노이즈를 제거한다. 강한 그림자, 그라디언트, 시각적 꾸밈은 와이어프레임 명확성을 떨어뜨린다.
+5. 중요한 상태를 보여준다. 리뷰어가 케이스를 보지 않으면 행동을 오해할 때, 그 케이스를 노출한다.
 
-### Visual rules
+### 시각 규칙
 
-- Use `text-sm` as the default text size.
-- Use `text-lg` or `text-xl` for headings and keep heading weight at `font-semibold`.
-- Keep UI surfaces boxy and simple: cards, panels, inputs, and buttons should read as structure, not finished branding.
-- Include `dark:` variants for all color-related classes.
+- 기본 텍스트 크기는 `text-sm`.
+- 헤딩은 `text-lg` 또는 `text-xl`, 굵기는 `font-semibold`.
+- UI 표면은 박스형으로 단순하게: 카드, 패널, 입력, 버튼은 구조로 읽혀야지 완성된 브랜딩이 아니다.
+- 모든 색상 관련 클래스에 `dark:` 변형을 포함한다.
 
-### Spacing and density
+### 간격과 밀도
 
-- Use `gap-2` or `gap-3` inside tight control groups.
-- Use `p-4` for most cards and `p-4` or `p-6` for panels.
-- Use `gap-6` or more between major sections.
-- Reduce oversized placeholders or excessive vertical whitespace before adding more decorative framing.
-- Keep PC layouts comfortably reviewable without stretching the main content past the `1200px` baseline.
-- Keep mobile layouts readable within the `370px` baseline rather than shrinking every control to fit more columns.
+- 타이트한 컨트롤 그룹 내부에는 `gap-2` 또는 `gap-3`.
+- 대부분의 카드에는 `p-4`, 패널에는 `p-4` 또는 `p-6`.
+- 주요 섹션 간에는 `gap-6` 이상.
+- 더 많은 장식 프레이밍을 추가하기 전에, 과도한 플레이스홀더나 수직 여백을 줄인다.
+- PC 레이아웃은 `1200px` 최소 기준선을 유지하면서 전체 폭으로 유지한다.
+- 모바일 레이아웃은 모든 컨트롤을 축소해 더 많은 열에 넣지 말고 `370px` 최대 폭 안에서 가독성을 유지한다.
 
-### Pattern-specific notes
+### 패턴별 참고
 
-#### Search + filter + list/grid
+#### 검색 + 필터 + 목록/그리드
 
-- Keep the search and filter controls easy to scan in one pass.
-- Keep filter areas visually narrower than the main results area.
-- Make the list or grid the visual center of the screen.
+- 검색과 필터 컨트롤은 한 번에 훑을 수 있도록 유지한다.
+- 필터 영역은 메인 결과 영역보다 시각적으로 좁게 유지한다.
+- 목록이나 그리드가 화면의 시각적 중심이 되도록 한다.
 
-#### Card lists
+#### 카드 목록
 
-- Keep image placeholders from overpowering the information below.
-- Keep repeated card text to roughly 3 to 4 lines of visible information.
-- Multiple actions may exist, but only one CTA should feel primary.
+- 이미지 플레이스홀더가 아래 정보를 압도하지 않도록 한다.
+- 반복되는 카드 텍스트는 대략 3~4줄의 가시 정보로 유지한다.
+- 여러 액션이 있을 수 있지만 하나의 CTA만 주요하게 느껴져야 한다.
 
-#### Forms
+#### 폼
 
-- Keep field rhythm consistent.
-- Keep helper links weaker than the primary CTA.
-- Show one representative validation, disabled, or processing state when it affects the next action.
+- 필드 리듬을 일관되게 유지한다.
+- 도우미 링크는 주요 CTA보다 약하게 유지한다.
+- 다음 액션에 영향을 주는 대표적인 검증, 비활성, 처리 중 상태 하나를 보여준다.
 
-### State and helper placement
+### 상태와 도우미 배치
 
-If a reviewer would misunderstand the feature without a visible case, show one representative case in the layout.
+리뷰어가 가시적 케이스 없이는 feature를 오해할 수 있으면, 레이아웃에 대표 케이스 하나를 보여준다.
 
-Good placements:
-- directly under the affected control
-- at the top of a feature block as helper or warning text
-- in a compact `상태 예시` or `검토 포인트` box near the relevant region
+기본 패턴:
+- 한 곳에서 2~4개 형제 상태를 비교해야 할 때 재사용 가능한 리뷰 탭 오버레이를 사용한다
+- 제품 UI 흐름 밖에 feature 상단 근처의 작은 absolute 오버레이로 배치한다
+- feature가 hover되거나 focus될 때까지 숨겨서 리뷰 도구로 인식되게 한다
+- 한 번에 하나의 상태 패널만 보여준다
 
-Good cases to surface:
-- empty results
-- disabled CTA
-- validation or warning copy
-- confirmation context
-- loading or permission cues
-- open dialog or drawer state when that state changes the user's next action
+대체 배치:
+- 영향받는 컨트롤 바로 아래
+- feature 블록 상단에 도우미나 경고 텍스트로
+- 중요한 상태가 인터럽션 자체인 경우 실제 다이얼로그/드로어 안에
 
-### Common layout fixes
+노출하기 좋은 케이스:
+- 빈 결과
+- 비활성 CTA
+- 검증이나 경고 문구
+- 확인 맥락
+- 로딩이나 권한 안내
+- 열린 다이얼로그/드로어 상태 (그 상태가 사용자의 다음 액션을 바꿀 때)
+- `등록 전 / 등록 완료`, `기본 / 선택됨 / 빈 결과` 같은 상호배타 feature 상태
 
-| Problem | Adjustment |
-|--------|------------|
-| The screen feels empty | tighten vertical space, reduce oversized placeholders, group related controls |
-| The screen feels crowded | increase grouping gaps, simplify repeated cards, remove nonessential chrome |
-| The wrong area draws attention | reduce contrast in secondary panels and strengthen the main content block |
-| State is unclear | add one visible helper block, badge, or disabled control near the affected feature |
+탭은 하나의 feature의 형제 상태를 비교할 때만 사용한다.
+모든 경고나 다이얼로그를 탭으로 만들지 않는다.
+리뷰 탭을 제품의 실제 내비게이션처럼 스타일링하지 않는다.
+중요한 것이 인터럽션 자체라면, 트리거 근처에 다이얼로그나 경고를 인라인으로 보여준다.
 
-## Key Patterns
+### 흔한 레이아웃 수정
 
-- Choose layout by responsibility shape, not by visual habit.
-- Keep fixed chrome untracked and visually secondary.
-- Give every referenced leaf a clear region in the screen.
-- Show one representative state when behavior would otherwise be ambiguous.
-- Prefer the simplest layout that still explains how the screen works.
+| 문제 | 조정 |
+|------|------|
+| 화면이 비어 보인다 | 수직 공간 좁히기, 과도한 플레이스홀더 줄이기, 관련 컨트롤 그루핑 |
+| 화면이 빽빽하다 | 그루핑 간격 늘리기, 반복 카드 단순화, 불필요한 고정 영역 제거 |
+| 잘못된 영역이 눈에 띈다 | 보조 패널의 대비를 줄이고 메인 콘텐츠 블록을 강화 |
+| 상태가 불명확하다 | 영향받는 feature 근처에 가시적 도우미 블록, 뱃지, 또는 비활성 컨트롤 추가 |
+
+## 핵심 패턴
+
+- 시각적 습관이 아니라 책임의 형태로 레이아웃을 선택한다.
+- 고정 영역은 추적하지 않고 시각적으로 부차적으로 유지한다.
+- 참조된 모든 feature에 화면 안의 명확한 영역을 부여한다.
+- 행동이 모호해질 때 대표 상태 하나를 보여준다.
+- 여러 형제 상태가 동등하게 중요할 때, 흩어진 점선 예시 대신 하나의 로컬 상태 비교 블록으로 그루핑한다.
+- 화면이 어떻게 작동하는지 설명할 수 있는 가장 단순한 레이아웃을 선호한다.

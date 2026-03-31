@@ -1,6 +1,6 @@
-# FlowFrame Wireframe Skill
+# FlowFrame Wireframe Plugin
 
-기획자를 위한 AI 에이전트 스킬 패키지. 기능명세와 화면명세를 작성하고, FlowFrame에 업로드 가능한 HTML 와이어프레임을 생성합니다.
+기획자를 위한 Claude Code 플러그인 패키지입니다. 번들 skill을 통해 기능명세와 화면명세를 작성하고, FlowFrame에 업로드 가능한 HTML 와이어프레임을 생성합니다.
 
 ## 포함된 스킬
 
@@ -9,11 +9,9 @@
 | **flowframe-spec** | 기능명세(`docs/features/*/index.md`)와 화면명세(`docs/screens/*/index.md`) 작성 도우미 |
 | **flowframe-wireframe** | 명세를 읽고 FlowFrame 규격 HTML 와이어프레임 생성/업데이트 |
 
-## 설치
+## 배포 대상
 
-```bash
-npx skills add flowframehq/wireframe-skill
-```
+Claude plugin marketplace
 
 ## 사용법
 
@@ -86,9 +84,9 @@ project/
 - **협업 지원** — 와이어프레임은 구조만, 상세 명세는 기능 md에서 확인
 - **FlowFrame 호환** — 업로드 시 양방향 호버 하이라이트, 기능별 코멘트 가능
 
-## 지원 에이전트
+## 실행 환경
 
-Claude Code, Cursor, GitHub Copilot, Windsurf, OpenCode, Codex, Cline, Gemini CLI 외 40+ 에이전트 자동 지원.
+기본 대상은 Claude Code 플러그인이며, skill 본문은 다른 에이전트 환경에서도 재사용 가능하게 유지합니다.
 
 ## 라이선스
 

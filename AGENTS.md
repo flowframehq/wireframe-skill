@@ -4,9 +4,9 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 
 ## Project Overview
 
-FlowFrame Wireframe Skill — skills.sh 플랫폼용 AI 에이전트 스킬 패키지. 기획자가 기능명세/화면명세를 작성하고, FlowFrame에 업로드 가능한 HTML 와이어프레임을 생성한다.
+FlowFrame Wireframe Plugin — Claude Code 플러그인 패키지. 기획자가 기능명세/화면명세를 작성하고, FlowFrame에 업로드 가능한 HTML 와이어프레임을 생성한다.
 
-설치: `npx skills add flowframehq/wireframe-skill`
+배포 대상: Claude plugin marketplace
 
 ## Architecture
 
@@ -36,12 +36,13 @@ docs/flows/*.md                → 화면 간 사용자 흐름과 인수조건
 출력 형식과 검증 규칙은 `guides/WIREFRAME-OUTPUT-SPEC.md`를 참조한다.
 JSON 스키마는 `schema/flowframe-meta.schema.json`에 있다.
 
-## Skills.sh Platform Conventions
+## Plugin Skill Conventions
 
 - SKILL.md 이름은 소문자+하이픈, 부모 디렉토리명과 일치
 - SKILL.md 본문 500줄 이하, 참조 자료는 `references/` 하위에만 (1단계 깊이)
 - description: 3인칭, what + when 포함
-- 배포: 빌드 스텝 없이 퍼블릭 레포 그대로
+- skill은 Claude Code plugin 내부의 번들 skill로 관리한다
+- 배포 시 `.claude-plugin/plugin.json` 및 marketplace 메타데이터와 함께 검토한다
 
 상세: `guides/SKILLS-SPEC-REFERENCE.md`
 

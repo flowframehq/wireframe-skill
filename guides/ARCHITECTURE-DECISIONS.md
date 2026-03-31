@@ -16,27 +16,28 @@
 project/
 └── docs/
     ├── features/                  ← 기능 단위 명세 (재사용 가능, 폴더 구조)
-    │   ├── auth/                  ← branch (하위 피쳐 있음)
-    │   │   ├── index.md           ← 공통 상태/인터랙션/비즈니스 로직
+    │   ├── auth/                  ← 상위 feature (하위 피쳐 + 자체 요소 가능)
+    │   │   ├── index.md           ← 공통 상태/인터랙션/비즈니스 로직 + 공용 요소 가능
     │   │   ├── login-form/
-    │   │   │   └── index.md       ← leaf (와이어프레임 요소 포함)
+    │   │   │   └── index.md       ← 하위 feature (와이어프레임 요소 포함)
     │   │   ├── social-login/
-    │   │   │   └── index.md       ← leaf
+    │   │   │   └── index.md       ← 하위 feature
     │   │   └── signup/
-    │   │       └── index.md       ← leaf
-    │   ├── comments/              ← leaf (하위 피쳐 없음)
+    │   │       └── index.md       ← 하위 feature
+    │   ├── comments/              ← 단일 feature (하위 피쳐 없음)
     │   │   └── index.md
     │   ├── version-control/
-    │   │   └── index.md           ← leaf
+    │   │   └── index.md           ← 단일 feature
     │   ├── file-upload/
-    │   │   └── index.md           ← leaf
+    │   │   └── index.md           ← 단일 feature
     │   └── notifications/
-    │       └── index.md           ← leaf
+    │       └── index.md           ← 단일 feature
     │
     ├── screens/                   ← 화면 정의 + 화면별 와이어프레임
     │   ├── LOGIN/
     │   │   ├── index.md           ← 화면명세
-    │   │   ├── requirements.md    ← 선택. 기획자가 미리 적어둔 요구사항
+    │   │   ├── notes.md           ← 선택. 기획자가 미리 적어둔 요구사항 메모
+    │   │   ├── requirements.md    ← screen 유저스토리 + 인수조건
     │   │   └── wireframe.html     ← 단일 viewport 와이어프레임
     │   ├── DASHBOARD/
     │   │   ├── index.md
@@ -57,7 +58,7 @@ project/
 - 기능 md는 여러 화면에서 재사용 가능하다
 - flow md는 여러 화면에 걸친 유저스토리와 인수조건을 별도로 관리할 수 있다
 - 와이어프레임은 화면 단위로 생성하여 한눈에 볼 수 있다
-- 폴더 구조를 사용하면 기능이 커져도 비즈니스 경계를 깨지 않고 하위 폴더로 확장(승격)할 수 있다
+- 폴더 구조를 사용하면 기능이 커져도 비즈니스 경계를 깨지 않고 하위 폴더로 확장할 수 있다
 
 ---
 
@@ -65,7 +66,7 @@ project/
 
 ### 결정
 
-기능 하나의 폴더는 **비즈니스 기능 단위**로 나눈다. UI 요소 단위가 아니다. 기능이 커지면 폴더 내부에 하위 폴더를 추가(leaf에서 branch로 승격)하여 비즈니스 경계를 유지하면서 구조적으로 확장할 수 있다.
+기능 하나의 폴더는 **비즈니스 기능 단위**로 나눈다. UI 요소 단위가 아니다. 기능이 커지면 폴더 내부에 하위 폴더를 추가하여 비즈니스 경계를 유지하면서 구조적으로 확장할 수 있다. 상위 feature도 자체 `elements` 와 하위 `features` 를 동시에 가질 수 있다.
 
 ### 기준표
 
@@ -79,21 +80,21 @@ project/
 
 ```
 ✅ 좋은 예 (비즈니스 기능 단위 — 폴더 구조)
-├── auth/                       ← branch: 로그인 + 회원가입 + 소셜로그인 + 비밀번호 찾기
-│   ├── index.md                ← 공통 상태/인터랙션/비즈니스 로직
+├── auth/                       ← 상위 feature: 로그인 + 회원가입 + 소셜로그인 + 비밀번호 찾기
+│   ├── index.md                ← 공통 상태/인터랙션/비즈니스 로직 + 공용 요소 가능
 │   ├── login-form/
-│   │   └── index.md            ← leaf
+│   │   └── index.md            ← 하위 feature
 │   ├── social-login/
-│   │   └── index.md            ← leaf
+│   │   └── index.md            ← 하위 feature
 │   └── signup/
-│       └── index.md            ← leaf
-├── comments/                   ← leaf: 작성 + 수정 + 삭제 + 멘션 + 답글 (아직 작음)
+│       └── index.md            ← 하위 feature
+├── comments/                   ← 단일 feature: 작성 + 수정 + 삭제 + 멘션 + 답글 (아직 작음)
 │   └── index.md
-├── version-control/            ← leaf: 히스토리 + 롤백 + 버전 비교
+├── version-control/            ← 단일 feature: 히스토리 + 롤백 + 버전 비교
 │   └── index.md
-├── file-upload/                ← leaf: 드래그앤드롭 + 미리보기 + 용량제한
+├── file-upload/                ← 단일 feature: 드래그앤드롭 + 미리보기 + 용량제한
 │   └── index.md
-└── notifications/              ← leaf: 실시간 알림 + 설정 + 읽음처리
+└── notifications/              ← 단일 feature: 실시간 알림 + 설정 + 읽음처리
     └── index.md
 
 ✗ 나쁜 예 (UI 요소 단위 — 너무 세분화)
@@ -114,14 +115,14 @@ project/
 기능이 커질 때 폴더 구조는 비즈니스 경계를 유지한 채 확장할 수 있다:
 
 ```
-초기 (leaf):  comments/index.md          ← 모든 요소가 한 파일에
+초기:  comments/index.md          ← 모든 요소가 한 파일에
 
-성장 후 (branch로 승격):
+성장 후:
   comments/
-    index.md                              ← branch: 공통 규칙
-    thread/index.md                       ← leaf: 스레드 관련 요소
-    mentions/index.md                     ← leaf: 멘션 관련 요소
-    reactions/index.md                    ← leaf: 리액션 관련 요소
+    index.md                              ← 상위 feature: 공통 규칙 + 공용 요소 가능
+    thread/index.md                       ← 하위 feature: 스레드 관련 요소
+    mentions/index.md                     ← 하위 feature: 멘션 관련 요소
+    reactions/index.md                    ← 하위 feature: 리액션 관련 요소
 ```
 
 비즈니스 경계(`comments`)는 그대로 유지되고, 내부 구조만 세분화된다.
@@ -140,16 +141,21 @@ project/
 docs/screens/
   {SCREEN_NAME}/
     index.md              ← 화면명세 (레이아웃 + 화면 연계 AC)
-    requirements.md       ← 선택. 기획자가 미리 적어둔 요구사항
+    notes.md              ← 선택. 기획자가 미리 적어둔 요구사항 메모
+    requirements.md       ← screen 유저스토리 + 인수조건
 ```
 
 - 모든 screen은 **폴더**다. 단독 `.md` 파일(예: `CART.md`)은 허용하지 않는다
 - 모든 폴더에는 반드시 `index.md`가 있다
 - 폴더 이름은 **대문자** (기존 screenId 규칙과 동일: `CART`, `LOGIN`, `PRODUCT_LIST`)
 
+### notes.md
+
+기획자가 feature 작성 전에 미리 적어두는 **자유형식 요구사항 메모**. 형식 제한 없이 기획자가 자유롭게 작성한다. 스킬은 feature 작성 시 해당 screen의 `notes.md`를 **먼저 읽고** 반영한다. `notes.md`가 있으면 이미 답이 있는 내용은 질문하지 않는다. `notes.md`가 없으면 기존대로 질문한다.
+
 ### requirements.md
 
-기획자가 feature 작성 전에 미리 적어두는 **자유형식 요구사항 메모**. 형식 제한 없이 기획자가 자유롭게 작성한다. 스킬은 feature 작성 시 해당 screen의 `requirements.md`를 **먼저 읽고** 반영한다. `requirements.md`가 있으면 이미 답이 있는 내용은 질문하지 않는다. `requirements.md`가 없으면 기존대로 질문한다.
+screen 단위의 **유저스토리 + 인수조건** 문서다. 자유형식 메모가 아니라 구조화된 검증 문서로 사용한다.
 
 ### 화면 md 예시
 
@@ -178,8 +184,8 @@ viewport: [pc, mobile]
 
 - 화면 단위 목표와 검증 기준을 한 문서 안에서 볼 수 있다
 - 기능 상세 구현은 feature md로 분리되어 중복을 줄인다
-- 폴더 구조를 사용하면 `requirements.md` 같은 보조 문서를 자연스럽게 함께 관리할 수 있다
-- 유저스토리와 인수조건은 feature leaf에 작성하므로 screen md에는 화면 연계 인수조건만 남긴다
+- 폴더 구조를 사용하면 `notes.md`, `requirements.md` 같은 보조 문서를 자연스럽게 함께 관리할 수 있다
+- 유저스토리와 인수조건은 screen 폴더의 `requirements.md`에 작성하고, screen `index.md`는 레이아웃 중심으로 유지한다
 
 ---
 
@@ -273,11 +279,11 @@ screens:
 
 ### 결정
 
-기능 명세 md는 **leaf 템플릿**과 **branch 템플릿**으로 구분한다. leaf는 와이어프레임 렌더링 단위이고, branch는 하위 피쳐들의 공통 도메인 컨텍스트만 담는다. `featureId`는 frontmatter에 쓰지 않으며 폴더 경로에서 자동 파생한다.
+기능 명세 md는 재귀 구조를 가진다. feature는 `elements`, 하위 `features`, 또는 둘 다 함께 가질 수 있다. `featureId`는 frontmatter에 쓰지 않으며 폴더 경로에서 자동 파생한다.
 
-### leaf 템플릿
+### 기본 feature 템플릿
 
-leaf는 자식 폴더가 없는 피쳐다. 와이어프레임 스킬이 읽는 대상.
+렌더링 가능한 feature는 `## 와이어프레임 요소`를 가진다. 와이어프레임 스킬은 이 섹션을 UI 생성의 주요 소스로 사용한다.
 
 ```markdown
 ---
@@ -327,18 +333,29 @@ usedIn:
 - 댓글 최대 1000자
 - 멘션된 사용자에게 알림 발송
 
+requirements: ../../screens/EDITOR/requirements.md#댓글
+
 ```
 
-### branch 템플릿
+### 상위 feature 템플릿
 
-branch는 자식 폴더가 있는 피쳐다. 와이어프레임 스킬은 branch를 읽지 않으며, 기획자/개발자가 참고하는 도메인 컨텍스트를 담는다.
+상위 feature는 자식 폴더가 있는 피쳐다. 필요하면 자체 `elements` 와 `usedIn` 을 가질 수 있다. `elements`가 없더라도 하위 `features`가 있으면 와이어프레임 스킬은 재귀적으로 내려간다. 기획자/개발자는 이 파일을 공통 도메인 컨텍스트로 참고한다.
 
 ```markdown
 ---
 label: 인증
+type: section
+usedIn:
+  - docs/screens/LOGIN/index.md
 ---
 
 # 인증
+
+## 와이어프레임 요소
+
+| 요소 | type | 설명 |
+|------|------|------|
+| 인증 상태 배너 | text | 현재 인증 상태와 세션 만료 여부를 요약 표시 |
 
 ## 공통 상태
 
@@ -359,52 +376,54 @@ label: 인증
 - HTTPS 필수
 ```
 
-### leaf 프론트매터 필드
+### 기본 feature 프론트매터 필드
 
 | 필드 | 필수 | 설명 |
 |------|------|------|
 | `label` | Yes | 기능 이름 |
 | `type` | Yes | 기능 유형 (`section`, `modal`, `drawer` 등) |
-| `usedIn` | Yes | 이 기능을 사용하는 화면 md 경로 목록. 기능 수정 시 에이전트가 이 목록의 와이어프레임을 업데이트한다 |
+| `usedIn` | No | 이 기능을 사용하는 화면 md 경로 목록. screen 에서 직접 참조되는 feature 에만 필요하다 |
 
 **`featureId`는 frontmatter에 없다.** 폴더 경로에서 자동 파생한다.
 
-### branch 프론트매터 필드
+### 상위 feature 프론트매터 필드
 
 | 필드 | 필수 | 설명 |
 |------|------|------|
 | `label` | Yes | 기능 이름 |
+| `type` | No | 기능 유형 (`section`, `modal`, `drawer` 등) |
+| `usedIn` | No | 이 기능을 직접 사용하는 화면 md 경로 목록 |
 
-**`featureId`, `type`, `usedIn` 필드는 없다.**
+**`featureId` 필드는 없다.**
 
 ### 읽는 주체와 역할
 
-| 주체 | leaf | branch |
-|------|------|--------|
-| **wireframe 스킬** | `## 와이어프레임 요소`를 읽고 렌더링 | **읽지 않음** |
-| **spec/planner/developer** | 상태, 인터랙션, 비즈니스 로직 참고 | ancestor branch의 `## 공통 *` 섹션을 함께 참고 |
+| 주체 | 직접 참조된 feature | 상위 feature |
+|------|--------------------|------------|
+| **wireframe 스킬** | `## 와이어프레임 요소`를 읽고 렌더링 | 하위 `features`가 있으면 재귀 탐색, `elements`가 있으면 함께 렌더링 |
+| **spec/planner/developer** | 상태, 인터랙션, 비즈니스 로직 참고 | ancestor feature의 `## 공통 *` 섹션을 함께 참고 |
 
 ### 병합 규칙
 
-branch의 공통 섹션과 leaf의 섹션이 충돌하면 **leaf 우선**. branch의 공통 규칙보다 leaf의 구체 규칙이 이긴다.
+상위 feature의 공통 섹션과 더 구체적인 하위 feature의 섹션이 충돌하면, 하위 feature 규칙을 우선한다.
 
-### 섹션별 역할 (leaf 기준)
+### 섹션별 역할 (feature 기준)
 
 | 섹션 | 읽는 주체 | 용도 |
 |------|-----------|------|
 | **프론트매터 (`usedIn`)** | 에이전트 (수정 영향 범위 파악) | 어떤 화면의 와이어프레임을 업데이트할지 결정 |
-| **와이어프레임 요소** | 에이전트 (와이어프레임 렌더링 시) | HTML의 data-feature 영역과 metadata `elements` 항목 생성 |
+| **와이어프레임 요소** | 에이전트 (와이어프레임 렌더링 시) | HTML의 `data-feature-id` / `data-feature` 영역과 metadata `features[].elements` 항목 생성 |
 | **상태** | 기획자 + 디자이너 | 상태별 UI 설계 |
 | **인터랙션** | 기획자 + 디자이너 | 사용자 흐름과 반응 설계 |
 | **비즈니스 로직** | 기획자 + 팀 | 정책, 조건, 제약 정리 |
 
 ### 근거
 
-- 에이전트가 전체 명세를 읽지 않고 leaf의 `와이어프레임 요소`만 읽어 빠르게 렌더링
-- branch는 렌더링에 참여하지 않아 와이어프레임 스킬이 단순해짐
+- 에이전트가 `elements`가 있는 feature는 직접 렌더링하고, 하위 `features`가 있으면 재귀적으로 탐색하여 빠르게 렌더링
+- 상위 feature는 `data-feature-id` 래퍼와 재귀 metadata 구조를 통해 화면 안에서 그룹을 형성할 수 있음
 - 기능 수정 시 screen md를 거치지 않고 feature md → wireframe HTML 직접 업데이트 가능
 - 나머지 섹션은 협업 참고용으로, 와이어프레임 생성과 무관
-- leaf/branch 구분은 자식 폴더 유무로 자동 결정되므로 수동 표기 불필요
+- feature depth는 자식 폴더 유무로 자동 결정되며, 렌더링 여부는 `elements` / 하위 `features` 보유 여부로 판단
 
 ---
 
@@ -447,10 +466,10 @@ branch의 공통 섹션과 leaf의 섹션이 충돌하면 **leaf 우선**. branc
 
 ```
 Pass 1: screen md 읽기 → 레이아웃 + 기능 위치 결정
-Pass 2: feature leaf md를 하나씩 읽기 → 해당 위치에 와이어프레임 요소 렌더링
-  → docs/features/auth/login-form/index.md의 "와이어프레임 요소" 읽기 → 해당 영역 그리기
-  → docs/features/comments/index.md의 "와이어프레임 요소" 읽기 → 해당 영역 그리기
-  → ... (한번에 하나씩, 필요한 섹션만)
+Pass 2: screen 이 참조한 feature md를 하나씩 읽기 → 해당 위치에 와이어프레임 요소 렌더링
+  → feature 에 `elements`가 있으면 해당 레벨 UI 그리기
+  → 하위 `features`가 있으면 재귀적으로 내려가며 그리기
+  → 필요한 섹션만 읽기
 ```
 
 ### 업데이트 흐름 (사용자 트리거 + 컨펌)
@@ -476,8 +495,8 @@ Pass 2: feature leaf md를 하나씩 읽기 → 해당 위치에 와이어프레
 에이전트 → 스킬 호출:
   1. docs/features/comments/index.md의 "와이어프레임 요소" 읽기
   2. docs/features/auth/login-form/index.md의 "와이어프레임 요소" 읽기
-  3. EDITOR.html에서 해당 data-feature 영역 교체
-  4. DASHBOARD.html에서 해당 data-feature 영역 교체
+  3. EDITOR.html에서 해당 `data-feature-id` / `data-feature` 영역 교체
+  4. DASHBOARD.html에서 해당 `data-feature-id` / `data-feature` 영역 교체
      (screen md 안 읽음, 다른 feature md 안 읽음)
 ```
 
@@ -485,10 +504,11 @@ Pass 2: feature leaf md를 하나씩 읽기 → 해당 위치에 와이어프레
 
 - `docs/screens/LOGIN/index.md` → `docs/screens/LOGIN/wireframe.html`
 - `docs/screens/EDITOR/index.md` + `viewport: [pc, mobile]` → `docs/screens/EDITOR/wireframe-pc.html`, `docs/screens/EDITOR/wireframe-mobile.html`
-- feature leaf의 폴더 경로 → featureId 자동 파생 → 메타데이터의 `featureId` 및 `spec` 필드로 연결
+- feature 폴더 경로 → featureId 자동 파생 → 메타데이터의 `featureId` 및 `spec` 필드로 연결
+- HTML feature 래퍼는 `data-feature-id="{featureId}"`, `data-feature-label="{label}"` 패턴을 사용
 - HTML의 `data-feature`는 `FEATURE_{FEATURE_ID}_{ELEMENT_ID}` 패턴 (예: `FEATURE_AUTH__LOGIN_FORM_EMAIL`)
-- 업데이트 시 해당 `data-feature` 영역만 교체
-- screen md에서 feature 참조: `[@auth/login-form](../../features/auth/login-form/index.md)` 형식 (항상 leaf를 직접 지정, screen이 폴더 안이므로 `../../`)
+- 업데이트 시 해당 `data-feature-id` / `data-feature` 영역만 교체
+- screen md에서 feature 참조: `[@auth](../../features/auth/index.md)`, `[@auth/login-form](../../features/auth/login-form/index.md)` 형식 모두 가능하다. screen이 폴더 안이므로 `../../`를 사용한다.
 
 ---
 
@@ -536,45 +556,44 @@ viewport: [pc, mobile]
 
 ---
 
-## 9. leaf에서 branch로 승격 절차
+## 9. feature 확장 절차
 
 ### 결정
 
-기능이 커지면 leaf를 branch로 승격한다. 비즈니스 경계(최상위 폴더)는 유지하면서 내부 구조만 세분화하는 방식이다.
+기능이 커지면 기존 feature를 상위 feature로 유지하면서 하위 feature를 추가한다. 비즈니스 경계(최상위 폴더)는 유지하면서 내부 구조만 세분화하는 방식이다.
 
 ### 승격 전
 
 ```
 auth/
-  index.md        ← leaf. 와이어프레임 요소 13개. 너무 커짐.
+  index.md        ← 단일 feature. 와이어프레임 요소 13개. 너무 커짐.
 ```
 
 ### 승격 후
 
 ```
 auth/
-  index.md        ← branch로 전환 (와이어프레임 요소 제거, 공통 섹션 추가)
+  index.md        ← 상위 feature로 확장 (공통 섹션 추가, 공용 요소 유지 가능)
   login-form/
-    index.md      ← leaf. 기존 요소 중 로그인 관련
+    index.md      ← 하위 feature. 기존 요소 중 로그인 관련
   social-login/
-    index.md      ← leaf. 기존 요소 중 소셜 관련
+    index.md      ← 하위 feature. 기존 요소 중 소셜 관련
   signup/
-    index.md      ← leaf. 기존 요소 중 회원가입 관련
+    index.md      ← 하위 feature. 기존 요소 중 회원가입 관련
 ```
 
 ### 승격 체크리스트
 
-1. 기존 leaf `index.md`에서 `## 와이어프레임 요소`와 `usedIn`을 제거 → branch로 전환
-2. 기존 상태/인터랙션/비즈니스 로직 중 공통 부분은 branch에 남기고, 섹션 이름에 `공통` 접두어 부여 (`## 공통 상태`, `## 공통 인터랙션`, `## 공통 비즈니스 로직`)
-3. 하위 leaf 폴더를 생성하고 각각에 해당 와이어프레임 요소 이동
-4. 각 leaf에 `usedIn` 설정
-5. **screen md 참조 업데이트**: 기존 `[@auth](../../features/auth/index.md)` → `[@auth/login-form](../../features/auth/login-form/index.md)`, `[@auth/social-login](../../features/auth/social-login/index.md)` 등으로 분할
-6. **wireframe의 data-feature 업데이트**: 기존 `FEATURE_AUTH_*` → `FEATURE_AUTH__LOGIN_FORM_*` 등으로 변경
+1. 기존 feature `index.md`에서 공통으로 남길 규칙과 하위로 분리할 요소를 구분한다
+2. 기존 상태/인터랙션/비즈니스 로직 중 공통 부분은 상위 feature에 남기고, 필요하면 섹션 이름에 `공통` 접두어를 부여한다
+3. 하위 feature 폴더를 생성하고 각각에 해당 와이어프레임 요소를 이동한다
+4. screen 이 상위 feature를 계속 참조할지, 하위 feature를 직접 참조할지 결정하고 `usedIn`을 맞춘다
+5. wireframe metadata와 `data-feature` ID가 실제 참조 구조와 일치하도록 갱신한다
 
 ### 근거
 
 - 기능이 성장해도 최상위 비즈니스 경계(`auth`, `comments` 등)가 깨지지 않는다
-- screen md 참조와 wireframe ID가 더 구체적인 leaf를 가리키므로 정밀도가 높아진다
+- 상위 feature와 하위 feature를 상황에 맞게 참조할 수 있어 재귀 구조를 유지한 채 설계를 세분화할 수 있다
 - 승격은 점진적이다 — 모든 feature를 처음부터 분할할 필요 없이 필요할 때 승격하면 된다
 
 상세 명세: `guides/FEATURE-FOLDER-SPEC.md`

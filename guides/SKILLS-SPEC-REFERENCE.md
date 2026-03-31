@@ -1,7 +1,7 @@
-# Agent Skills 공식 스펙 레퍼런스
+# Claude Plugin Skill 레퍼런스
 
 > 수집일: 2026-03-27
-> 출처: agentskills.io/specification, platform.claude.com, github.com/vercel-labs/skills
+> 출처: docs.claude.com, agentskills.io/specification, github.com/vercel-labs/skills
 
 ---
 
@@ -123,55 +123,30 @@ description: 설명
 
 ---
 
-## 5. 설치 및 배포
+## 5. Claude 플러그인 내 skill 배치
 
-### 설치 명령
+Claude Code에서는 skill을 단독 설치 대상으로 보기보다 플러그인 내부 번들 자산으로 함께 배포할 수 있다.
 
-```bash
-# GitHub shorthand
-npx skills add owner/repo
+### 권장 구조
 
-# 특정 스킬만
-npx skills add owner/repo --skill skill-name
-
-# 특정 에이전트만
-npx skills add owner/repo -a claude-code -a cursor
-
-# 글로벌 설치
-npx skills add owner/repo -g
-
-# 목록 확인
-npx skills add owner/repo --list
+```text
+my-plugin/
+├── .claude-plugin/
+│   └── plugin.json
+├── skills/
+│   └── my-skill/
+│       ├── SKILL.md
+│       └── references/
+├── agents/            # 선택
+├── commands/          # 선택
+└── hooks/             # 선택
 ```
 
-### 설치 범위
+### 설치와 배포
 
-| 범위 | 플래그 | 경로 | 용도 |
-|------|--------|------|------|
-| **Project** | (기본) | `./<agent>/skills/` | 팀 공유, 커밋 |
-| **Global** | `-g` | `~/<agent>/skills/` | 모든 프로젝트 |
-
-### 설치 방식
-
-- **Symlink** (권장): 원본에 대한 심볼릭 링크. 단일 소스
-- **Copy**: 독립 복사본. 심볼릭 링크 미지원 환경용
-
-### 배포
-
-1. `SKILL.md` 파일이 있는 레포를 public으로 생성
-2. 별도 빌드/배포 스텝 없음
-3. URL 또는 GitHub shorthand로 공유
-
-### 기타 CLI 명령
-
-| 명령 | 기능 |
-|------|------|
-| `npx skills list` | 설치된 스킬 목록 |
-| `npx skills find [query]` | 스킬 검색 |
-| `npx skills remove [skills]` | 스킬 제거 |
-| `npx skills check` | 업데이트 확인 |
-| `npx skills update` | 전체 업데이트 |
-| `npx skills init [name]` | 새 스킬 템플릿 생성 |
+- 플러그인은 marketplace를 통해 설치한다
+- skill은 플러그인 설치 시 함께 배포되는 번들 구성요소다
+- skill을 단독 패키지처럼 설명하기보다, 어떤 plugin capability와 함께 배포되는지 명시하는 편이 안전하다
 
 ---
 
@@ -253,6 +228,8 @@ agent-skills/
 
 ```
 wireframe-skill/
+├── .claude-plugin/
+│   └── plugin.json               ← 플러그인 메타데이터
 ├── skills/
 │   └── flowframe-wireframe/        ← name과 동일해야 함
 │       ├── SKILL.md                ← 핵심 인스트럭션

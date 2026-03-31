@@ -2,80 +2,111 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/schema/flowframe-meta.schema.json",
   "title": "FlowFrame Wireframe Metadata",
-  "description": "Metadata schema for FlowFrame wireframe HTML files. Embedded in <script id=\"flowframe-meta\"> block.",
+  "description": "FlowFrame 와이어프레임 HTML 파일의 메타데이터 스키마. <script id=\"flowframe-meta\"> 블록에 삽입된다.",
   "type": "object",
-  "required": ["generator", "version", "screenId", "title", "purpose", "elements"],
+  "required": ["generator", "version", "screenId", "title", "purpose", "features"],
   "properties": {
     "generator": {
       "type": "string",
       "const": "flowframe-wireframe-skill",
-      "description": "Fixed value identifying the generator."
+      "description": "생성기 식별 고정값."
     },
     "version": {
       "type": "string",
-      "description": "Skill version (e.g., \"1.0\")."
+      "description": "메타데이터 버전 (예: \"1.2\")."
     },
     "screenId": {
       "type": "string",
-      "description": "Screen identifier (e.g., LOGIN, DASHBOARD, ORDER_MANAGEMENT)."
+      "description": "화면 식별자 (예: LOGIN, DASHBOARD, ORDER_MANAGEMENT)."
     },
     "title": {
       "type": "string",
-      "description": "Screen title."
+      "description": "화면 제목."
     },
     "purpose": {
       "type": "string",
-      "description": "One-sentence description of the screen's purpose."
+      "description": "화면 목적 한 줄 설명."
     },
-    "elements": {
+    "features": {
       "type": "array",
       "minItems": 1,
-      "description": "List of tracked wireframe elements on this screen.",
+      "description": "이 화면의 피처 목록. 재귀적 구조로 하위 피처를 포함할 수 있다.",
       "items": {
-        "$ref": "#/$defs/Element"
+        "$ref": "#/$defs/Feature"
       }
     },
     "author": {
       "type": "string",
-      "description": "Author name (optional)."
+      "description": "작성자 이름 (선택)."
     },
     "viewport": {
       "type": "string",
       "enum": ["pc", "mobile"],
-      "description": "Target viewport (optional)."
+      "description": "대상 뷰포트 (선택)."
     }
   },
   "additionalProperties": false,
   "$defs": {
+    "Feature": {
+      "type": "object",
+      "required": ["featureId", "label", "spec"],
+      "anyOf": [
+        { "required": ["elements"] },
+        { "required": ["features"] }
+      ],
+      "properties": {
+        "featureId": {
+          "type": "string",
+          "pattern": "^[A-Z0-9_]+$",
+          "description": "폴더 경로에서 파생한 피처 ID (예: AUTH__LOGIN_FORM). 단일 밑줄은 단어 연결, 이중 밑줄은 깊이 구분."
+        },
+        "label": {
+          "type": "string",
+          "description": "피처 표시명 (한국어, frontmatter label 값)."
+        },
+        "spec": {
+          "type": "string",
+          "description": "피처 명세 index.md의 상대 경로 (예: \"../../features/auth/login-form/index.md\")."
+        },
+        "elements": {
+          "type": "array",
+          "minItems": 1,
+          "description": "이 피처에 속하는 추적 와이어프레임 요소.",
+          "items": {
+            "$ref": "#/$defs/Element"
+          }
+        },
+        "features": {
+          "type": "array",
+          "minItems": 1,
+          "description": "하위 피처 목록 (재귀).",
+          "items": {
+            "$ref": "#/$defs/Feature"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
     "Element": {
       "type": "object",
-      "required": ["id", "featureId", "type", "label", "description", "spec"],
+      "required": ["id", "type", "label", "description"],
       "properties": {
         "id": {
           "type": "string",
           "pattern": "^FEATURE_[A-Z0-9_]+$",
-          "description": "Tracked wireframe element ID following FEATURE_{FEATURE_ID}_{ELEMENT_ID} pattern (e.g., FEATURE_AUTH_EMAIL)."
-        },
-        "featureId": {
-          "type": "string",
-          "pattern": "^[A-Z0-9_]+$",
-          "description": "Feature ID derived from folder path (e.g., AUTH__LOGIN_FORM, CART_ITEMS). Single underscore joins words, double underscore separates depth levels."
+          "description": "추적 요소 ID. FEATURE_{FEATURE_ID}_{ELEMENT_ID} 패턴 (예: FEATURE_AUTH__LOGIN_FORM_EMAIL)."
         },
         "type": {
           "type": "string",
-          "description": "Wireframe element type (e.g., input, button, link, text, list, table)."
+          "description": "와이어프레임 요소 타입 (예: input, button, link, text, list, table)."
         },
         "label": {
           "type": "string",
-          "description": "Element label shown in the wireframe panel."
+          "description": "와이어프레임 패널에 표시되는 요소 이름."
         },
         "description": {
           "type": "string",
-          "description": "Element-level description shown in the wireframe panel."
-        },
-        "spec": {
-          "type": "string",
-          "description": "Relative path to the leaf feature spec index.md from the screen folder wireframe (e.g., \"../../features/auth/login-form/index.md\")."
+          "description": "이 화면에서 요소가 수행하는 기능적 역할에 대한 설명."
         }
       },
       "additionalProperties": false

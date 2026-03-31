@@ -1,10 +1,10 @@
-# Example: Feature Spec — 상품 상세
+# Example: Feature Definition — Product Detail
 
-> **featureId는 경로에서 파생된다.** frontmatter에 featureId를 쓰지 않는다.
-> 예: `docs/features/product-detail/summary/index.md` → featureId = `PRODUCT_DETAIL__SUMMARY`
-> 예: `docs/features/product-detail/options/index.md` → featureId = `PRODUCT_DETAIL__OPTIONS`
+> **`featureId` is path-derived.** Do not write `featureId` in frontmatter.
+> Example: `docs/features/product-detail/summary/index.md` → `PRODUCT_DETAIL__SUMMARY`
+> Example: `docs/features/product-detail/options/index.md` → `PRODUCT_DETAIL__OPTIONS`
 
-## Leaf 예제 — `docs/features/product-detail/options/index.md`
+## Leaf Example — `docs/features/product-detail/options/index.md`
 
 ```markdown
 ---
@@ -42,30 +42,19 @@ usedIn:
 - 구매 버튼 클릭 → 주문/결제 흐름으로 이동
 - 장바구니 버튼 클릭 → 선택 옵션과 수량으로 장바구니 추가
 
-## 유저스토리
-
-- 사용자로서 원하는 색상과 사이즈를 선택하고 싶다, 내게 맞는 상품을 구매하기 위해
-- 사용자로서 구매 전에 품절 여부를 알고 싶다, 주문 불가 옵션을 미리 피하기 위해
-- 사용자로서 선택한 옵션을 장바구니에 담고 싶다, 다른 상품과 함께 비교 후 구매하기 위해
-
-## 인수조건
-
-- Given 필수 옵션을 모두 선택하면 Then 구매 버튼과 장바구니 버튼이 활성화된다
-- Given 품절 옵션을 선택하면 Then 재고 안내에 품절 상태가 표시되고 구매 관련 버튼이 비활성화된다
-- Given 허용 재고보다 큰 수량을 입력하면 Then 수량이 반영되지 않거나 경고가 표시된다
-- Given 장바구니 버튼을 클릭하면 Then 현재 선택 옵션과 수량이 장바구니에 추가된다
-
 ## 비즈니스 로직
 
 - 필수 옵션을 모두 선택해야 구매 가능
 - 품절 옵션은 선택 가능하더라도 구매/장바구니 실행 불가
 - 최소 수량 1개, 최대 수량은 선택 옵션 재고 수량 이하
 - 옵션 조합이 바뀌면 가격과 재고 정보 즉시 재계산
+
+requirements: ../../screens/PRODUCT_DETAIL/requirements.md#옵션-선택
 ```
 
-## Branch 예제 — `docs/features/product-detail/index.md`
+## Branch Example — `docs/features/product-detail/index.md`
 
-branch는 자식 폴더가 있는 피쳐다. `## 와이어프레임 요소`와 `usedIn`이 없으며, 하위 leaf들의 공통 도메인 컨텍스트만 담는다. 와이어프레임 스킬은 branch를 읽지 않는다.
+A branch is a feature that has child folders. It does not contain `## 와이어프레임 요소` or `usedIn`; it only holds shared domain context for child leaves. The wireframe skill does not read branches.
 
 ```markdown
 ---
@@ -96,7 +85,8 @@ label: 상품 상세
 
 ## Key patterns
 
-- **Leaf는 구현 단위다.** 옵션 선택처럼 독립적으로 설명되고 구현 가능한 책임은 leaf `index.md`에 작성한다.
-- **Branch는 공통 컨텍스트다.** `product-detail/index.md`는 하위 leaf들이 공유하는 상태, 규칙, 인터랙션만 담고 직접 렌더링하지 않는다.
-- **유저스토리와 인수조건은 leaf에 작성한다.** 기능 자체의 검증 기준은 `docs/features/product-detail/options/index.md` 같은 leaf에 둔다.
-- **같은 branch 아래 leaf들이 함께 화면을 구성할 수 있다.** screen spec은 `summary`, `options`, `reviews` 같은 여러 leaf를 조합해 하나의 화면을 만든다.
+- **Leafs are implementation units.** Independently describable and buildable responsibilities should be written in a leaf `index.md`.
+- **Branches are shared context.** `product-detail/index.md` contains only shared states, rules, and interactions for its child leaves and is not rendered directly.
+- **Do not place user stories or acceptance criteria in features.** Verification belongs in the owning screen's `requirements.md`.
+- **Add a required `requirements` pointer.** The one-line `requirements:` entry at the end of a leaf must point to the matching auto-generated heading anchor in `requirements.md`.
+- **Multiple leaves under one branch can compose a screen together.** A screen spec may combine `summary`, `options`, and `reviews` into one page.
