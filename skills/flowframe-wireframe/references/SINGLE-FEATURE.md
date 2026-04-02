@@ -193,9 +193,9 @@ features: [AUTH]
 | 그루핑 feature | `AUTH`는 `elements` 없이 `features`만 보유 |
 | DOM 중첩 | `data-feature="AUTH"` > `data-feature="AUTH__LOGIN"` |
 | element는 짧은 키 | `data-el="EMAIL"`, `data-el="SUBMIT"` — 부모 feature 스코프 내 유니크 |
-| 상태 탭 (data-state) | `data-state="기본"`, `data-state="에러"` — flowframe.js가 자동 탭 생성 |
+| 상태 탭 (data-state) | `data-state="기본"`, `data-state="에러"` — ff-platform.js가 자동 탭 생성 |
 | 상태 패널 내 data-el 재사용 | 같은 `data-el="EMAIL"`이 두 패널에 존재 — 상호배타이므로 허용 |
 | 캔버스 프레임 | `bg-zinc-100 p-8` + `rounded-xl border shadow-sm` 컨테이너 |
 | 단일 포커스 레이아웃 | 캔버스 내 중앙 카드, 고정 영역 없음 |
-| flowframe.js | 호버 하이라이트 + 상태 탭 자동 처리. `<style>`에는 다크모드만 |
+| ff-platform.js | 호버 하이라이트 + 상태 탭 자동 처리. `<style>`에는 다크모드만 |
 | 화면 참조 문법 | `@AUTH/LOGIN` — 도메인/TOC_ID |

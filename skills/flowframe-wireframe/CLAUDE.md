@@ -3,7 +3,7 @@
 ## DOM 구조
 
 - feature 컨테이너는 **중첩**한다 (상위가 하위를 감쌈)
-- 호버는 CSS만으로 가장 깊은 feature만 강조 — JS 불필요
+- 호버는 ff-platform.js가 가장 깊은 feature만 강조 — 별도 CSS 불필요
 - 메타데이터 JSON의 계층 구조와 DOM 중첩이 1:1 대응
 
 ## 속성 규칙
@@ -16,18 +16,18 @@
 
 ### `data-el` 래핑 규칙
 
-레이블이 있는 요소는 **래퍼 `<div data-el>`로 레이블과 입력을 함께 감싼다.**
+레이블이 있는 요소는 **가능하면 래퍼 `<div data-el>`로 레이블과 입력을 함께 감싼다.**
 레이블 없이 단독인 버튼·링크는 요소 자체에 `data-el`.
 
 ```html
 <!-- 중첩 DOM 예시 -->
 <div data-feature="AUTH" data-label="인증">
   <div data-feature="AUTH__LOGIN" data-label="로그인">
-    <div data-feature="AUTH__LOGIN__EMAIL" data-label="이메일 로그인">
+    <div data-feature="AUTH__LOGIN__EMAIL_LOGIN" data-label="이메일 로그인">
       <input data-el="EMAIL" placeholder="이메일" />
       <button data-el="SUBMIT">로그인</button>
 
-      <div data-feature="AUTH__LOGIN__EMAIL__MFA" data-label="2단계 인증">
+      <div data-feature="AUTH__LOGIN__EMAIL_LOGIN__MFA" data-label="2단계 인증">
         <input data-el="CODE" placeholder="인증 코드" />
         <button data-el="VERIFY">인증 확인</button>
       </div>

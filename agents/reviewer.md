@@ -43,7 +43,7 @@ skills:
 | S4 | 화면 레이아웃 참조 | 화면의 모든 `@DOMAIN/PATH` 참조에 대응하는 기능이 해당 도메인 파일에 존재 |
 | S5 | features 배열 동기화 | frontmatter `features` 배열이 레이아웃에서 참조하는 모든 도메인을 포함 |
 | S6 | INDEX.md 동기화 | 모든 도메인 파일이 INDEX.md에 등록됨 |
-| S7 | screenId 형식 | `UPPER-KEBAB` 형식 준수 (번호 없음) |
+| S7 | screenId 형식 | `UPPER-KEBAB` 형식 준수 (순차 번호 금지 (001, 002 등). V2 같은 의미 있는 숫자는 허용) |
 | S8 | featureId 형식 | `DOMAIN__PATH` 형식, `__`로 깊이 구분, 대문자+밑줄만 사용 |
 | S9 | Requirement 커버리지 | Requirement·UserStory의 H3 헤딩에 `— @DOMAIN/PATH` 연결 표식이 있어야 하고, 레이아웃에서 참조한 모든 기능에 대응하는 Requirement 그룹이 최소 1개 존재 |
 | S10 | 인수조건 형식 | Requirement의 각 항목이 Given/When/Then 형식을 따르고, "적절한", "빠르게", "충분한" 등 모호한 표현이 없음 |
@@ -63,16 +63,17 @@ skills:
 | # | 항목 | 기준 |
 |---|------|------|
 | W1 | 메타데이터 존재 | `<script type="application/json" id="flowframe-meta">` 존재하고 JSON 파싱 가능 |
-| W2 | 메타데이터 필수 필드 | `screenId`, `title`, `purpose`, `version`("2.0"), `generator`("flowframe-wireframe-skill"), `features`. 모달 파일(`*_modal-*.html`)이면 `modalId`도 필수 |
+| W2 | 메타데이터 필수 필드 | `screenId`, `title`, `purpose`, `version`("2.0"), `generator`("flowframe-wireframe-skill"), `features`. 모달 파일(`*_modal-*.html`)이면 `modalId`도 필수이며, `modalId` 값이 파일명의 slug와 일치해야 함 (예: `*_modal-upload.html` → `modalId: "upload"`) |
 | W3 | feature 래퍼 존재 | 메타데이터 `features[]`의 모든 항목에 대응하는 `[data-feature]` DOM 요소 존재 |
 | W4 | feature-명세 일치 | `data-feature` 값이 기능명세 TOC에서 파생한 featureId와 일치 |
 | W5 | element 매핑 | 메타데이터 `elements[].id`에 대응하는 `[data-el]` DOM 요소가 해당 `[data-feature]` 안에 존재 |
 | W6 | DOM 중첩 구조 | 하위 feature의 `[data-feature]`가 부모 `[data-feature]` 안에 위치 |
-| W7 | 다크모드 CSS | Tailwind CDN 포함, `<style>`에 다크모드 규칙, 모든 색상에 `dark:` 변형 |
+| W7 | Tailwind + 플랫폼 스크립트 + 다크모드 | Tailwind CDN 포함, `ff-platform.js` 스크립트 포함, `<style>`에 다크모드 규칙, 모든 색상에 `dark:` 변형 |
 | W8 | data-label 존재 | 모든 `[data-feature]`에 `data-label` 속성 존재 |
 | W9 | data-state 배치 | `[data-state]` 요소가 `[data-feature]`의 직접 자식인지 확인. 중간 래퍼가 있으면 상태 탭이 작동하지 않음 |
 | W10 | HTML 유효성 | `[data-feature]` 래퍼가 block-level 요소(`<div>`, `<section>` 등)인지 확인. `<span>` 등 inline 요소 안에 block 요소가 중첩되면 fail |
 | W11 | feature 범위 일치 | 와이어프레임의 feature 목록이 화면 명세의 레이아웃 참조와 일치 (모달 파일의 feature도 포함). 화면 명세가 참조하는 기능이 와이어프레임에 없거나, 와이어프레임에 화면 명세에 없는 기능이 있으면 fail |
+| W12 | 슬롯 마커 보존 | partial-update 지원을 위해 `<!-- @SLOT:{region} -->` ~ `<!-- @END:{region} -->`과 `<!-- @META -->` ~ `<!-- @END:META -->` 마커 쌍이 존재하고 올바르게 닫혀 있는지 확인 |
 
 ### 3. 전체 정합성 리뷰 (full-review)
 

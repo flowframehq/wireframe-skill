@@ -40,11 +40,11 @@ feature 컨테이너는 **중첩**한다 (상위가 하위를 감쌈).
 ```html
 <div data-feature="AUTH" data-label="인증">
   <div data-feature="AUTH__LOGIN" data-label="로그인">
-    <div data-feature="AUTH__LOGIN__EMAIL" data-label="이메일 로그인">
+    <div data-feature="AUTH__LOGIN__EMAIL_LOGIN" data-label="이메일 로그인">
       <input data-el="EMAIL" placeholder="이메일" />
       <button data-el="SUBMIT">로그인</button>
 
-      <div data-feature="AUTH__LOGIN__EMAIL__MFA" data-label="2단계 인증">
+      <div data-feature="AUTH__LOGIN__EMAIL_LOGIN__MFA" data-label="2단계 인증">
         <input data-el="CODE" placeholder="인증 코드" />
         <button data-el="VERIFY">인증 확인</button>
       </div>
@@ -131,7 +131,7 @@ feature 컨테이너는 **중첩**한다 (상위가 하위를 감쌈).
 같은 기능의 2~4개 상호배타 형제 상태를 비교할 때 사용한다.
 리뷰 컨트롤이지, 제품 UI가 아니다.
 
-`data-feature` **직접 자식**에 `data-state` 속성을 붙이면 flowframe.js가 자동으로 탭을 생성한다.
+`data-feature` **직접 자식**에 `data-state` 속성을 붙이면 ff-platform.js가 자동으로 탭을 생성한다.
 
 **중요**: `data-state`와 `data-feature` 사이에 래퍼 div가 있으면 상태 탭이 작동하지 않는다.
 
@@ -163,6 +163,7 @@ feature 컨테이너는 **중첩**한다 (상위가 하위를 감쌈).
 ## 메타데이터 (`flowframe-meta`)
 
 `<script type="application/json" id="flowframe-meta">`에 배치.
+> 기계 판독 가능한 메타데이터 스키마: [`schema/flowframe-meta.schema.json`](../../schema/flowframe-meta.schema.json)
 
 ```json
 {
@@ -214,6 +215,16 @@ feature 컨테이너는 **중첩**한다 (상위가 하위를 감쌈).
 | `type` | Yes | input, button, text, select, table, list 등 |
 | `label` | Yes | 한국어 표시명 |
 | `description` | Yes | 기능적 역할 설명. 액션 요소(button, link 등)는 클릭 시 결과도 포함 (예: "클릭 시 인증 요청. 성공: 메인 화면 이동, 실패: 에러 메시지 표시") |
+
+### elementId 네이밍 가이드
+
+wireframer는 기능 명세의 와이어프레임 요소 테이블에서 한국어 요소명을 읽고, 다음 원칙에 따라 영문 elementId를 부여한다:
+
+- 요소의 기능적 역할을 영문으로 표현한다 (예: "이메일" → EMAIL, "로그인 버튼" → SUBMIT)
+- UPPER_SNAKE_CASE만 사용한다 (대문자, 밑줄)
+- 부모 data-feature 스코프 내에서 유니크하면 된다
+- 가능한 짧게 (1~2 단어) 유지한다
+- 한국어 음역이 아닌 영문 의미 번역을 사용한다 (예: "검색창" → SEARCH, not GEOMSAEKCHANG)
 
 ---
 
@@ -309,9 +320,9 @@ Tailwind CSS v4: `<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser
 
 ### 파일명 규칙
 
-`{screenId 소문자}_modal-{name}.html`
+`{screenId 소문자}_modal-{slug}.html`
 
-- `{name}`: 레이아웃의 `모달:` 항목에 planner가 `[slug]` 형식으로 확정한 값을 그대로 사용한다 (예: `모달: 저장 버전 선택 [save-version]` → `save-version`). wireframer는 slug을 자동 생성하지 않는다
+- `{slug}`: 레이아웃의 `모달:` 항목에 planner가 `[slug]` 형식으로 확정한 값을 그대로 사용한다 (예: `모달: 저장 버전 선택 [save-version]` → `save-version`). wireframer는 slug을 자동 생성하지 않는다
 - 예: `flow-editor_modal-upload.html`, `flow-editor_modal-save.html`
 
 ### 메타데이터

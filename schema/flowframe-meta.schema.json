@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/schema/flowframe-meta.schema.json",
+  "$id": "https://flowframe.dev/schema/flowframe-meta.schema.json",
   "title": "FlowFrame Wireframe Metadata",
-  "description": "FlowFrame 와이어프레임 HTML 파일의 메타데이터 스키마. <script type=\"application/json\" data-flowframe-meta> 블록에 삽입된다.",
+  "description": "FlowFrame 와이어프레임 HTML 파일의 메타데이터 스키마. <script type=\"application/json\" id=\"flowframe-meta\"> 블록에 삽입된다.",
   "type": "object",
   "required": ["generator", "version", "screenId", "title", "purpose", "features"],
   "properties": {
@@ -19,7 +19,7 @@
     "screenId": {
       "type": "string",
       "pattern": "^[A-Z][A-Z0-9-]*$",
-      "description": "화면 식별자 (예: LOGIN, CHECKOUT, PRODUCT-LIST)."
+      "description": "화면 식별자 (예: LOGIN, CHECKOUT, PRODUCT-LIST). 순차 번호(001, 002 등) 금지 — reviewer S7이 검증."
     },
     "title": {
       "type": "string",
@@ -28,6 +28,11 @@
     "purpose": {
       "type": "string",
       "description": "화면 목적 한 줄 설명."
+    },
+    "modalId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "description": "모달 와이어프레임의 식별자. 모달 파일(*_modal-*.html)에서 필수 — reviewer W2가 파일명 기반으로 검증."
     },
     "features": {
       "type": "array",
@@ -96,7 +101,7 @@
         },
         "type": {
           "type": "string",
-          "description": "와이어프레임 요소 타입 (예: input, button, link, text, list, table)."
+          "description": "와이어프레임 요소 타입. 일반적인 값: input, button, text, select, checkbox, radio, table, list, link, image, textarea, toggle."
         },
         "label": {
           "type": "string",

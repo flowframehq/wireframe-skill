@@ -6,7 +6,7 @@
 
 ## 예제 1: 단일 feature 화면
 
-`docs/screens/LOGIN/login-screen.md`
+`docs/screens/LOGIN/login_screen.md`
 
 ```markdown
 ---
@@ -41,7 +41,7 @@ features: [AUTH]
 
 ## 예제 2: 다중 feature 화면
 
-`docs/screens/PRODUCT-LIST/product-list-screen.md`
+`docs/screens/PRODUCT-LIST/product-list_screen.md`
 
 ```markdown
 ---
@@ -113,4 +113,4 @@ viewport: [pc, mobile]
 2. 전체 화면 목록 — @PRODUCT/LIST
 ```
 
-와이어프레임 출력: `product-list-wireframe-pc.html`, `product-list-wireframe-mobile.html`
+와이어프레임 출력: `product-list_wireframe-pc.html`, `product-list_wireframe-mobile.html`

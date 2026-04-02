@@ -18,6 +18,7 @@ agents/
 └── reviewer.md              ← 리뷰어 에이전트 (읽기 전용, pass/fail 판정)
 
 skills/
+├── planning-workflow/       ← 기획 오케스트레이션 하네스
 ├── flowframe-spec/          ← 명세 포맷 지식 (에이전트가 참조)
 └── flowframe-wireframe/     ← 와이어프레임 생성
 
@@ -27,14 +28,16 @@ docs/
 │   ├── AUTH.md
 │   └── PAYMENT.md
 ├── screens/                 ← 화면 단위 폴더
-│   └── LOGIN/               ← 화면 ID = 폴더명 (UPPER_KEBAB, 번호 없음)
-│       ├── login_intake.md        ← 화면 단위 intake (선택)
+│   └── LOGIN/               ← 화면 ID = 폴더명 (UPPER-KEBAB, 순차 번호 금지 (001, 002 등). V2 같은 의미 있는 숫자는 허용)
+│       ├── login_intake.md        ← 화면 단위 intake (워크플로우가 생성, 리뷰 시 필수)
 │       ├── login_screen.md        ← Screen + Requirement + UserStory 통합
 │       ├── login_wireframe.html   ← 와이어프레임 (단일 뷰포트)
 │       ├── login_wireframe-pc.html    ← 다중 뷰포트 시
 │       ├── login_wireframe-mobile.html
-│       └── login_modal-{name}.html    ← 모달 (개별 파일)
+│       └── login_modal-{slug}.html    ← 모달 (개별 파일)
 ```
+
+> docs/ 하위 경로(LOGIN/, AUTH.md 등)는 명명 규칙 예시입니다. 사용자가 기획을 시작하면 생성됩니다.
 
 플러그인은 agent와 skill을 번들로 포함하며, 계속 추가될 수 있다.
 
@@ -44,13 +47,13 @@ docs/
 - `agents/reviewer.md` — 리뷰어 에이전트. 명세·와이어프레임 정합성 검증 (읽기 전용, pass/fail 판정)
 
 현재 skill:
-- `skills/planning-workflow/` — 기획 오케스트레이션 하네스. intake → planner → wireframer 흐름 제어
+- `skills/planning-workflow/` — 기획 오케스트레이션 하네스. intake → planner → reviewer gate → wireframer → reviewer gate 오케스트레이션
 - `skills/flowframe-spec/` — 명세 포맷 지식 (planner 에이전트가 참조)
 - `skills/flowframe-wireframe/` — 와이어프레임 포맷 지식 (wireframer 에이전트가 참조)
 
 ## ID Rules
 
-**screenId** — 화면 폴더명과 동일, UPPER_KEBAB:
+**screenId** — 화면 폴더명과 동일, UPPER-KEBAB:
 - `LOGIN`, `CHECKOUT`, `PRODUCT-LIST`
 - 같은 목적의 변형이 있으면 이름으로 구분: `LOGIN-EMAIL`, `LOGIN-SOCIAL`
 

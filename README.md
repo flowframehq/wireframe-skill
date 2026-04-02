@@ -14,7 +14,7 @@
 
 | 스킬 | 역할 |
 |------|------|
-| **planning-workflow** | intake → planner → reviewer → wireframer 오케스트레이션 |
+| **planning-workflow** | intake → planner → reviewer gate → wireframer → reviewer gate 오케스트레이션 |
 | **flowframe-spec** | 기능명세·화면명세 포맷 지식 (planner가 참조) |
 | **flowframe-wireframe** | 와이어프레임 DOM 구조·디자인 원칙 (wireframer가 참조) |
 
@@ -38,7 +38,7 @@ Claude plugin marketplace
 에디터 화면 만들어줘. 댓글이랑 버전관리 기능이 들어가
 ```
 
-→ `docs/screens/EDITOR/editor-screen.md` 생성 (레이아웃 + 기능 참조)
+→ `docs/screens/EDITOR/editor_screen.md` 생성 (레이아웃 + 기능 참조)
 
 ### 3. 와이어프레임 생성
 
@@ -46,7 +46,7 @@ Claude plugin marketplace
 와이어프레임 만들어줘
 ```
 
-→ `docs/screens/EDITOR/editor-wireframe.html` 생성 (FlowFrame 업로드 가능)
+→ `docs/screens/EDITOR/editor_wireframe.html` 생성 (FlowFrame 업로드 가능)
 
 ### 4. 와이어프레임 업데이트
 
@@ -66,12 +66,13 @@ docs/
 │   └── COMMENT.md
 ├── screens/               ← 화면 단위 폴더
 │   ├── LOGIN/
-│   │   ├── login-screen.md
-│   │   └── login-wireframe.html
+│   │   ├── login_intake.md
+│   │   ├── login_screen.md
+│   │   └── login_wireframe.html
 │   └── EDITOR/
-│       ├── editor-screen.md
-│       ├── editor-wireframe-pc.html
-│       └── editor-wireframe-mobile.html
+│       ├── editor_screen.md
+│       ├── editor_wireframe-pc.html
+│       └── editor_wireframe-mobile.html
 ```
 
 ## 특징
@@ -84,6 +85,10 @@ docs/
 ## 실행 환경
 
 기본 대상은 Claude Code 플러그인이며, skill 본문은 다른 에이전트 환경에서도 재사용 가능하게 유지합니다.
+
+## 참고 자료
+
+- [FlowFrame 명세 작성 가이드](guides/flow-spec-guide.md) — FlowFrame 플랫폼의 Flow 명세 업로드 포맷 안내
 
 ## 라이선스
 
