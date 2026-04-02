@@ -51,6 +51,10 @@ docs/
 
 ## ID Rules
 
+**screenId** — 화면 폴더명과 동일, UPPER_KEBAB:
+- `LOGIN`, `CHECKOUT`, `PRODUCT-LIST`
+- 같은 목적의 변형이 있으면 이름으로 구분: `LOGIN-EMAIL`, `LOGIN-SOCIAL`
+
 **featureId** — TOC 경로에서 파생, `__`로 깊이 구분:
 - `AUTH`, `AUTH__LOGIN`, `AUTH__LOGIN__EMAIL_LOGIN`
 - DOM 속성: `data-feature="AUTH__LOGIN"`

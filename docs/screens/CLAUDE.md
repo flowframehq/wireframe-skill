@@ -46,11 +46,11 @@ features: [AUTH]
 2. 하단 링크 — @AUTH/SIGNUP
 
 ## Requirement
-### 인증
+### 인증 — @AUTH/LOGIN/EMAIL_LOGIN
 - Given 이메일과 비밀번호 입력 완료 When 로그인 버튼 클릭 Then 인증 요청 후 메인 화면 이동
 
 ## UserStory
-### 인증
+### 인증 — @AUTH/LOGIN/EMAIL_LOGIN
 - 사용자로서 이메일과 비밀번호로 로그인하고 싶다, 내 계정에 접근하기 위해
 ```
 

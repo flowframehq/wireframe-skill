@@ -158,11 +158,11 @@ features: [AUTH]
 2. 하단 링크 — @AUTH/SIGNUP
 
 ## Requirement
-### 인증
+### 인증 — @AUTH/LOGIN/EMAIL_LOGIN
 - Given 이메일과 비밀번호 입력 완료 When 로그인 버튼 클릭 Then 인증 요청 후 메인 화면 이동
 
 ## UserStory
-### 인증
+### 인증 — @AUTH/LOGIN/EMAIL_LOGIN
 - 사용자로서 이메일과 비밀번호로 로그인하고 싶다, 내 계정에 접근하기 위해
 ```
 
@@ -195,6 +195,8 @@ features: [AUTH]
 | 4 | 참조된 기능에 `와이어프레임 요소` 테이블 또는 하위 기능 존재 |
 | 5 | 모든 도메인 파일이 INDEX.md에 등록 |
 | 6 | 와이어프레임의 `data-feature`가 현재 기능 구조와 일치 |
+| 7 | Requirement·UserStory의 H3 헤딩에 `— @DOMAIN/PATH` 연결 표식이 있고, 레이아웃 참조 기능마다 대응 그룹 존재 |
+| 8 | Requirement의 Given/When/Then에 "적절한", "빠르게" 등 모호한 표현이 없음 |
 
 ---
 

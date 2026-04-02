@@ -33,7 +33,7 @@ skills:
 
 | # | 항목 | 기준 |
 |---|------|------|
-| S1 | frontmatter 필수 필드 | feature: `id`, `domain`, `toc`. screen: `screenId`, `title`, `viewport`, `features` |
+| S1 | frontmatter 필수 필드 | feature: `domain`, `label`, `toc`. screen: `screenId`, `title`, `viewport`, `features` |
 | S2 | TOC-본문 일치 | TOC의 모든 항목에 대응하는 본문 헤딩이 존재하고, 본문에 TOC에 없는 헤딩이 없음 |
 | S3 | 와이어프레임 요소 테이블 | 리프 기능에 `와이어프레임 요소` 테이블이 존재 (하위 기능이 있으면 생략 가능) |
 | S4 | 화면 레이아웃 참조 | 화면의 모든 `@DOMAIN/PATH` 참조에 대응하는 기능이 해당 도메인 파일에 존재 |
@@ -41,6 +41,8 @@ skills:
 | S6 | INDEX.md 동기화 | 모든 도메인 파일이 INDEX.md에 등록됨 |
 | S7 | screenId 형식 | `UPPER-KEBAB` 형식 준수 (번호 없음) |
 | S8 | featureId 형식 | `DOMAIN__PATH` 형식, `__`로 깊이 구분, 대문자+밑줄만 사용 |
+| S9 | Requirement 커버리지 | Requirement·UserStory의 H3 헤딩에 `— @DOMAIN/PATH` 연결 표식이 있어야 하고, 레이아웃에서 참조한 모든 기능에 대응하는 Requirement 그룹이 최소 1개 존재 |
+| S10 | 인수조건 형식 | Requirement의 각 항목이 Given/When/Then 형식을 따르고, "적절한", "빠르게", "충분한" 등 모호한 표현이 없음 |
 
 ### 2. 와이어프레임 리뷰 (wireframe-review)
 
@@ -64,7 +66,7 @@ skills:
 
 ### 3. 전체 정합성 리뷰 (full-review)
 
-트리거: "전체 리뷰", "full review", 또는 planning-workflow의 review gate
+트리거: "전체 리뷰", "full review" (명세 + 와이어프레임이 모두 존재할 때 수동 요청)
 
 명세 리뷰 + 와이어프레임 리뷰를 모두 실행하고, 추가로 교차 검증:
 
