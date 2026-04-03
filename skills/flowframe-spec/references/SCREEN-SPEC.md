@@ -1,10 +1,45 @@
 # 예제: 화면 명세 — LOGIN
 
-단일 feature 화면과 다중 feature 화면의 화면명세 2가지를 보여준다.
+단일 feature 화면과 다중 feature 화면의 intake + 화면명세 2가지를 보여준다.
 
 ---
 
 ## 예제 1: 단일 feature 화면
+
+`docs/screens/LOGIN/login_intake.md`
+
+```markdown
+## 화면 목적
+
+사용자가 이메일과 비밀번호로 서비스에 로그인한다.
+
+## 핵심 행동
+
+- 이메일과 비밀번호를 입력한다
+- 로그인 시도 결과를 확인한다
+
+## 화면 구성
+
+- 단일 포커스 로그인 카드
+
+## 모달
+
+없음
+
+## 특수 인터랙션
+
+없음
+
+## viewport
+
+pc
+
+## 제약사항
+
+- 5회 연속 실패 시 계정 잠금 안내가 필요하다
+```
+
+---
 
 `docs/screens/LOGIN/login_screen.md`
 
@@ -40,6 +75,45 @@ features: [AUTH]
 ---
 
 ## 예제 2: 다중 feature 화면
+
+`docs/screens/PRODUCT-LIST/product-list_intake.md`
+
+```markdown
+## 화면 목적
+
+사용자가 카테고리와 가격으로 상품을 필터링하고 원하는 상품을 찾는다.
+
+## 핵심 행동
+
+- 카테고리와 가격 조건으로 상품을 좁혀 본다
+- 정렬 기준을 바꿔 상품을 비교한다
+- 결과가 없을 때 조건을 다시 조정한다
+
+## 화면 구성
+
+- 상단 헤더
+- 좌측 사이드바 필터
+- 메인 목록 영역
+- 하단 푸터
+
+## 모달
+
+없음
+
+## 특수 인터랙션
+
+없음
+
+## viewport
+
+pc
+
+## 제약사항
+
+없음
+```
+
+---
 
 `docs/screens/PRODUCT-LIST/product-list_screen.md`
 
@@ -86,6 +160,7 @@ features: [PRODUCT]
 
 | 패턴 | 예제 1 (LOGIN) | 예제 2 (PRODUCT-LIST) |
 |------|-------------------|--------------------------|
+| intake 선행 입력 | `login_intake.md` 생성 후 `login_screen.md` 작성 | `product-list_intake.md` 생성 후 `product-list_screen.md` 작성 |
 | screenId 형식 | `LOGIN` | `PRODUCT-LIST` |
 | features 배열 | `[AUTH]` — 단일 도메인 | `[PRODUCT]` — 단일 도메인 내 여러 기능 |
 | 레이아웃 참조 | `@AUTH/LOGIN` | `@PRODUCT/SEARCH_FILTER`, `@PRODUCT/LIST` |

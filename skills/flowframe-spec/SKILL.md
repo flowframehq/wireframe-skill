@@ -231,7 +231,7 @@ features: [AUTH]
 | 6 | 와이어프레임의 `data-feature`가 현재 기능 구조와 일치 |
 | 7 | Requirement·UserStory의 H3 헤딩에 `— @DOMAIN/PATH` 연결 표식이 있고, 레이아웃 참조 기능마다 대응 그룹 존재 |
 | 8 | Requirement의 Given/When/Then에 "적절한", "빠르게" 등 모호한 표현이 없음 |
-| 9 | intake 결정적 필드 3개(화면 목적 → purpose, viewport → viewport, 모달 → 레이아웃 모달 항목)를 자동 대조. intake 부재 시 fail |
+| 9 | intake 결정적 필드 3개(화면 목적 → purpose, viewport → viewport, 모달 → 레이아웃 모달 항목)를 자동 대조. intake가 없으면 reviewer는 fail로 보고하고 planner가 intake를 먼저 생성/보완해야 한다 |
 | 10 | intake 나머지 4개(핵심 행동, 화면 구성, 특수 인터랙션, 제약사항)가 Screen/Requirement/UserStory/비즈니스 로직/열린 이슈에 반영되었는지 자동 대조 |
 | 11 | `viewport: [pc, mobile]`이면 `### 레이아웃 (PC)`과 `### 레이아웃 (Mobile)` 헤딩이 모두 존재 |
 

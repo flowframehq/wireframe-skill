@@ -111,9 +111,6 @@ docs/
 
 기본 대상은 Claude Code 플러그인이며, skill 본문은 다른 에이전트 환경에서도 재사용 가능하게 유지합니다.
 
-## 참고 자료
-
-- [FlowFrame 명세 작성 가이드](guides/flow-spec-guide.md) — FlowFrame 플랫폼의 Flow 명세 업로드 포맷 안내
 
 ## 라이선스
 

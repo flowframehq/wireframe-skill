@@ -16,7 +16,7 @@ skills:
 - **읽기 전용이다**: Read, Grep, Glob만 사용한다. 파일을 생성하거나 수정하지 않는다
 - **판정을 내린다**: 각 검증 항목에 대해 `pass`, `fail`, `skip` 중 하나를 선언한다. 최종 PASS/FAIL 산출은 하네스가 수행한다
 - **근거를 제시한다**: fail이면 파일 경로, 위치, 기대값, 실제값을 함께 보고한다
-- **추정하지 않는다**: 검증 대상 파일이 없으면 `skip`으로 처리하고 이유를 밝힌다
+- **추정하지 않는다**: 선택적 산출물이 없으면 `skip`으로 처리하고 이유를 밝힌다. 선행 입력이 필수인 검증에서 파일이 없으면 `fail`로 보고하고 planner 보완이 필요함을 명시한다
 - **한국어로 보고한다**: 보고서는 한국어로 작성한다
 
 ---
@@ -47,7 +47,7 @@ skills:
 | S8 | featureId 형식 | `DOMAIN__PATH` 형식, `__`로 깊이 구분, 대문자+밑줄만 사용 |
 | S9 | Requirement 커버리지 | Requirement·UserStory의 H3 헤딩에 `— @DOMAIN/PATH` 연결 표식이 있어야 하고, 레이아웃에서 참조한 모든 기능에 대응하는 Requirement 그룹이 최소 1개 존재 |
 | S10 | 인수조건 형식 | Requirement의 각 항목이 Given/When/Then 형식을 따르고, "적절한", "빠르게", "충분한" 등 모호한 표현이 없음 |
-| S11 | intake 결정적 필드 반영 | intake의 결정적 필드 3개를 화면 명세와 대조한다: (1) `## 화면 목적` → frontmatter `purpose`와 의미 일치, (2) `## viewport` → frontmatter `viewport`와 값 일치 (intake의 `둘 다`와 frontmatter의 `[pc, mobile]`은 동치로 취급한다), (3) `## 모달` → 레이아웃 `모달:` 항목과 대조 (intake `## 모달`에 기록된 화면 종속 모달이 레이아웃에 `모달:` 항목으로 존재하는지. "없음"이면 건너뜀). intake가 없으면 `skip` (warning: "intake 파일 없음 — S11 검증 생략") |
+| S11 | intake 결정적 필드 반영 | intake의 결정적 필드 3개를 화면 명세와 대조한다: (1) `## 화면 목적` → frontmatter `purpose`와 의미 일치, (2) `## viewport` → frontmatter `viewport`와 값 일치 (intake의 `둘 다`와 frontmatter의 `[pc, mobile]`은 동치로 취급한다), (3) `## 모달` → 레이아웃 `모달:` 항목과 대조 (intake `## 모달`에 기록된 화면 종속 모달이 레이아웃에 `모달:` 항목으로 존재하는지. "없음"이면 건너뜀). intake가 없으면 `fail`로 처리하고 "intake 파일 없음 — planner가 intake를 먼저 생성해야 함"을 보고한다 |
 | S12 | intake 커버리지 반영 | intake의 나머지 4개 필드를 기계적으로 대조한다: (1) `## 핵심 행동`의 각 bullet은 Requirement 또는 UserStory에 같은 명사구/동사구 수준으로 대응하는 항목이 최소 1개 있어야 함, (2) `## 화면 구성`은 `## Screen` 레이아웃에 같은 구조어(예: 상단/하단, 사이드바, 패널, 탭, 전체 화면 전환)가 반영되어야 함, (3) `## 특수 인터랙션`이 "없음"이 아니면 Requirement 또는 레이아웃 설명에 해당 인터랙션 키워드가 존재해야 함, (4) `## 제약사항`이 "없음"이 아니면 Requirement, 비즈니스 로직, 또는 명시적 열린 이슈로 반영되어야 함. `정책 미확정`, `추후 확정` 같은 미결정 표현은 허용하되, 이 경우 명세에도 동일한 열린 이슈/가정이 남아 있어야 pass |
 | S13 | 뷰포트별 레이아웃 | frontmatter `viewport`가 `[pc, mobile]`이면 `### 레이아웃 (PC)`과 `### 레이아웃 (Mobile)` 헤딩이 모두 존재해야 함. 단일 뷰포트면 `skip` |
 

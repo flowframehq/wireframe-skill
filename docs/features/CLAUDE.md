@@ -45,6 +45,30 @@ toc:
 - `인터랙션` — 사용자 인터랙션 목록
 - `비즈니스 로직` — 비즈니스 규칙 (와이어프레임에 직접 반영하지 않음)
 
+## 와이어프레임 요소 테이블
+
+```markdown
+### 와이어프레임 요소
+| 요소 | type | 설명 |
+|------|------|------|
+| 이메일 | input | 이메일 주소 입력 필드 |
+| 로그인 버튼 | button | 클릭 시 인증 요청. 성공: 메인 화면 이동, 실패: "이메일 또는 비밀번호가 올바르지 않습니다" 에러 표시 |
+```
+
+- `요소`: 한국어 표시명
+- `type`: `input`, `button`, `text`, `select`, `checkbox`, `radio`, `table`, `list`, `link`, `image`
+- `설명`: 리뷰어가 명세를 열지 않고도 역할을 이해할 수 있는 수준. 액션 요소(button, link 등)는 클릭 시 성공/실패 결과를 포함
+
+## featureId 파생
+
+TOC 경로에서 파생. 도메인 ID와 TOC `id`를 `__`로 연결:
+
+| TOC 경로 | featureId |
+|----------|-----------|
+| AUTH | `AUTH` |
+| AUTH > LOGIN | `AUTH__LOGIN` |
+| AUTH > LOGIN > EMAIL_LOGIN | `AUTH__LOGIN__EMAIL_LOGIN` |
+
 ## 예시
 
 ```markdown

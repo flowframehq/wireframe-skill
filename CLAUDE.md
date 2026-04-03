@@ -69,11 +69,6 @@ docs/
 - DOM 속성: `data-el="EMAIL"`
 - 와이어프레임 내에서 같은 `data-feature` 안에서만 유니크하면 됨
 
-## Codex 연동
-
-- Codex 호출 시 `codex:codex-rescue` 에이전트를 직접 사용한다 (`/codex:rescue` 스킬 경유 금지 — 내부 라우팅 오류 발생)
-- 신규 스레드: 프롬프트에 `--fresh` 포함, 이어가기: `--resume` 포함
-
 ## Plugin Conventions
 
 - SKILL.md는 소문자+하이픈, 부모 디렉토리명과 일치

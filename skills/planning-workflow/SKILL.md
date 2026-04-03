@@ -297,7 +297,7 @@ reviewer를 호출하기 전에 하네스가 먼저 확인한다:
 - INDEX.md에 모든 도메인 등록 여부
 - 5단계 사용자 승인 완료 여부 (이슈 유무와 관계없이 항상 필요)
 
-파일 관련 항목(intake, screen spec, INDEX.md)이 충족되지 않으면 reviewer를 호출하지 않고 planner에게 보완을 위임한다.
+파일 관련 항목(intake, screen spec, INDEX.md)이 충족되지 않으면 reviewer를 호출하지 않고 planner에게 보완을 위임한다. 특히 intake가 없으면 spec-review를 시작하지 않고 planner가 `*_intake.md`를 먼저 생성하거나 기존 intake를 보완한 뒤 다음 단계로 진행한다.
 
 reviewer에게 위임할 때, 1단계 수집 정보의 명세 반영 여부도 함께 확인을 요청한다 (reviewer S11~S12).
 

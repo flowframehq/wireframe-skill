@@ -4,3 +4,10 @@
 skills-lock.json
 .DS_Store
 .claude/settings.local.json
+
+# docs 산출물 (사용자 프로젝트에서 생성)
+docs/features/*.md
+!docs/features/CLAUDE.md
+!docs/features/INDEX.md
+docs/screens/*/
+!docs/screens/CLAUDE.md
