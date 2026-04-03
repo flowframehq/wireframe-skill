@@ -5,24 +5,12 @@ IT 서비스 기획자를 위한 Claude Code 플러그인.
 
 ## 설치
 
-### 마켓플레이스에서 설치
-
 ```bash
+# 1. 마켓플레이스 등록
+claude plugin marketplace add flowframehq/wireframe-skill
+
+# 2. 플러그인 설치
 claude plugin install ff
-```
-
-또는 Claude Code 안에서:
-
-```
-/plugin
-```
-
-→ Discover 탭에서 `ff` 검색 → Install
-
-### 수동 설치 (Git)
-
-```bash
-claude --plugin-dir /path/to/ff-plugin
 ```
 
 ## 업데이트
@@ -30,8 +18,6 @@ claude --plugin-dir /path/to/ff-plugin
 ```bash
 claude plugin update ff
 ```
-
-또는 Claude Code 안에서 `/plugin` → Installed 탭 → ff → Update
 
 ## 사용법
 
