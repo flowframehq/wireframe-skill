@@ -4,7 +4,7 @@
   "title": "FlowFrame Wireframe Metadata",
   "description": "FlowFrame 와이어프레임 HTML 파일의 메타데이터 스키마. <script type=\"application/json\" id=\"flowframe-meta\"> 블록에 삽입된다.",
   "type": "object",
-  "required": ["generator", "version", "screenId", "title", "purpose", "features"],
+  "required": ["generator", "version", "type", "screenId", "title", "purpose", "features"],
   "properties": {
     "generator": {
       "type": "string",
@@ -15,6 +15,11 @@
       "type": "string",
       "const": "2.0",
       "description": "메타데이터 버전."
+    },
+    "type": {
+      "type": "string",
+      "enum": ["screen", "modal"],
+      "description": "와이어프레임 유형. screen: 일반 화면, modal: 모달 다이얼로그."
     },
     "screenId": {
       "type": "string",
@@ -32,7 +37,7 @@
     "modalId": {
       "type": "string",
       "pattern": "^[a-z][a-z0-9-]*$",
-      "description": "모달 와이어프레임의 식별자. 모달 파일(*_modal-*.html)에서 필수 — reviewer W2가 파일명 기반으로 검증."
+      "description": "모달 식별자. type이 modal이면 필수."
     },
     "features": {
       "type": "array",
@@ -53,6 +58,13 @@
     }
   },
   "additionalProperties": false,
+  "if": {
+    "properties": { "type": { "const": "modal" } },
+    "required": ["type"]
+  },
+  "then": {
+    "required": ["modalId"]
+  },
   "$defs": {
     "Feature": {
       "type": "object",

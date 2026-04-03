@@ -24,23 +24,31 @@ Claude plugin marketplace
 
 ## 사용법
 
-### 1. 기능명세 작성
+### 1. 요구사항 수집
 
 ```
 댓글 기능 기획해줘. 작성, 수정, 삭제, 멘션 기능이 필요해
 ```
 
-→ `docs/features/COMMENT.md` 생성 (와이어프레임 요소, 상태, 인터랙션, 비즈니스 로직)
+→ planner가 필요한 질문을 통해 요구사항을 수집
 
-### 2. 화면명세 작성
+### 2. intake 생성
 
 ```
 에디터 화면 만들어줘. 댓글이랑 버전관리 기능이 들어가
 ```
 
-→ `docs/screens/EDITOR/editor_screen.md` 생성 (레이아웃 + 기능 참조)
+→ `docs/screens/EDITOR/editor_intake.md` 생성 또는 갱신
 
-### 3. 와이어프레임 생성
+### 3. spec 작성
+
+→ `docs/features/COMMENT.md`, `docs/screens/EDITOR/editor_screen.md` 생성 또는 갱신
+
+### 4. spec review
+
+→ reviewer가 화면명세/기능명세 정합성을 검사하고 pass/fail로 review gate를 통과시킨다
+
+### 5. wireframe 생성
 
 ```
 와이어프레임 만들어줘
@@ -48,13 +56,11 @@ Claude plugin marketplace
 
 → `docs/screens/EDITOR/editor_wireframe.html` 생성 (FlowFrame 업로드 가능)
 
-### 4. 와이어프레임 업데이트
+### 6. wireframe review
 
-```
-댓글이랑 인증 수정했어, 와이어프레임 업데이트해줘
-```
+→ reviewer가 DOM/메타데이터/참조 정합성을 검사하고 pass/fail로 최종 review gate를 통과시킨다
 
-→ 영향 받는 와이어프레임 목록 표시 → 사용자 컨펌 → 해당 HTML만 업데이트
+review gate는 생성 직후 다음 단계로 넘기기 전에 문서와 산출물이 규칙을 만족하는지 막는 검수 단계다.
 
 ## 프로젝트 구조
 
@@ -70,6 +76,7 @@ docs/
 │   │   ├── login_screen.md
 │   │   └── login_wireframe.html
 │   └── EDITOR/
+│       ├── editor_intake.md
 │       ├── editor_screen.md
 │       ├── editor_wireframe-pc.html
 │       └── editor_wireframe-mobile.html
@@ -81,6 +88,24 @@ docs/
 - **부분 업데이트** — 수정된 기능의 와이어프레임 영역만 교체 (전체 재생성 불필요)
 - **협업 지원** — 와이어프레임은 구조만, 상세 명세는 기능 md에서 확인
 - **FlowFrame 호환** — 업로드 시 양방향 호버 하이라이트, 기능별 코멘트 가능
+
+## 외부 의존성
+
+와이어프레임 HTML은 다음 외부 스크립트를 사용합니다 (네트워크 연결 필요):
+
+- **Tailwind CSS** — `@tailwindcss/browser@4` CDN
+- **ff-platform.js** — FlowFrame 플랫폼 스크립트 (호버 하이라이트, 상태 탭 자동 생성)
+
+오프라인 환경에서는 와이어프레임이 스타일 없이 렌더링됩니다.
+
+## 부분 업데이트 (partial-update)
+
+와이어프레임의 특정 영역만 교체하려면 HTML 내의 슬롯 마커가 보존되어야 합니다:
+
+- `<!-- @SLOT:{region} -->` ~ `<!-- @END:{region} -->` — `<body>` 내 영역 단위 교체 마커
+- `<!-- @META -->` ~ `<!-- @END:META -->` — `<head>` 내에서 `<script id="flowframe-meta">`를 감싸는 메타데이터 교체 마커
+
+수동으로 HTML을 편집할 때 이 마커를 삭제하거나 위치를 옮기면 부분 업데이트가 동작하지 않습니다. 특히 `@META` 마커는 반드시 `<head>` 안에서 메타데이터 `<script>` 태그를 감싸야 합니다.
 
 ## 실행 환경
 

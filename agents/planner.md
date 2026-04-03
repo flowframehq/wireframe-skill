@@ -38,7 +38,7 @@ skills:
 
 ### 1단계 — 책임 단위 분해
 
-1. 화면의 intake 파일(`docs/screens/{SCREEN_ID}/{screenId 소문자}_intake.md`)이 있으면 읽고 화면 목적, 핵심 행동, 화면 구성, 모달, 특수 인터랙션, viewport, 제약사항을 명세에 반영한다. intake가 없으면 사용자에게 직접 묻는다
+1. 화면의 intake 파일(`docs/screens/{SCREEN_ID}/{screenId 소문자}_intake.md`)이 있으면 읽고 화면 목적, 핵심 행동, 화면 구성, 모달, 특수 인터랙션, viewport, 제약사항을 명세에 반영한다. intake가 없으면 사용자에게 질문한 뒤 `*_intake.md`를 먼저 생성하거나 기존 intake를 갱신한다
 2. viewport를 확인한다 (intake에 있으면 그대로 사용, 없으면 **PC / 모바일 / 둘 다** 중 선택)
 3. 책임 단위 분해를 수행한다:
 
@@ -95,9 +95,12 @@ skills:
 
 ## 워크플로우: 화면에 기능 추가/제거
 
-- **추가**: 레이아웃에 `@DOMAIN/PATH` 참조 추가, frontmatter `features` 배열 갱신
-- **제거**: 참조 삭제, `features` 배열 갱신, 와이어프레임 업데이트 필요 경고
-- 두 경우 모두 `screen-regenerate` 핸드오프 출력
+1. **intake 확인**: 해당 화면의 intake 파일(`docs/screens/{SCREEN_ID}/{screenId 소문자}_intake.md`)이 있는지 확인한다. 없으면 기존 screen spec의 frontmatter(`purpose`, `viewport`)와 레이아웃(`모달:` 항목)에서 역생성하여 최소 intake를 만든다
+2. **명세 수정**:
+   - **추가**: 레이아웃에 `@DOMAIN/PATH` 참조 추가, frontmatter `features` 배열 갱신
+   - **제거**: 참조 삭제, `features` 배열 갱신, 와이어프레임 업데이트 필요 경고
+3. **intake 동기화**: 명세 변경으로 모달이나 화면 구성이 달라졌으면 intake도 갱신한다
+4. 두 경우 모두 `screen-regenerate` 핸드오프 출력
 
 ## 워크플로우: 기능 삭제
 

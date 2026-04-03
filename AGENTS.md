@@ -3,7 +3,6 @@
 This file provides guidance to Codex (Codex.ai/code) when working with code in this repository.
 
 ## Project Overview
-
 FlowFrame — Claude plugin marketplace 배포를 목표로 하는 Claude Code 플러그인.
 기획자가 기능명세/화면명세를 작성하고, HTML 와이어프레임을 생성한다.
 
@@ -24,6 +23,9 @@ skills/
 ├── flowframe-spec/          ← 명세 포맷 지식 (에이전트가 참조)
 └── flowframe-wireframe/     ← 와이어프레임 생성
 
+.claude-plugin/
+└── plugin.json              ← Claude plugin marketplace 배포용 매니페스트
+
 docs/
 ├── features/                ← 도메인 단위 기능 명세 (플랫 파일)
 │   ├── INDEX.md             ← 전체 기능 목록 인덱스
@@ -38,6 +40,8 @@ docs/
 │       ├── login_wireframe-mobile.html
 │       └── login_modal-{slug}.html    ← 모달 (개별 파일)
 ```
+
+> docs/ 하위 경로(LOGIN/, AUTH.md 등)는 명명 규칙 예시입니다. 사용자가 기획을 시작하면 생성됩니다.
 
 플러그인은 agent와 skill을 번들로 포함하며, 계속 추가될 수 있다.
 
@@ -66,7 +70,12 @@ docs/
 - DOM 속성: `data-el="EMAIL"`
 - 와이어프레임 내에서 같은 `data-feature` 안에서만 유니크하면 됨
 
+## Codex 연동
+
+- Codex 호출 시 `codex:codex-rescue` 에이전트를 직접 사용한다 (`/codex:rescue` 스킬 경유 금지 — 내부 라우팅 오류 발생)
+- 신규 스레드: 프롬프트에 `--fresh` 포함, 이어가기: `--resume` 포함
+
 ## Plugin Conventions
 
 - SKILL.md는 소문자+하이픈, 부모 디렉토리명과 일치
-- SKILL.md 본문 500줄 이하, 참조는 `references/` 하위에만
+- SKILL.md 본문 500줄 이하, 참조는 `references/` 하위에만. 단, 프로젝트 루트의 공유 스키마(`schema/`)는 직접 참조 허용

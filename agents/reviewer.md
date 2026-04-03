@@ -27,7 +27,7 @@ skills:
 
 트리거: "명세 리뷰해줘", "spec review", 또는 planner 완료 후 자동 실행
 
-대상: 호출자가 파일 목록을 명시하면 해당 파일만, 명시하지 않으면 `docs/features/*.md`, `docs/screens/*/*_screen.md`, `docs/features/INDEX.md` 전체.
+대상: 호출자가 파일 목록을 명시하면 해당 파일만, 명시하지 않으면 `docs/features/*.md` (INDEX.md, CLAUDE.md 제외), `docs/screens/*/*_screen.md`, `docs/features/INDEX.md` 전체.
 
 하네스(planning-workflow)에서 호출할 때는 현재 워크플로우 대상 화면의 screen spec, 관련 feature 파일, INDEX.md만 전달한다.
 
@@ -47,8 +47,9 @@ skills:
 | S8 | featureId 형식 | `DOMAIN__PATH` 형식, `__`로 깊이 구분, 대문자+밑줄만 사용 |
 | S9 | Requirement 커버리지 | Requirement·UserStory의 H3 헤딩에 `— @DOMAIN/PATH` 연결 표식이 있어야 하고, 레이아웃에서 참조한 모든 기능에 대응하는 Requirement 그룹이 최소 1개 존재 |
 | S10 | 인수조건 형식 | Requirement의 각 항목이 Given/When/Then 형식을 따르고, "적절한", "빠르게", "충분한" 등 모호한 표현이 없음 |
-| S11 | 수집 정보 반영 | intake의 결정적 필드 3개를 화면 명세와 대조한다: (1) `## 화면 목적` → frontmatter `purpose`와 의미 일치, (2) `## viewport` → frontmatter `viewport`와 값 일치, (3) `## 모달` → 레이아웃 `모달:` 항목과 대조 (intake `## 모달`에 기록된 화면 종속 모달이 레이아웃에 `모달:` 항목으로 존재하는지. "없음"이면 건너뜀). intake가 없으면 `fail`. 나머지 필드(핵심 행동, 화면 구성, 특수 인터랙션, 제약사항)는 자동 검증 대상이 아니며 5단계 수동 체크리스트에서 사용자가 판단한다 |
-| S12 | 뷰포트별 레이아웃 | frontmatter `viewport`가 `[pc, mobile]`이면 `### 레이아웃 (PC)`과 `### 레이아웃 (Mobile)` 헤딩이 모두 존재해야 함. 단일 뷰포트면 `skip` |
+| S11 | intake 결정적 필드 반영 | intake의 결정적 필드 3개를 화면 명세와 대조한다: (1) `## 화면 목적` → frontmatter `purpose`와 의미 일치, (2) `## viewport` → frontmatter `viewport`와 값 일치 (intake의 `둘 다`와 frontmatter의 `[pc, mobile]`은 동치로 취급한다), (3) `## 모달` → 레이아웃 `모달:` 항목과 대조 (intake `## 모달`에 기록된 화면 종속 모달이 레이아웃에 `모달:` 항목으로 존재하는지. "없음"이면 건너뜀). intake가 없으면 `skip` (warning: "intake 파일 없음 — S11 검증 생략") |
+| S12 | intake 커버리지 반영 | intake의 나머지 4개 필드를 기계적으로 대조한다: (1) `## 핵심 행동`의 각 bullet은 Requirement 또는 UserStory에 같은 명사구/동사구 수준으로 대응하는 항목이 최소 1개 있어야 함, (2) `## 화면 구성`은 `## Screen` 레이아웃에 같은 구조어(예: 상단/하단, 사이드바, 패널, 탭, 전체 화면 전환)가 반영되어야 함, (3) `## 특수 인터랙션`이 "없음"이 아니면 Requirement 또는 레이아웃 설명에 해당 인터랙션 키워드가 존재해야 함, (4) `## 제약사항`이 "없음"이 아니면 Requirement, 비즈니스 로직, 또는 명시적 열린 이슈로 반영되어야 함. `정책 미확정`, `추후 확정` 같은 미결정 표현은 허용하되, 이 경우 명세에도 동일한 열린 이슈/가정이 남아 있어야 pass |
+| S13 | 뷰포트별 레이아웃 | frontmatter `viewport`가 `[pc, mobile]`이면 `### 레이아웃 (PC)`과 `### 레이아웃 (Mobile)` 헤딩이 모두 존재해야 함. 단일 뷰포트면 `skip` |
 
 ### 2. 와이어프레임 리뷰 (wireframe-review)
 
@@ -63,7 +64,7 @@ skills:
 | # | 항목 | 기준 |
 |---|------|------|
 | W1 | 메타데이터 존재 | `<script type="application/json" id="flowframe-meta">` 존재하고 JSON 파싱 가능 |
-| W2 | 메타데이터 필수 필드 | `screenId`, `title`, `purpose`, `version`("2.0"), `generator`("flowframe-wireframe-skill"), `features`. 모달 파일(`*_modal-*.html`)이면 `modalId`도 필수이며, `modalId` 값이 파일명의 slug와 일치해야 함 (예: `*_modal-upload.html` → `modalId: "upload"`) |
+| W2 | 메타데이터 필수 필드 | `generator`("flowframe-wireframe-skill"), `version`("2.0"), `type`("screen" \| "modal"), `screenId`, `title`, `purpose`, `features`. `type`이 `"modal"`이면 `modalId`도 필수이며, `modalId` 값이 파일명의 slug와 일치해야 함 (예: `*_modal-upload.html` → `modalId: "upload"`) |
 | W3 | feature 래퍼 존재 | 메타데이터 `features[]`의 모든 항목에 대응하는 `[data-feature]` DOM 요소 존재 |
 | W4 | feature-명세 일치 | `data-feature` 값이 기능명세 TOC에서 파생한 featureId와 일치 |
 | W5 | element 매핑 | 메타데이터 `elements[].id`에 대응하는 `[data-el]` DOM 요소가 해당 `[data-feature]` 안에 존재 |

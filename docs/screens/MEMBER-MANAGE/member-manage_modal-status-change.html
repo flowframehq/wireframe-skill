@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>상태 변경 확인</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script src="https://kxyhbeykjlphcifhbbkr.supabase.co/storage/v1/object/public/wireframes/shared/ff-platform.js"></script>
+
+  <style type="text/tailwindcss">
+    @custom-variant dark (&:where(.dark, .dark *));
+  </style>
+
+  <!-- @META -->
+  <script type="application/json" id="flowframe-meta">
+  {
+    "generator": "flowframe-wireframe-skill",
+    "version": "2.0",
+    "type": "modal",
+    "screenId": "MEMBER-MANAGE",
+    "modalId": "status-change",
+    "title": "상태 변경 확인",
+    "purpose": "회원 상태를 변경할 때 변경할 상태와 사유를 입력받아 확인하는 모달",
+    "features": [
+      {
+        "featureId": "MEMBER",
+        "label": "회원 관리",
+        "features": [
+          {
+            "featureId": "MEMBER__MEMBER_STATUS",
+            "label": "상태 변경",
+            "elements": [
+              { "id": "CURRENT_STATUS", "type": "text", "label": "현재 상태", "description": "변경 대상 회원의 현재 상태를 표시하는 텍스트" },
+              { "id": "TARGET_STATUS", "type": "select", "label": "변경할 상태", "description": "활성/정지/탈퇴 중 변경할 상태를 선택하는 드롭다운" },
+              { "id": "REASON", "type": "textarea", "label": "변경 사유", "description": "상태 변경 사유를 입력하는 필수 텍스트 영역" },
+              { "id": "CONFIRM", "type": "button", "label": "확인 버튼", "description": "입력된 사유와 함께 상태 변경을 확정하는 실행 버튼. 사유 미입력 시 비활성화" },
+              { "id": "CANCEL", "type": "button", "label": "취소 버튼", "description": "상태 변경을 취소하고 모달을 닫는 버튼" }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+  <!-- @END:META -->
+</head>
+<body class="bg-zinc-100 dark:bg-zinc-950 p-8 flex items-center justify-center min-h-screen">
+  <div class="w-[440px] rounded-xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
+
+    <!-- @SLOT:modal:status-change -->
+    <div data-feature="MEMBER" data-label="회원 관리">
+      <div data-feature="MEMBER__MEMBER_STATUS" data-label="상태 변경">
+
+        <div data-state="기본">
+          <h2 class="text-base font-semibold text-zinc-800 dark:text-zinc-200 mb-4">상태 변경</h2>
+
+          <div class="flex flex-col gap-4">
+            <!-- 현재 상태 -->
+            <div data-el="CURRENT_STATUS">
+              <div class="text-xs text-zinc-400 mb-1">현재 상태</div>
+              <div class="flex items-center gap-2">
+                <span class="text-sm text-zinc-700 dark:text-zinc-300">김철수</span>
+                <span class="rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">활성</span>
+              </div>
+            </div>
+
+            <!-- 변경할 상태 -->
+            <div class="flex flex-col gap-1.5" data-el="TARGET_STATUS">
+              <label class="text-xs font-medium text-zinc-500 dark:text-zinc-400">변경할 상태</label>
+              <select class="h-9 w-full rounded-md border border-zinc-200 bg-transparent px-3 text-sm dark:border-zinc-700" disabled>
+                <option>정지</option>
+                <option>활성</option>
+                <option>탈퇴</option>
+              </select>
+            </div>
+
+            <!-- 변경 사유 (비어있음) -->
+            <div class="flex flex-col gap-1.5" data-el="REASON">
+              <label class="text-xs font-medium text-zinc-500 dark:text-zinc-400">변경 사유 <span class="text-red-500">*</span></label>
+              <textarea class="h-20 w-full rounded-md border border-zinc-200 bg-transparent px-3 py-2 text-sm dark:border-zinc-700" placeholder="상태 변경 사유를 입력해주세요" readonly></textarea>
+            </div>
+          </div>
+
+          <!-- 버튼 -->
+          <div class="flex gap-2 mt-5">
+            <button class="h-9 flex-1 rounded-md border border-zinc-300 text-sm font-medium text-zinc-600 dark:border-zinc-600 dark:text-zinc-400" data-el="CANCEL">취소</button>
+            <button class="h-9 flex-1 rounded-md bg-zinc-300 text-sm font-medium text-zinc-500 cursor-not-allowed dark:bg-zinc-700 dark:text-zinc-500" data-el="CONFIRM" disabled>확인</button>
+          </div>
+        </div>
+
+        <div data-state="입력 완료">
+          <h2 class="text-base font-semibold text-zinc-800 dark:text-zinc-200 mb-4">상태 변경</h2>
+
+          <div class="flex flex-col gap-4">
+            <!-- 현재 상태 -->
+            <div data-el="CURRENT_STATUS">
+              <div class="text-xs text-zinc-400 mb-1">현재 상태</div>
+              <div class="flex items-center gap-2">
+                <span class="text-sm text-zinc-700 dark:text-zinc-300">김철수</span>
+                <span class="rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">활성</span>
+              </div>
+            </div>
+
+            <!-- 변경할 상태 -->
+            <div class="flex flex-col gap-1.5" data-el="TARGET_STATUS">
+              <label class="text-xs font-medium text-zinc-500 dark:text-zinc-400">변경할 상태</label>
+              <select class="h-9 w-full rounded-md border border-zinc-200 bg-transparent px-3 text-sm dark:border-zinc-700" disabled>
+                <option>정지</option>
+              </select>
+            </div>
+
+            <!-- 변경 사유 (입력됨) -->
+            <div class="flex flex-col gap-1.5" data-el="REASON">
+              <label class="text-xs font-medium text-zinc-500 dark:text-zinc-400">변경 사유 <span class="text-red-500">*</span></label>
+              <textarea class="h-20 w-full rounded-md border border-zinc-200 bg-transparent px-3 py-2 text-sm dark:border-zinc-700" readonly>부적절한 콘텐츠 반복 게시로 인한 이용 정지 조치</textarea>
+            </div>
+          </div>
+
+          <!-- 버튼 -->
+          <div class="flex gap-2 mt-5">
+            <button class="h-9 flex-1 rounded-md border border-zinc-300 text-sm font-medium text-zinc-600 dark:border-zinc-600 dark:text-zinc-400" data-el="CANCEL">취소</button>
+            <button class="h-9 flex-1 rounded-md bg-zinc-800 text-sm font-medium text-white dark:bg-zinc-200 dark:text-zinc-900" data-el="CONFIRM">확인</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <!-- @END:modal:status-change -->
+
+  </div>
+</body>
+</html>

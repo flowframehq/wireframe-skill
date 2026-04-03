@@ -162,13 +162,14 @@ feature 컨테이너는 **중첩**한다 (상위가 하위를 감쌈).
 
 ## 메타데이터 (`flowframe-meta`)
 
-`<script type="application/json" id="flowframe-meta">`에 배치.
+`<head>` 내 `<!-- @META -->` ~ `<!-- @END:META -->` 마커 안에 `<script type="application/json" id="flowframe-meta">`로 배치. partial-update 시 @META 블록 전체가 교체 단위.
 > 기계 판독 가능한 메타데이터 스키마: [`schema/flowframe-meta.schema.json`](../../schema/flowframe-meta.schema.json)
 
 ```json
 {
   "generator": "flowframe-wireframe-skill",
   "version": "2.0",
+  "type": "screen",
   "screenId": "LOGIN",
   "title": "로그인",
   "viewport": "pc",
@@ -183,8 +184,7 @@ feature 컨테이너는 **중첩**한다 (상위가 하위를 감쌈).
           "label": "로그인",
           "elements": [
             { "id": "EMAIL", "type": "input", "label": "이메일", "description": "역할 설명" }
-          ],
-          "features": [ ]
+          ]
         }
       ]
     }
@@ -194,7 +194,9 @@ feature 컨테이너는 **중첩**한다 (상위가 하위를 감쌈).
 
 ### 필수 최상위 필드
 
-`generator` (고정 `"flowframe-wireframe-skill"`), `version` (`"2.0"`), `screenId`, `title`, `purpose`, `features` (1개 이상).
+`generator` (고정 `"flowframe-wireframe-skill"`), `version` (`"2.0"`), `type` (`"screen"` | `"modal"`), `screenId`, `title`, `purpose`, `features` (1개 이상).
+
+`type`이 `"modal"`이면 `modalId`도 필수.
 
 선택: `viewport` (`"pc"` | `"mobile"`).
 
@@ -333,6 +335,7 @@ Tailwind CSS v4: `<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser
 {
   "generator": "flowframe-wireframe-skill",
   "version": "2.0",
+  "type": "modal",
   "screenId": "FLOW-EDITOR",
   "modalId": "upload",
   "title": "플로우 업로드",

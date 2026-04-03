@@ -1,5 +1,7 @@
 # 예제: 다중 feature 화면 — 상품 목록
 
+> 이 예제는 최종 출력 규격을 따르는 완전한 예시입니다.
+
 사이드바(필터) + 메인(목록) 두 영역 레이아웃. 고정 영역(헤더/푸터)과 빈 상태 상태 탭을 포함한다.
 
 ---
@@ -133,47 +135,60 @@ features: [PRODUCT]
     @custom-variant dark (&:where(.dark, .dark *));
   </style>
 
+  <!-- @META -->
   <script type="application/json" id="flowframe-meta">
   {
     "generator": "flowframe-wireframe-skill",
     "version": "2.0",
+    "type": "screen",
     "screenId": "PRODUCT-LIST",
     "title": "상품 목록",
     "viewport": "pc",
     "purpose": "사용자가 카테고리와 가격으로 상품을 필터링하고 원하는 상품을 찾는 화면",
     "features": [
       {
-        "featureId": "PRODUCT__SEARCH_FILTER",
-        "label": "검색/필터",
-        "elements": [
-          { "id": "CATEGORY", "type": "list", "label": "카테고리 필터", "description": "사용자가 관심 상품 카테고리만 남기도록 체크박스 조건을 조정하는 필터 목록" },
-          { "id": "PRICE", "type": "input", "label": "가격 범위", "description": "예산 구간만 조회되도록 최소 가격과 최대 가격을 입력하는 필터 영역" },
-          { "id": "APPLY", "type": "button", "label": "필터 적용 버튼", "description": "선택한 카테고리와 가격 조건을 실제 목록 조회 결과에 반영하는 실행 버튼" },
-          { "id": "RESET", "type": "link", "label": "필터 초기화", "description": "현재 적용된 필터 조건을 모두 제거하고 전체 상품 목록으로 되돌리는 초기화 링크" }
-        ]
-      },
-      {
-        "featureId": "PRODUCT__LIST",
-        "label": "상품 목록",
-        "elements": [
-          { "id": "SORT", "type": "select", "label": "정렬 선택", "description": "인기순, 최신순, 가격순 중 하나를 골라 같은 결과 집합의 우선순위를 바꾸는 정렬 선택 영역" },
-          { "id": "CARDS", "type": "list", "label": "상품 카드", "description": "상품 이미지, 이름, 가격, 평점을 카드 단위로 보여 주는 메인 결과 목록" },
-          { "id": "PAGINATION", "type": "button", "label": "페이지네이션", "description": "현재 결과 페이지를 기준으로 이전이나 다음 결과 묶음으로 이동하는 하단 제어 영역" }
+        "featureId": "PRODUCT",
+        "label": "상품",
+        "features": [
+          {
+            "featureId": "PRODUCT__SEARCH_FILTER",
+            "label": "검색/필터",
+            "elements": [
+              { "id": "CATEGORY", "type": "list", "label": "카테고리 필터", "description": "사용자가 관심 상품 카테고리만 남기도록 체크박스 조건을 조정하는 필터 목록" },
+              { "id": "PRICE", "type": "input", "label": "가격 범위", "description": "예산 구간만 조회되도록 최소 가격과 최대 가격을 입력하는 필터 영역" },
+              { "id": "APPLY", "type": "button", "label": "필터 적용 버튼", "description": "선택한 카테고리와 가격 조건을 실제 목록 조회 결과에 반영하는 실행 버튼" },
+              { "id": "RESET", "type": "link", "label": "필터 초기화", "description": "현재 적용된 필터 조건을 모두 제거하고 전체 상품 목록으로 되돌리는 초기화 링크" }
+            ]
+          },
+          {
+            "featureId": "PRODUCT__LIST",
+            "label": "상품 목록",
+            "elements": [
+              { "id": "SORT", "type": "select", "label": "정렬 선택", "description": "인기순, 최신순, 가격순 중 하나를 골라 같은 결과 집합의 우선순위를 바꾸는 정렬 선택 영역" },
+              { "id": "CARDS", "type": "list", "label": "상품 카드", "description": "상품 이미지, 이름, 가격, 평점을 카드 단위로 보여 주는 메인 결과 목록" },
+              { "id": "PAGINATION", "type": "button", "label": "페이지네이션", "description": "현재 결과 페이지를 기준으로 이전이나 다음 결과 묶음으로 이동하는 하단 제어 영역" }
+            ]
+          }
         ]
       }
     ]
   }
   </script>
+  <!-- @END:META -->
 </head>
 <body class="bg-zinc-100 dark:bg-zinc-950 p-8">
   <div class="mx-auto min-w-[1280px] min-h-[calc(100vh-4rem)] flex flex-col rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
 
+    <!-- @SLOT:header -->
     <header class="flex h-10 items-center rounded-t-xl border-b border-zinc-200 px-5 dark:border-zinc-700">
       <span class="text-xs text-zinc-300 dark:text-zinc-600">Header</span>
     </header>
+    <!-- @END:header -->
 
-    <div class="flex flex-1">
+    <!-- PRODUCT: 루트 feature 래퍼 (elements 없음, features만) -->
+    <div data-feature="PRODUCT" data-label="상품" class="flex flex-1">
 
+      <!-- @SLOT:sidebar -->
       <!-- PRODUCT__SEARCH_FILTER -->
       <aside data-feature="PRODUCT__SEARCH_FILTER" data-label="검색/필터"
              class="w-60 border-r border-zinc-200 p-4 dark:border-zinc-700">
@@ -197,7 +212,7 @@ features: [PRODUCT]
             <div class="mb-1.5 text-xs font-medium text-zinc-400">가격 범위</div>
             <div class="flex items-center gap-1.5">
               <input class="h-8 w-full rounded-md border border-zinc-200 bg-transparent px-2 text-xs dark:border-zinc-700" type="text" value="30,000" readonly />
-              <span class="text-xs text-zinc-300">~</span>
+              <span class="text-xs text-zinc-300 dark:text-zinc-600">~</span>
               <input class="h-8 w-full rounded-md border border-zinc-200 bg-transparent px-2 text-xs dark:border-zinc-700" type="text" value="200,000" readonly />
             </div>
           </div>
@@ -207,7 +222,9 @@ features: [PRODUCT]
           </button>
         </div>
       </aside>
+      <!-- @END:sidebar -->
 
+      <!-- @SLOT:content -->
       <!-- PRODUCT__LIST: data-state로 상태 탭 자동 생성 -->
       <main class="flex-1 p-5">
         <div data-feature="PRODUCT__LIST" data-label="상품 목록">
@@ -297,7 +314,7 @@ features: [PRODUCT]
               <button class="h-8 w-8 rounded-md bg-zinc-800 text-xs font-medium text-white dark:bg-zinc-200 dark:text-zinc-900">1</button>
               <button class="h-8 w-8 text-xs text-zinc-400">2</button>
               <button class="h-8 w-8 text-xs text-zinc-400">3</button>
-              <span class="text-xs text-zinc-300">...</span>
+              <span class="text-xs text-zinc-300 dark:text-zinc-600">...</span>
               <button class="h-8 w-8 text-xs text-zinc-400">12</button>
               <button class="h-8 rounded-md border border-zinc-200 px-2.5 text-xs text-zinc-400 dark:border-zinc-700">다음</button>
             </div>
@@ -322,12 +339,15 @@ features: [PRODUCT]
 
         </div>
       </main>
+      <!-- @END:content -->
 
     </div>
 
+    <!-- @SLOT:footer -->
     <footer class="flex h-10 items-center rounded-b-xl border-t border-zinc-200 px-5 dark:border-zinc-700">
       <span class="text-xs text-zinc-300 dark:text-zinc-600">Footer</span>
     </footer>
+    <!-- @END:footer -->
 
   </div>
 </body>

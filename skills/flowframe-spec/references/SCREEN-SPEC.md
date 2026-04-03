@@ -101,7 +101,7 @@ features: [PRODUCT]
 viewport: [pc, mobile]
 ```
 
-이 경우 `### 레이아웃` 아래에 뷰포트별 하위 섹션을 추가:
+이 경우 `## Screen` 아래에 `### 레이아웃 (PC)`, `### 레이아웃 (Mobile)`를 각각 둔다:
 
 ```markdown
 ### 레이아웃 (PC)

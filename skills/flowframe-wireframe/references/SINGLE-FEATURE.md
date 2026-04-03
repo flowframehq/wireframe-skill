@@ -1,5 +1,7 @@
 # 예제: 단일 feature 화면 — 로그인
 
+> 이 예제는 최종 출력 규격을 따르는 완전한 예시입니다.
+
 단순한 단일 feature 화면의 전체 흐름: 기능 명세 + 화면 명세 → HTML 와이어프레임.
 
 ---
@@ -101,10 +103,12 @@ features: [AUTH]
     @custom-variant dark (&:where(.dark, .dark *));
   </style>
 
+  <!-- @META -->
   <script type="application/json" id="flowframe-meta">
   {
     "generator": "flowframe-wireframe-skill",
     "version": "2.0",
+    "type": "screen",
     "screenId": "LOGIN",
     "title": "로그인",
     "viewport": "pc",
@@ -128,10 +132,12 @@ features: [AUTH]
     ]
   }
   </script>
+  <!-- @END:META -->
 </head>
 <body class="bg-zinc-100 dark:bg-zinc-950 p-8">
   <div class="mx-auto min-w-[1280px] min-h-[calc(100vh-4rem)] flex items-center justify-center rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
 
+    <!-- @SLOT:content -->
     <!-- AUTH: 그루핑 래퍼 (elements 없음, features만) -->
     <div data-feature="AUTH" data-label="인증">
 
@@ -178,6 +184,7 @@ features: [AUTH]
 
       </div>
     </div>
+    <!-- @END:content -->
   </div>
 </body>
 </html>

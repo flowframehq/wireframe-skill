@@ -46,12 +46,13 @@
 
 ## 메타데이터 (`flowframe-meta`)
 
-`<script type="application/json" id="flowframe-meta">`에 배치.
+`<head>` 내 `<!-- @META -->` ~ `<!-- @END:META -->` 마커 안에 `<script type="application/json" id="flowframe-meta">`로 배치.
 
 ```json
 {
   "generator": "flowframe-wireframe-skill",
   "version": "2.0",
+  "type": "screen",
   "screenId": "LOGIN",
   "title": "로그인",
   "viewport": "pc",
