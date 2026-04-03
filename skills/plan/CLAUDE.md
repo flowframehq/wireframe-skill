@@ -29,3 +29,7 @@
 - 5단계 사용자 승인 없이 reviewer 호출 금지
 - spec-review FAIL → planner 수정 → 재리뷰 (최대 3회)
 - wireframe-review FAIL → 책임 라우팅 표에 따라 wireframer 또는 planner에 수정 위임
+- 공유 도메인 수정 시 planner는 `구조 변경: yes|no`를 보고해야 함
+- `구조 변경: yes`면 현재 화면만 보지 않고 영향 화면 집합에 대해 `impact-review`를 추가 실행
+- `impact-review`는 `S2`, `S4`, `S5`, `W4`, `W11`만 차단 기준으로 본다
+- 영향 화면의 기존 품질 부채는 현재 작업 차단 사유로 승격하지 않으며, 필요 시 `full-review`에서 별도로 다룬다

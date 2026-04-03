@@ -14,9 +14,9 @@
 
 | 스킬 | 역할 |
 |------|------|
-| **planning-workflow** | intake → planner → reviewer gate → wireframer → reviewer gate 오케스트레이션 |
-| **flowframe-spec** | 기능명세·화면명세 포맷 지식 (planner가 참조) |
-| **flowframe-wireframe** | 와이어프레임 DOM 구조·디자인 원칙 (wireframer가 참조) |
+| **plan** | intake → planner → reviewer gate → wireframer → reviewer gate 오케스트레이션 |
+| **spec** | 기능명세·화면명세 포맷 지식 (planner가 참조) |
+| **wireframe** | 와이어프레임 DOM 구조·디자인 원칙 (wireframer가 참조) |
 
 ## 배포 대상
 

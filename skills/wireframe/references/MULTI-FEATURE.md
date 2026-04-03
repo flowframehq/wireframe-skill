@@ -27,12 +27,12 @@ toc:
 
 ### 와이어프레임 요소
 
-| 요소 | type | 설명 |
-|------|------|------|
-| 카테고리 필터 | list | 상품 카테고리 체크박스 목록 |
-| 가격 범위 | input | 최소~최대 가격 입력 필드 |
-| 필터 적용 버튼 | button | 선택한 조건을 목록에 반영하는 실행 버튼 |
-| 필터 초기화 | link | 적용된 필터를 모두 해제하는 링크 |
+| id | 요소 | type | 설명 |
+|----|------|------|------|
+| CATEGORY | 카테고리 필터 | list | 상품 카테고리 체크박스 목록 |
+| PRICE | 가격 범위 | input | 최소~최대 가격 입력 필드 |
+| APPLY | 필터 적용 버튼 | button | 선택한 조건을 목록에 반영하는 실행 버튼 |
+| RESET | 필터 초기화 | link | 적용된 필터를 모두 해제하는 링크 |
 
 ### 상태
 
@@ -51,11 +51,11 @@ toc:
 
 ### 와이어프레임 요소
 
-| 요소 | type | 설명 |
-|------|------|------|
-| 정렬 선택 | select | 인기순, 최신순, 가격순 정렬 드롭다운 |
-| 상품 카드 | list | 상품 이미지, 이름, 가격, 평점을 보여주는 카드 그리드 |
-| 페이지네이션 | button | 이전/다음 페이지 이동 버튼 |
+| id | 요소 | type | 설명 |
+|----|------|------|------|
+| SORT | 정렬 선택 | select | 인기순, 최신순, 가격순 정렬 드롭다운 |
+| CARDS | 상품 카드 | list | 상품 이미지, 이름, 가격, 평점을 보여주는 카드 그리드 |
+| PAGINATION | 페이지네이션 | button | 이전/다음 페이지 이동 버튼 |
 
 ### 상태
 
@@ -235,12 +235,12 @@ features: [PRODUCT]
              class="w-60 border-r border-zinc-200 p-4 dark:border-zinc-700">
         <div class="flex items-center justify-between">
           <span class="text-xs font-semibold text-zinc-500 uppercase dark:text-zinc-400">필터</span>
-          <a class="text-xs text-zinc-400 hover:underline" href="#" data-el="RESET">초기화</a>
+          <a class="text-xs text-zinc-400 hover:underline dark:text-zinc-500" href="#" data-el="RESET">초기화</a>
         </div>
 
         <div class="mt-4 flex flex-col gap-4">
           <div data-el="CATEGORY">
-            <div class="mb-1.5 text-xs font-medium text-zinc-400">카테고리</div>
+            <div class="mb-1.5 text-xs font-medium text-zinc-400 dark:text-zinc-500">카테고리</div>
             <div class="flex flex-col gap-1.5">
               <label class="flex items-center gap-2 text-sm"><input class="h-3.5 w-3.5 rounded border-zinc-300 dark:border-zinc-600" type="checkbox" checked disabled /> 전자기기</label>
               <label class="flex items-center gap-2 text-sm"><input class="h-3.5 w-3.5 rounded border-zinc-300 dark:border-zinc-600" type="checkbox" disabled /> 의류</label>
@@ -250,7 +250,7 @@ features: [PRODUCT]
           </div>
 
           <div data-el="PRICE">
-            <div class="mb-1.5 text-xs font-medium text-zinc-400">가격 범위</div>
+            <div class="mb-1.5 text-xs font-medium text-zinc-400 dark:text-zinc-500">가격 범위</div>
             <div class="flex items-center gap-1.5">
               <input class="h-8 w-full rounded-md border border-zinc-200 bg-transparent px-2 text-xs dark:border-zinc-700" type="text" value="30,000" readonly />
               <span class="text-xs text-zinc-300 dark:text-zinc-600">~</span>
@@ -272,7 +272,7 @@ features: [PRODUCT]
 
           <div data-state="기본">
             <div class="mb-4 flex items-center justify-between">
-              <span class="text-xs text-zinc-400">총 128개 상품</span>
+              <span class="text-xs text-zinc-400 dark:text-zinc-500">총 128개 상품</span>
               <div data-el="SORT">
                 <select class="h-8 rounded-md border border-zinc-200 bg-transparent px-2 text-xs dark:border-zinc-700" disabled>
                   <option>인기순</option>
@@ -351,19 +351,19 @@ features: [PRODUCT]
             </div>
 
             <div class="mt-5 flex items-center justify-center gap-1.5" data-el="PAGINATION">
-              <button class="h-8 rounded-md border border-zinc-200 px-2.5 text-xs text-zinc-400 dark:border-zinc-700">이전</button>
+              <button class="h-8 rounded-md border border-zinc-200 px-2.5 text-xs text-zinc-400 dark:border-zinc-700 dark:text-zinc-500">이전</button>
               <button class="h-8 w-8 rounded-md bg-zinc-800 text-xs font-medium text-white dark:bg-zinc-200 dark:text-zinc-900">1</button>
-              <button class="h-8 w-8 text-xs text-zinc-400">2</button>
-              <button class="h-8 w-8 text-xs text-zinc-400">3</button>
+              <button class="h-8 w-8 text-xs text-zinc-400 dark:text-zinc-500">2</button>
+              <button class="h-8 w-8 text-xs text-zinc-400 dark:text-zinc-500">3</button>
               <span class="text-xs text-zinc-300 dark:text-zinc-600">...</span>
-              <button class="h-8 w-8 text-xs text-zinc-400">12</button>
-              <button class="h-8 rounded-md border border-zinc-200 px-2.5 text-xs text-zinc-400 dark:border-zinc-700">다음</button>
+              <button class="h-8 w-8 text-xs text-zinc-400 dark:text-zinc-500">12</button>
+              <button class="h-8 rounded-md border border-zinc-200 px-2.5 text-xs text-zinc-400 dark:border-zinc-700 dark:text-zinc-500">다음</button>
             </div>
           </div>
 
           <div data-state="결과 없음">
             <div class="mb-4 flex items-center justify-between">
-              <span class="text-xs text-zinc-400">총 0개 상품</span>
+              <span class="text-xs text-zinc-400 dark:text-zinc-500">총 0개 상품</span>
               <div data-el="SORT">
                 <select class="h-8 rounded-md border border-zinc-200 bg-transparent px-2 text-xs dark:border-zinc-700" disabled>
                   <option>인기순</option>
@@ -374,7 +374,7 @@ features: [PRODUCT]
             <div data-el="CARDS" class="rounded-lg border border-dashed border-zinc-200 p-10 text-center dark:border-zinc-700">
               <div class="mx-auto h-10 w-10 rounded-full bg-zinc-100 dark:bg-zinc-800"></div>
               <div class="mt-3 text-sm font-medium text-zinc-500 dark:text-zinc-400">검색 결과가 없습니다</div>
-              <p class="mt-1 text-xs text-zinc-400">현재 필터 조건을 다시 확인하거나 일부 조건을 해제해 보세요.</p>
+              <p class="mt-1 text-xs text-zinc-400 dark:text-zinc-500">현재 필터 조건을 다시 확인하거나 일부 조건을 해제해 보세요.</p>
             </div>
           </div>
 

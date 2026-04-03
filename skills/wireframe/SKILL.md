@@ -1,5 +1,5 @@
 ---
-name: flowframe-wireframe
+name: wireframe
 description: FlowFrame 호환 HTML 와이어프레임의 DOM 구조, 속성 규칙, 메타데이터 포맷, 디자인 원칙을 정의한다. wireframer 에이전트가 와이어프레임을 생성할 때 참조하며, 사용자가 "와이어프레임 포맷", "DOM 규칙" 등을 확인할 때도 사용한다.
 license: MIT
 metadata:
@@ -220,9 +220,9 @@ feature 컨테이너는 **중첩**한다 (상위가 하위를 감쌈).
 
 ### elementId 네이밍 가이드
 
-wireframer는 기능 명세의 와이어프레임 요소 테이블에서 한국어 요소명을 읽고, 다음 원칙에 따라 영문 elementId를 부여한다:
+wireframer는 기능 명세의 `와이어프레임 요소` 테이블에 정의된 `id` 컬럼을 그대로 사용한다. 즉, `data-el`과 메타데이터 `elements[].id`는 planner가 기능 명세에서 확정한 값을 따른다.
 
-- 요소의 기능적 역할을 영문으로 표현한다 (예: "이메일" → EMAIL, "로그인 버튼" → SUBMIT)
+- 기능 명세의 `id` 값은 요소의 기능적 역할을 영문으로 표현한다 (예: "이메일" → EMAIL, "로그인 버튼" → SUBMIT)
 - UPPER_SNAKE_CASE만 사용한다 (대문자, 밑줄)
 - 부모 data-feature 스코프 내에서 유니크하면 된다
 - 가능한 짧게 (1~2 단어) 유지한다

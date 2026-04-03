@@ -2,8 +2,8 @@
 name: reviewer
 description: 리뷰어 에이전트. 기능명세·화면명세·와이어프레임의 정합성을 검증하고 개별 항목별 pass/fail/skip 판정을 반환한다. 읽기 전용(Read/Grep/Glob)으로 동작하며, 직접 파일을 수정하지 않는다. "리뷰해줘", "검증해줘", "정합성 확인" 등의 요청에 사용한다.
 skills:
-  - flowframe-spec
-  - flowframe-wireframe
+  - spec
+  - wireframe
 ---
 
 # 리뷰어 에이전트
@@ -23,13 +23,15 @@ skills:
 
 ## 검증 유형
 
+하네스(plan)는 아래 기본 검증 유형을 조합해 사용할 수 있다. reviewer 자체의 공식 유형은 `spec-review`, `wireframe-review`, `full-review` 세 가지이며, 하네스가 공유 도메인 구조 변경을 처리할 때는 이 결과 중 `S2`, `S4`, `S5`, `W4`, `W11`만 별도로 집계하여 **impact-review**로 해석할 수 있다.
+
 ### 1. 명세 리뷰 (spec-review)
 
 트리거: "명세 리뷰해줘", "spec review", 또는 planner 완료 후 자동 실행
 
 대상: 호출자가 파일 목록을 명시하면 해당 파일만, 명시하지 않으면 `docs/features/*.md` (INDEX.md, CLAUDE.md 제외), `docs/screens/*/*_screen.md`, `docs/features/INDEX.md` 전체.
 
-하네스(planning-workflow)에서 호출할 때는 현재 워크플로우 대상 화면의 screen spec, 관련 feature 파일, INDEX.md만 전달한다.
+하네스(plan)에서 호출할 때는 현재 워크플로우 대상 화면의 screen spec, 관련 feature 파일, INDEX.md만 전달한다.
 
 `*_intake.md`는 spec-review 대상이 아니다. intake는 S11에서 참조 소스로만 사용한다.
 
@@ -57,7 +59,7 @@ skills:
 
 대상: 호출자가 파일 목록을 명시하면 해당 파일만, 명시하지 않으면 `docs/screens/*/*.html` 전체 (메인 와이어프레임 + 모달 파일 포함).
 
-하네스(planning-workflow)에서 호출할 때는 현재 워크플로우에서 생성된 와이어프레임 파일만 전달한다.
+하네스(plan)에서 호출할 때는 현재 워크플로우에서 생성된 와이어프레임 파일만 전달한다.
 
 #### 검증 항목
 
@@ -66,14 +68,14 @@ skills:
 | W1 | 메타데이터 존재 | `<script type="application/json" id="flowframe-meta">` 존재하고 JSON 파싱 가능 |
 | W2 | 메타데이터 필수 필드 | `generator`("flowframe-wireframe-skill"), `version`("2.0"), `type`("screen" \| "modal"), `screenId`, `title`, `purpose`, `features`. `type`이 `"modal"`이면 `modalId`도 필수이며, `modalId` 값이 파일명의 slug와 일치해야 함 (예: `*_modal-upload.html` → `modalId: "upload"`) |
 | W3 | feature 래퍼 존재 | 메타데이터 `features[]`의 모든 항목에 대응하는 `[data-feature]` DOM 요소 존재 |
-| W4 | feature-명세 일치 | `data-feature` 값이 기능명세 TOC에서 파생한 featureId와 일치 |
+| W4 | feature-명세 일치 | 모든 `data-feature` 값이 기능명세 TOC에서 파생한 featureId와 일치 |
 | W5 | element 매핑 | 메타데이터 `elements[].id`에 대응하는 `[data-el]` DOM 요소가 해당 `[data-feature]` 안에 존재 |
 | W6 | DOM 중첩 구조 | 하위 feature의 `[data-feature]`가 부모 `[data-feature]` 안에 위치 |
 | W7 | Tailwind + 플랫폼 스크립트 + 다크모드 | Tailwind CDN 포함, `ff-platform.js` 스크립트 포함, `<style>`에 다크모드 규칙, 모든 색상에 `dark:` 변형 |
 | W8 | data-label 존재 | 모든 `[data-feature]`에 `data-label` 속성 존재 |
 | W9 | data-state 배치 | `[data-state]` 요소가 `[data-feature]`의 직접 자식인지 확인. 중간 래퍼가 있으면 상태 탭이 작동하지 않음 |
 | W10 | HTML 유효성 | `[data-feature]` 래퍼가 block-level 요소(`<div>`, `<section>` 등)인지 확인. `<span>` 등 inline 요소 안에 block 요소가 중첩되면 fail |
-| W11 | feature 범위 일치 | 와이어프레임의 feature 목록이 화면 명세의 레이아웃 참조와 일치 (모달 파일의 feature도 포함). 화면 명세가 참조하는 기능이 와이어프레임에 없거나, 와이어프레임에 화면 명세에 없는 기능이 있으면 fail |
+| W11 | feature 범위 일치 | 화면 명세가 참조하는 기능이 와이어프레임에 모두 존재해야 한다 (모달 파일의 feature도 포함). 와이어프레임에는 해당 참조 기능들의 조상 feature를 구조적 래퍼로 포함할 수 있다. 조상 관계가 아닌 추가 feature가 있거나, 참조 feature가 누락되면 fail |
 | W12 | 슬롯 마커 보존 | partial-update 지원을 위해 `<!-- @SLOT:{region} -->` ~ `<!-- @END:{region} -->`과 `<!-- @META -->` ~ `<!-- @END:META -->` 마커 쌍이 존재하고 올바르게 닫혀 있는지 확인 |
 
 ### 3. 전체 정합성 리뷰 (full-review)
@@ -85,7 +87,7 @@ skills:
 | # | 항목 | 기준 |
 |---|------|------|
 | F1 | 화면-와이어프레임 쌍 | 모든 화면 명세(`*_screen.md`)에 대응하는 와이어프레임이 같은 폴더에 존재. 단일 뷰포트면 `*_wireframe.html`, 다중 뷰포트(`viewport: [pc, mobile]`)면 `*_wireframe-pc.html` + `*_wireframe-mobile.html` (이 경우 단일 `*_wireframe.html`은 없어도 정상). 아직 미생성이면 `skip` |
-| F2 | 와이어프레임 feature 범위 | 와이어프레임의 feature 목록이 화면 명세의 레이아웃 참조와 일치 (모달 파일의 feature도 포함) |
+| F2 | 와이어프레임 feature 범위 | 화면 명세가 참조한 feature가 와이어프레임에 모두 존재하는지 확인한다 (모달 파일의 feature도 포함). 와이어프레임에는 해당 참조 feature들의 조상 feature를 구조적 래퍼로 포함할 수 있다 |
 | F3 | 뷰포트 파일 매칭 | `viewport: [pc, mobile]`이면 `{screenId 소문자}_wireframe-pc.html`과 `{screenId 소문자}_wireframe-mobile.html` 둘 다 존재 |
 
 #### full-review skip 해석
@@ -141,7 +143,7 @@ skills:
 
 각 검증 항목에 대해 `pass`, `fail`, `skip` 중 하나를 반환한다. `skip`은 검증 대상 파일이 아직 없거나 해당 조건이 적용되지 않는 경우(예: 단일 뷰포트에서 S13은 `skip`).
 
-reviewer는 **개별 항목의 판정과 이슈 목록만 반환**한다. 최종 PASS/FAIL 판정, skip의 해석(block vs 경고), 다음 단계 진행 여부는 모두 하네스(planning-workflow)가 결정한다. reviewer는 보고서 상단에 최종 판정을 기재하지 않는다.
+reviewer는 **개별 항목의 판정과 이슈 목록만 반환**한다. 최종 PASS/FAIL 판정, skip의 해석(block vs 경고), 다음 단계 진행 여부는 모두 하네스(plan)가 결정한다. reviewer는 보고서 상단에 최종 판정을 기재하지 않는다.
 
 ## hook agent로 사용 시
 

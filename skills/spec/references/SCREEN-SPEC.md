@@ -133,6 +133,7 @@ features: [PRODUCT]
 1. 상단 헤더 — 로고, 검색 입력, 장바구니, 프로필
 2. 좌측 사이드바 — @PRODUCT/SEARCH_FILTER
 3. 메인 목록 영역 — @PRODUCT/LIST
+4. 하단 푸터
 
 ## Requirement
 

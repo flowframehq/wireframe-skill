@@ -27,12 +27,13 @@
 
 ```markdown
 ### 와이어프레임 요소
-| 요소 | type | 설명 |
-|------|------|------|
-| 이메일 | input | 이메일 주소 입력 필드 |
+| id | 요소 | type | 설명 |
+|----|------|------|------|
+| EMAIL | 이메일 | input | 이메일 주소 입력 필드 |
 ```
 
-- `요소`: 한국어 표시명 (wireframe에서 `data-label`로 사용)
+- `id`: 영문 UPPER_SNAKE_CASE. 같은 feature 스코프 안에서 유니크. wireframe의 `data-el` 및 메타데이터 `elements[].id`의 단일 원천
+- `요소`: 한국어 표시명
 - `type`: input, textarea, button, text, select, checkbox, radio, table, list, link, image, toggle 중 하나
 - `설명`: 리뷰어가 명세를 열지 않고도 역할을 이해할 수 있는 수준
 

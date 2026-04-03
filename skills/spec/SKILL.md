@@ -1,5 +1,5 @@
 ---
-name: flowframe-spec
+name: spec
 description: FlowFrame 프로젝트의 기능 명세(docs/features/)와 화면 명세(docs/screens/)의 포맷 지식과 검증 규칙을 제공한다. 기획자 에이전트(planner)가 명세를 작성할 때 참조하며, 사용자가 직접 "명세 포맷", "템플릿", "정합성 규칙" 등을 확인할 때도 사용한다.
 license: MIT
 metadata:
@@ -10,7 +10,7 @@ metadata:
 # FlowFrame 명세 포맷
 
 기능명세와 화면명세의 포맷 규칙, 템플릿, 검증 기준을 정의한다.
-이 스킬의 산출물이 `flowframe-wireframe` 스킬의 입력이 된다.
+이 스킬의 산출물이 `wireframe` 스킬의 입력이 된다.
 
 ## 프로젝트 구조
 
@@ -84,12 +84,13 @@ toc:
 
 ```markdown
 ### 와이어프레임 요소
-| 요소 | type | 설명 |
-|------|------|------|
-| 이메일 | input | 이메일 주소 입력 필드 |
-| 로그인 버튼 | button | 클릭 시 인증 요청. 성공: 메인 화면 이동, 실패: "이메일 또는 비밀번호가 올바르지 않습니다" 에러 표시 |
+| id | 요소 | type | 설명 |
+|----|------|------|------|
+| EMAIL | 이메일 | input | 이메일 주소 입력 필드 |
+| SUBMIT | 로그인 버튼 | button | 클릭 시 인증 요청. 성공: 메인 화면 이동, 실패: "이메일 또는 비밀번호가 올바르지 않습니다" 에러 표시 |
 ```
 
+- `id`: 영문 UPPER_SNAKE_CASE. 같은 feature 스코프 안에서 유니크해야 하며, 와이어프레임의 `data-el` 및 메타데이터 `elements[].id`의 단일 원천으로 사용
 - `요소`: 한국어 표시명
 - `type`: `input`, `textarea`, `button`, `text`, `select`, `checkbox`, `radio`, `table`, `list`, `link`, `image`, `toggle`
 - `설명`: 리뷰어가 명세를 열지 않고도 역할을 이해할 수 있는 수준. 액션 요소(button, link 등)는 클릭 시 성공/실패 결과를 포함
@@ -228,7 +229,7 @@ features: [AUTH]
 | 3 | 도메인 파일의 TOC 구조와 본문 헤딩이 일치 |
 | 4 | 참조된 기능에 `와이어프레임 요소` 테이블 또는 하위 기능 존재 |
 | 5 | 모든 도메인 파일이 INDEX.md에 등록 |
-| 6 | 와이어프레임의 `data-feature`가 현재 기능 구조와 일치 |
+| 6 | 와이어프레임의 `data-feature`가 현재 기능 구조와 일치. 화면이 참조한 feature는 모두 존재해야 하며, 그 조상 feature는 구조적 래퍼로 허용 |
 | 7 | Requirement·UserStory의 H3 헤딩에 `— @DOMAIN/PATH` 연결 표식이 있고, 레이아웃 참조 기능마다 대응 그룹 존재 |
 | 8 | Requirement의 Given/When/Then에 "적절한", "빠르게" 등 모호한 표현이 없음 |
 | 9 | intake 결정적 필드 3개(화면 목적 → purpose, viewport → viewport, 모달 → 레이아웃 모달 항목)를 자동 대조. intake가 없으면 reviewer는 fail로 보고하고 planner가 intake를 먼저 생성/보완해야 한다 |

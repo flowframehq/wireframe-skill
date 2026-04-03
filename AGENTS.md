@@ -19,9 +19,9 @@ agents/
 └── reviewer.md              ← 리뷰어 에이전트 (읽기 전용, pass/fail 판정)
 
 skills/
-├── planning-workflow/       ← 기획 오케스트레이션 하네스
-├── flowframe-spec/          ← 명세 포맷 지식 (에이전트가 참조)
-└── flowframe-wireframe/     ← 와이어프레임 생성
+├── plan/                    ← 기획 오케스트레이션 하네스
+├── spec/                    ← 명세 포맷 지식 (에이전트가 참조)
+└── wireframe/               ← 와이어프레임 생성
 
 .claude-plugin/
 └── plugin.json              ← Claude plugin marketplace 배포용 매니페스트
@@ -51,9 +51,9 @@ docs/
 - `agents/reviewer.md` — 리뷰어 에이전트. 명세·와이어프레임 정합성 검증 (읽기 전용, pass/fail 판정)
 
 현재 skill:
-- `skills/planning-workflow/` — 기획 오케스트레이션 하네스. intake → planner → reviewer gate → wireframer → reviewer gate 오케스트레이션
-- `skills/flowframe-spec/` — 명세 포맷 지식 (planner 에이전트가 참조)
-- `skills/flowframe-wireframe/` — 와이어프레임 포맷 지식 (wireframer 에이전트가 참조)
+- `skills/plan/` — 기획 오케스트레이션 하네스. intake → planner → reviewer gate → wireframer → reviewer gate 오케스트레이션
+- `skills/spec/` — 명세 포맷 지식 (planner 에이전트가 참조)
+- `skills/wireframe/` — 와이어프레임 포맷 지식 (wireframer 에이전트가 참조)
 
 ## ID Rules
 
@@ -68,7 +68,7 @@ docs/
 **elementId** — feature 스코프 내 짧은 영문 키:
 - `EMAIL`, `SUBMIT`, `CODE`
 - DOM 속성: `data-el="EMAIL"`
-- 와이어프레임 내에서 같은 `data-feature` 안에서만 유니크하면 됨
+- 기능 명세의 `와이어프레임 요소` 테이블 `id` 컬럼이 원천이며, 같은 `data-feature` 안에서만 유니크하면 됨
 
 ## Plugin Conventions
 
