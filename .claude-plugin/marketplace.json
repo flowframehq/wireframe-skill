@@ -1,8 +1,10 @@
 {
   "name": "flowframe",
-  "description": "FlowFrame 플러그인 마켓플레이스",
   "owner": {
     "name": "flowframehq"
+  },
+  "metadata": {
+    "description": "FlowFrame 플러그인 마켓플레이스"
   },
   "plugins": [
     {
