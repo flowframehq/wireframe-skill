@@ -19,6 +19,12 @@ claude plugin install ff
 claude plugin update ff
 ```
 
+## 삭제
+
+```bash
+claude plugin uninstall ff
+```
+
 ## 사용법
 
 마켓플레이스 설치 시 모든 스킬에 `ff:` 접두어가 붙습니다.
